@@ -51,10 +51,47 @@ def _fit_fe(y: pd.Series, x: pd.Series, year: pd.Series) -> tuple[float, float, 
     return b, float(np.sqrt((resid ** 2).sum() / max(dof, 1))), resid
 
 
-def fundamentals_errors() -> dict:
-    """Prior residual SDs from MEDSL; empty dict if data unavailable."""
-    from .sources import medsl
+def history_errors(hist: pd.DataFrame) -> dict:
+    """Prior residual SDs from long-run race history (ElectIt: House 1946-, Senate 1954-).
+
+    House: margin ~ year effect + b * same district's previous margin (skipping
+    redistricting years). Senate: margin ~ year effect + b * the state's most
+    recent earlier Senate margin. Uncontested races (|margin| > 90) are dropped.
+    """
     out = {}
+    h = hist[(hist["margin"].abs() < 90)]
+    house = h[h["chamber"] == "house"].dropna(subset=["district"])
+    if len(house):
+        prev = house[["year", "state", "district", "margin"]].copy()
+        prev["year"] += 2
+        m = house.merge(prev.rename(columns={"margin": "prev"}), on=["year", "state", "district"])
+        m = m[m["year"] % 10 != 2]          # new maps take effect in years ending in 2
+        if len(m) > 100:
+            b, sd, resid = _fit_fe(m["margin"], m["prev"], m["year"])
+            out["house"] = {"lean_weight": b, "race_sd": sd, "n": len(m), "residuals": resid.tolist(),
+                            "years": f"{int(m['year'].min())}-{int(m['year'].max())}"}
+    sen = h[h["chamber"] == "senate"].sort_values("year")
+    if len(sen):
+        sen = sen.groupby(["year", "state"], as_index=False)["margin"].mean()
+        sen["prev"] = sen.groupby("state")["margin"].shift(1)
+        m = sen.dropna(subset=["prev"])
+        if len(m) > 50:
+            b, sd, resid = _fit_fe(m["margin"], m["prev"], m["year"])
+            out["senate"] = {"lean_weight": b, "race_sd": sd, "n": len(m), "residuals": resid.tolist(),
+                             "years": f"{int(m['year'].min())}-{int(m['year'].max())}"}
+    return out
+
+
+def fundamentals_errors() -> dict:
+    """Prior residual SDs from ElectIt history if present, else MEDSL."""
+    from .sources import harvard, medsl
+    hist = harvard.load_history()
+    if not hist.empty:
+        out = history_errors(hist)
+        if out:
+            out["source"] = "ElectIt historical results (King, Ebanks & Katz)"
+            return out
+    out = {"source": "MIT Election Data + Science Lab"}
     try:
         pres = medsl.two_party(medsl.load("president"), ["year", "state_po"])
         nat = pres.groupby("year")[["dem", "rep"]].sum()
@@ -68,7 +105,7 @@ def fundamentals_errors() -> dict:
                         on=["pres_year", "state_po"])
         b, sd, resid = _fit_fe(sen["margin"], sen["lean"], sen["year"])
         out["senate"] = {"lean_weight": b, "race_sd": sd, "n": len(sen),
-                         "residuals": resid.tolist()}
+                         "residuals": resid.tolist(), "lean_is_pres": True}
     except Exception as e:  # noqa: BLE001
         out["senate_error"] = str(e)
     try:
@@ -175,14 +212,18 @@ def run() -> dict:
         if ch in fund:
             f = fund[ch]
             overrides["prior"]["race_sd"][ch] = round(f["race_sd"], 2)
-            overrides["prior"]["lean_weight"][ch] = round(min(max(f["lean_weight"], 0.3), 1.1), 3)
+            # Only a regression on presidential lean estimates the model's lean
+            # weight; slopes on a previous race's margin are reported, not applied.
+            if f.get("lean_is_pres"):
+                overrides["prior"]["lean_weight"][ch] = round(min(max(f["lean_weight"], 0.3), 1.1), 3)
             panel["fundamentals"][ch] = {"race_sd": round(f["race_sd"], 2),
                                          "lean_weight": round(f["lean_weight"], 3),
+                                         "years": f.get("years"),
                                          "n": f["n"], "hist": _hist(f["residuals"], -30, 30, 2)}
         elif f"{ch}_error" in fund:
             panel["fundamentals"][ch] = {"unavailable": fund[f"{ch}_error"]}
     if any("race_sd" in v for v in panel["fundamentals"].values()):
-        panel["source"] += "; MIT Election Data + Science Lab results (CC0)"
+        panel["source"] += "; " + fund.get("source", "")
     for k in ("lean_weight", "race_sd"):
         if not overrides["prior"][k]:
             del overrides["prior"][k]

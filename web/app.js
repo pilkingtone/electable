@@ -1,16 +1,16 @@
 /* Electable front end. Reads data/forecast.json, data/history.json, data/calibration.json.
- * URL hash = panel tokens + chamber, e.g. #seats_races_history_senate (like electit's scheme). */
+ * URL hash = panel tokens + chamber, e.g. #seats-races-history-senate (like electit's scheme; _ also accepted). */
 (function () {
   "use strict";
 
   const CHAMBERS = ["senate", "house", "governor"];
-  const PANELS = ["seats", "races", "polls", "tipping", "history", "errors"];
-  const DEFAULT_PANELS = ["seats", "races", "polls", "tipping", "history", "errors"];
+  const PANELS = ["seats", "races", "polls", "tipping", "history", "errors", "electit"];
+  const DEFAULT_PANELS = ["seats", "races", "polls", "tipping", "history", "errors", "electit"];
   const STATE_NAMES = {AL:"Alabama",AK:"Alaska",AZ:"Arizona",AR:"Arkansas",CA:"California",CO:"Colorado",CT:"Connecticut",DE:"Delaware",FL:"Florida",GA:"Georgia",HI:"Hawaii",ID:"Idaho",IL:"Illinois",IN:"Indiana",IA:"Iowa",KS:"Kansas",KY:"Kentucky",LA:"Louisiana",ME:"Maine",MD:"Maryland",MA:"Massachusetts",MI:"Michigan",MN:"Minnesota",MS:"Mississippi",MO:"Missouri",MT:"Montana",NE:"Nebraska",NV:"Nevada",NH:"New Hampshire",NJ:"New Jersey",NM:"New Mexico",NY:"New York",NC:"North Carolina",ND:"North Dakota",OH:"Ohio",OK:"Oklahoma",OR:"Oregon",PA:"Pennsylvania",RI:"Rhode Island",SC:"South Carolina",SD:"South Dakota",TN:"Tennessee",TX:"Texas",UT:"Utah",VT:"Vermont",VA:"Virginia",WA:"Washington",WV:"West Virginia",WI:"Wisconsin",WY:"Wyoming"};
   const CHAMBER_LABEL = {senate: "Senate", house: "House", governor: "Governors"};
   const UNIT = {senate: "seats", house: "seats", governor: "governorships"};
 
-  const state = {chamber: "senate", panels: new Set(DEFAULT_PANELS), forecast: null, history: [], calibration: null};
+  const state = {electitSet: null, chamber: "senate", panels: new Set(DEFAULT_PANELS), forecast: null, history: [], calibration: null};
   const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
   const pct = (p) => p == null ? "—" : p > 0.99 ? ">99%" : p < 0.01 ? "<1%" : Math.round(p * 100) + "%";
   const margin = (m) => m == null ? "—" : (m >= 0 ? "D+" : "R+") + Math.abs(m).toFixed(1);
@@ -27,7 +27,7 @@
 
   /* ---------------- routing ---------------- */
   function readHash() {
-    const toks = location.hash.replace(/^#/, "").split("_").filter(Boolean);
+    const toks = location.hash.replace(/^#/, "").split(/[_-]/).filter(Boolean);
     const ch = toks.find((t) => CHAMBERS.includes(t));
     const ps = toks.filter((t) => PANELS.includes(t));
     if (ch) state.chamber = ch;
@@ -35,7 +35,7 @@
   }
   function writeHash() {
     const toks = PANELS.filter((p) => state.panels.has(p)).concat(state.chamber);
-    history.replaceState(null, "", "#" + toks.join("_"));
+    history.replaceState(null, "", "#" + toks.join("-"));
   }
 
   /* ---------------- tooltip ---------------- */
@@ -219,6 +219,8 @@
       [margin(d.median), `forecast · 80%: ${margin(d.lo80)} to ${margin(d.hi80)}`]];
     if (d.poll_n) rows.push([margin(d.poll_avg), `poll avg (${d.poll_n} polls, ${Math.round(d.w_polls * 100)}% weight)`]);
     rows.push([margin(d.prior), "fundamentals prior"]);
+    const ex = electitFor(d);
+    if (ex) rows.push([ex.p_dem != null ? pct(ex.p_dem) : shareText(ex.dem_share), `ElectIt (Harvard), ${state.electitSet}`]);
     (d.ratings || []).forEach((r) => rows.push([r.rating, r.source]));
     return rows;
   }
@@ -227,7 +229,7 @@
     const cols = [["Race", (r) => raceLabel(r)], ["Democrat", (r) => (r.dem || "—") + (r.dem_label === "I" ? " (I)" : "")],
       ["Republican", (r) => r.rep || "—"], ["Held by", (r) => r.holder], ["P(Dem)", (r) => pct(r.p_dem), 1],
       ["Forecast", (r) => margin(r.median), 1], ["80% range", (r) => `${margin(r.lo80)} to ${margin(r.hi80)}`, 1],
-      ["Poll avg", (r) => r.poll_n ? `${margin(r.poll_avg)} (${r.poll_n})` : "—", 1], ["Prior", (r) => margin(r.prior), 1],
+      ["Poll avg", (r) => r.poll_n ? `${margin(r.poll_avg)} (${r.poll_n})` : "—", 1], ["Prior", (r) => margin(r.prior), 1], ["ElectIt P(Dem)", (r) => { const e = electitFor(r); return e ? (e.p_dem != null ? pct(e.p_dem) : shareText(e.dem_share)) : "—"; }, 1],
       ["Ratings", (r) => (r.ratings || []).map((x) => `${x.source.split(" ")[0]}: ${x.rating}`).join("; ") || "—"]];
     t.append("thead").append("tr").selectAll("th").data(cols).join("th").attr("class", (c) => c[2] ? "num" : null).text((c) => c[0]);
     t.append("tbody").selectAll("tr").data(races).join("tr").selectAll("td")
@@ -374,7 +376,9 @@
   function renderSources() {
     const ul = document.getElementById("sources"); ul.replaceChildren();
     const src = (state.forecast.sources || []).concat([
-      {name: "FiveThirtyEight pollster ratings & historical polls (CC BY 4.0)", url: "https://github.com/fivethirtyeight/data/tree/master/pollster-ratings"}]);
+      {name: "FiveThirtyEight pollster ratings & historical polls (CC BY 4.0)", url: "https://github.com/fivethirtyeight/data/tree/master/pollster-ratings"}]
+      .concat(state.forecast.electit && state.forecast.electit.sets.length
+        ? [{name: "ElectIt: King, Ebanks & Katz, Harvard University", url: "https://gking.harvard.edu/electit/"}] : []));
     src.forEach((s) => {
       const li = document.createElement("li");
       if (s.url && /^https:\/\//.test(s.url)) { const a = document.createElement("a"); a.href = s.url; a.rel = "noopener"; a.textContent = s.name; li.appendChild(a); }
@@ -390,6 +394,61 @@
       ws.forEach((w) => { const li = document.createElement("li"); li.textContent = w; ul2.appendChild(li); });
       d.appendChild(ul2); wEl.appendChild(d);
     }
+  }
+
+  /* ---------------- Harvard ElectIt ---------------- */
+  const electitFor = (r) => (r.electit && state.electitSet && r.electit[state.electitSet]) || null;
+  const shareText = (s) => s == null ? "—" : `${(s * 100).toFixed(1)}% D share`;
+
+  function renderElectit(c) {
+    const el = document.getElementById("electit-chart"), tiles = document.getElementById("electit-tiles");
+    const meta = state.forecast.electit || {sets: []};
+    const sel = document.getElementById("electit-set");
+    tiles.replaceChildren();
+    d3.select("#electit-table").selectAll("*").remove();
+    if (!meta.sets.length) {
+      sel.parentElement.hidden = true;
+      message(el, "ElectIt's forecasts haven't been loaded yet. Add their published files to data/raw/electit/ (or their links to config/harvard.json) and rebuild.");
+      return;
+    }
+    sel.parentElement.hidden = meta.sets.length < 2;
+    if (!state.electitSet || !meta.sets.includes(state.electitSet)) state.electitSet = meta.primary_set || meta.sets[0];
+    if (sel.options.length !== meta.sets.length) {
+      sel.replaceChildren(...meta.sets.map((s) => { const o = document.createElement("option"); o.value = s; o.textContent = s; return o; }));
+    }
+    sel.value = state.electitSet;
+    const sum = (c.electit_summary || {})[state.electitSet];
+    const pts = c.races.map((r) => ({r, e: electitFor(r)})).filter((d) => d.e && d.e.p_dem != null);
+    if (!sum || !pts.length) { message(el, `ElectIt has no win probabilities for the ${CHAMBER_LABEL[state.chamber]} in this set.`); return; }
+    if (sum.expected_dem != null) tile(tiles, {label: `ElectIt expected Dem ${UNIT[state.chamber]}`, value: sum.expected_dem.toFixed(1),
+      note: `Electable: ${c.dem_seats.mean.toFixed(1)}`});
+    tile(tiles, {label: "Races with a different favorite", value: String(sum.disagree), note: `of ${sum.races} races both models cover`});
+    tile(tiles, {label: "Average gap in win probability", value: Math.round(sum.mean_abs_diff * 100) + " pts"});
+    if (meta.ensemble_weight > 0) tile(tiles, {label: "Blended into Electable", value: Math.round(meta.ensemble_weight * 100) + "%", note: `weight on ElectIt "${meta.primary_set}"`});
+
+    const size = Math.min(width(el), 560), m = {t: 12, r: 16, b: 40, l: 48};
+    el.replaceChildren();
+    const svg = d3.select(el).append("svg").attr("viewBox", `0 0 ${size} ${size}`).attr("width", size).attr("height", size).style("max-width", size + "px");
+    const x = d3.scaleLinear().domain([0, 1]).range([m.l, size - m.r]);
+    const y = d3.scaleLinear().domain([0, 1]).range([size - m.b, m.t]);
+    svg.append("g").attr("class", "grid").attr("transform", `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(size - m.l - m.r)).tickFormat(d3.format(".0%"))).call((g) => g.select(".domain").remove());
+    svg.append("g").attr("class", "grid").attr("transform", `translate(0,${size - m.b})`).call(d3.axisBottom(x).ticks(4).tickSize(-(size - m.t - m.b)).tickFormat(d3.format(".0%"))).call((g) => g.select(".domain").remove());
+    svg.append("line").attr("x1", x(0)).attr("y1", y(0)).attr("x2", x(1)).attr("y2", y(1)).attr("stroke", css("--axis"));
+    svg.append("text").attr("x", (m.l + size - m.r) / 2).attr("y", size - 6).attr("text-anchor", "middle").text("ElectIt: chance Democrat wins");
+    svg.append("text").attr("transform", `translate(12,${(m.t + size - m.b) / 2}) rotate(-90)`).attr("text-anchor", "middle").text("Electable: chance Democrat wins");
+    const g = svg.append("g").selectAll("g").data(pts).join("g");
+    g.append("circle").attr("cx", (d) => x(d.e.p_dem)).attr("cy", (d) => y(d.r.p_dem)).attr("r", state.chamber === "house" ? 4 : 5)
+      .attr("fill", (d) => d.r.p_dem >= 0.5 ? css("--dem") : css("--rep")).attr("stroke", css("--surface")).attr("stroke-width", 2).attr("opacity", 0.85);
+    g.append("circle").attr("class", "hit").attr("cx", (d) => x(d.e.p_dem)).attr("cy", (d) => y(d.r.p_dem)).attr("r", 12).attr("tabindex", 0)
+      .on("pointermove", (e, d) => showTip(e, [[raceLabel(d.r), ""], [pct(d.r.p_dem), "Electable"], [pct(d.e.p_dem), "ElectIt"]]))
+      .on("pointerleave blur", hideTip);
+    const top = pts.slice().sort((a, b) => Math.abs(b.r.p_dem - b.e.p_dem) - Math.abs(a.r.p_dem - a.e.p_dem)).slice(0, 15);
+    const t = d3.select("#electit-table");
+    const cols = [["Race", (d) => raceLabel(d.r)], ["Electable P(Dem)", (d) => pct(d.r.p_dem), 1], ["ElectIt P(Dem)", (d) => pct(d.e.p_dem), 1],
+      ["Gap", (d) => Math.round((d.r.p_dem - d.e.p_dem) * 100) + " pts", 1], ["Poll avg", (d) => d.r.poll_n ? margin(d.r.poll_avg) : "no polls", 1]];
+    t.append("thead").append("tr").selectAll("th").data(cols).join("th").attr("class", (c) => c[2] ? "num" : null).text((c) => c[0]);
+    t.append("tbody").selectAll("tr").data(top).join("tr").selectAll("td").data((d) => cols.map((c) => [c[1](d), c[2]]))
+      .join("td").attr("class", (d) => d[1] ? "num" : null).text((d) => d[0]);
   }
 
   /* ---------------- main render ---------------- */
@@ -411,6 +470,10 @@
       if (state.panels.has("polls")) renderPolls(c);
       if (state.panels.has("tipping")) renderTipping(c);
       if (state.panels.has("history")) renderHistory();
+      if (state.panels.has("electit")) {
+        if (state.chamber === "governor") { document.getElementById("panel-electit").hidden = true; }
+        else renderElectit(c);
+      }
     }
     if (state.panels.has("errors")) renderErrors();
   }
@@ -425,12 +488,14 @@
       return;
     }
     Object.assign(state, {forecast: f, history: h || [], calibration: cal});
+    if (f.electit && f.electit.sets && f.electit.sets.length) state.electitSet = f.electit.primary_set || f.electit.sets[0];
     renderMeta(); renderSources(); render();
     document.querySelectorAll("#chamber-tabs button").forEach((b) => b.addEventListener("click", () => { state.chamber = b.dataset.chamber; render(); }));
     document.querySelectorAll("#panel-chips button").forEach((b) => b.addEventListener("click", () => {
       const p = b.dataset.panel; state.panels.has(p) ? state.panels.delete(p) : state.panels.add(p);
       if (!state.panels.size) state.panels.add(p); render();
     }));
+    document.getElementById("electit-set").addEventListener("change", (e) => { state.electitSet = e.target.value; render(); });
     document.getElementById("race-search").addEventListener("input", () => renderRaces(state.forecast.chambers[state.chamber]));
     document.getElementById("show-all").addEventListener("change", () => renderRaces(state.forecast.chambers[state.chamber]));
     addEventListener("hashchange", () => { readHash(); render(); });

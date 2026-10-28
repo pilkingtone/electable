@@ -28,7 +28,7 @@ import pandas as pd
 from . import model, polls as P
 from .config import (MANUAL_DIR, PROCESSED_DIR, WEB_DATA_DIR, model_config,
                      races_config, race_id)
-from .sources import fec, medsl, wikipedia
+from .sources import fec, harvard, medsl, wikipedia
 
 CHAMBERS = ("senate", "house", "governor")
 
@@ -124,6 +124,10 @@ def fetch(out_dir: Path = PROCESSED_DIR) -> dict:
         warnings.append(f"Generic ballot fetch failed: {e}")
         (out_dir / "generic_ballot.csv").write_text("")
 
+    h_sources, h_warn = harvard.mirror_all()
+    sources += h_sources
+    warnings += h_warn
+
     house_margin = rc.get("national_house_margin_2024")
     if house_margin is None:
         try:
@@ -150,7 +154,8 @@ def _bool(v, default=False) -> bool:
     return str(v).strip().lower() in ("1", "true", "yes", "y", "t")
 
 
-def load_inputs(processed: Path = PROCESSED_DIR, manual: Path = MANUAL_DIR) -> dict:
+def load_inputs(processed: Path = PROCESSED_DIR, manual: Path = MANUAL_DIR,
+                electit_dir: Path | None = None) -> dict:
     meta = json.loads((processed / "meta.json").read_text()) if (processed / "meta.json").exists() else {}
     warnings = list(meta.get("warnings", []))
     races = _read(processed / "races.csv")
@@ -204,8 +209,10 @@ def load_inputs(processed: Path = PROCESSED_DIR, manual: Path = MANUAL_DIR) -> d
     appr = _read(manual / "approval.csv")
     if not appr.empty:
         appr = appr.rename(columns={"approve": "dem_pct", "disapprove": "rep_pct"})
+    electit, notes = harvard.load_electit(electit_dir or harvard.ELECTIT_DIR)
+    warnings += notes
     return {"meta": meta, "warnings": warnings, "races": races, "polls": polls,
-            "generic": gb, "approval": appr}
+            "generic": gb, "approval": appr, "electit": electit}
 
 
 def run_model(inp: dict, as_of: date, n_sims: int | None = None) -> dict:
@@ -260,6 +267,13 @@ def run_model(inp: dict, as_of: date, n_sims: int | None = None) -> dict:
         if a:
             pavg[rid] = a
     est = model.combine(allr, pavg, nat, cfg)
+    ext = inp.get("electit")
+    hcfg = harvard.config().get("electit", {})
+    ext_sets = sorted(ext["set"].unique()) if ext is not None and not ext.empty else []
+    ext_set = hcfg.get("preferred_set") if hcfg.get("preferred_set") in ext_sets else (ext_sets[0] if ext_sets else None)
+    if ext_set and hcfg.get("ensemble_weight", 0) > 0:
+        pe = ext[ext["set"] == ext_set].set_index("race_id")["p_dem"].dropna()
+        est = model.blend_external(est, pe, float(hcfg["ensemble_weight"]), nat, cfg)
     sims = model.simulate(est, nat, cfg, n=n_sims)
 
     for ch in CHAMBERS:
@@ -270,6 +284,8 @@ def run_model(inp: dict, as_of: date, n_sims: int | None = None) -> dict:
                 "not_up": rc[ch].get("not_up", {"D": 0, "R": 0})}
         chambers_out[ch] = {"status": "ok", **model.summarize(est[idx].reset_index(drop=True),
                                                                sims[:, idx], ccfg)}
+        if ext_sets:
+            _attach_electit(chambers_out[ch], ext, ext_sets, ccfg)
 
     # Joint control probability (same simulations, so correlation is preserved).
     if all(chambers_out.get(c, {}).get("status") == "ok" for c in ("senate", "house")):
@@ -286,10 +302,51 @@ def run_model(inp: dict, as_of: date, n_sims: int | None = None) -> dict:
         joint = None
 
     return {"as_of": as_of.isoformat(),
+            "electit": {"sets": ext_sets, "primary_set": ext_set,
+                        "ensemble_weight": float(hcfg.get("ensemble_weight", 0)) if ext_sets else 0.0},
             "national": {**nat.__dict__, "approval_net": appr_avg["mean"] if appr_avg else None,
                          "baseline_2024": base},
             "chambers": chambers_out, "joint": joint, "warnings": warnings,
             "n_sims": int(sims.shape[0])}
+
+
+def _attach_electit(chamber: dict, ext: pd.DataFrame, sets: list[str], ccfg: dict) -> None:
+    """Add ElectIt's per-race numbers and a chamber summary for each forecast set."""
+    by = {s: ext[ext["set"] == s].set_index("race_id") for s in sets}
+    for r in chamber["races"]:
+        vals = {}
+        for s, d in by.items():
+            if r["id"] in d.index:
+                row = d.loc[r["id"]]
+                vals[s] = {"p_dem": _f(row["p_dem"]), "dem_share": _f(row["dem_share"])}
+        if vals:
+            r["electit"] = vals
+    summary = {}
+    base = ccfg.get("not_up", {}).get("D", 0)
+    for s in sets:
+        ps = [r["electit"][s]["p_dem"] for r in chamber["races"]
+              if s in r.get("electit", {}) and r["electit"][s]["p_dem"] is not None]
+        ours = [r["p_dem"] for r in chamber["races"]
+                if s in r.get("electit", {}) and r["electit"][s]["p_dem"] is not None]
+        if not ps:
+            continue
+        disagree = sum((a >= 0.5) != (b >= 0.5) for a, b in zip(ps, ours))
+        covered = len(ps) == len(chamber["races"])
+        summary[s] = {"races": len(ps), "disagree": int(disagree),
+                      # Expected seats is a plain sum of probabilities, so it needs no
+                      # knowledge of how ElectIt correlates races.
+                      "expected_dem": base + float(sum(ps)) if covered else None,
+                      "mean_abs_diff": float(np.mean(np.abs(np.array(ps) - np.array(ours))))}
+    if summary:
+        chamber["electit_summary"] = summary
+
+
+def _f(v):
+    try:
+        v = float(v)
+    except (TypeError, ValueError):
+        return None
+    return v if np.isfinite(v) else None
 
 
 def _history_point(f: dict) -> dict | None:
@@ -305,10 +362,11 @@ def _history_point(f: dict) -> dict | None:
 
 def build(as_of: date | None = None, backfill_days: int = 0, step: int = 7,
           processed: Path = PROCESSED_DIR, manual: Path = MANUAL_DIR,
-          out_dir: Path = WEB_DATA_DIR, demo: bool = False) -> dict:
+          out_dir: Path = WEB_DATA_DIR, demo: bool = False,
+          electit_dir: Path | None = None) -> dict:
     rc = races_config()
     as_of = as_of or date.today()
-    inp = load_inputs(processed, manual)
+    inp = load_inputs(processed, manual, electit_dir)
     f = run_model(inp, as_of)
     f.update({"generated_at": datetime.now(timezone.utc).replace(tzinfo=None).isoformat(timespec="seconds") + "Z",
               "election_date": rc["election_date"], "demo": demo,

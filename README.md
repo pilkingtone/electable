@@ -14,8 +14,8 @@ python -m http.server -d web 8000      # open http://localhost:8000
 ```
 
 Views are addressable by URL hash, like ELECTit: panel tokens followed by a chamber, e.g.
-`#seats_races_history_senate` or `#seats_tipping_house`.
-Panels: `seats` `races` `polls` `tipping` `history` `errors`. Chambers: `senate` `house` `governor`.
+`#seats-races-history-senate` or `#seats-tipping-house` (underscores also work).
+Panels: `seats` `races` `polls` `tipping` `history` `errors` `electit`. Chambers: `senate` `house` `governor`.
 
 ## Data sources
 
@@ -27,6 +27,16 @@ Panels: `seats` `races` `polls` `tipping` `history` `errors`. Chambers: `senate`
 | [OpenFEC API](https://api.open.fec.gov/developers/) | Senate fundraising (small prior adjustment) | set `FEC_API_KEY` |
 | [FiveThirtyEight pollster ratings & raw polls](https://github.com/fivethirtyeight/data/tree/master/pollster-ratings) (CC BY 4.0) | Pollster quality weights; historical polling error 1998–2023 | bundled in `data/raw/538/` |
 | Kalshi / Polymarket (optional) | Side-by-side comparison only, never a model input | `config/markets.json` |
+
+### Harvard data
+
+`config/harvard.json` lists Harvard sources, and `python -m electable fetch` mirrors all of them:
+
+- **Harvard Dataverse:** every file of each listed dataset goes to `data/raw/dataverse/<doi>/`. The list includes MIT Election Lab president, Senate, House and county files, plus Ebanks, Katz & King replication data. Add any DOI to the list.
+- **[ElectIt](https://gking.harvard.edu/electit/)** (Gary King, Danny Ebanks, Jonathan Katz): their 2026 House and Senate race forecasts, and their historical results (House since 1946, Senate since 1954). Put file links in `electit.urls`, or drop the files into `data/raw/electit/` (historical results into `data/raw/electit/history/`). Electable recognises columns by name: state, district, office, win probability or vote share, forecast set. If a file isn't recognised, the "Data notes" list says so, and you set `electit.column_map`.
+  - **Comparison:** the *Harvard ElectIt* panel plots Electable's and ElectIt's win probabilities race by race and lists the biggest disagreements. The race table gains an ElectIt column.
+  - **Optional blend:** set `electit.ensemble_weight` (e.g. `0.3`) to pull Electable's race forecasts toward ElectIt's. Each ElectIt probability is converted to the margin it implies under that race's own error size, then averaged.
+  - **Calibration:** when ElectIt's historical results are present, `calibrate` estimates race-level error from that longer series instead of MEDSL's 1976+ data.
 
 Anything the scrapers miss or get wrong can be fixed in `data/manual/` (templates in `data/manual/templates/`). Manual files are merged on top of fetched data at build time, so you can correct inputs and re-run `build` without re-fetching.
 

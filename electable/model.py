@@ -189,3 +189,34 @@ def summarize(est: pd.DataFrame, sims: np.ndarray, chamber_cfg: dict) -> dict:
                 [{"id": est.iloc[j]["race_id"], "p": float(cc / len(tip))} for j, cc in zip(ids, c)],
                 key=lambda x: -x["p"])[:15]
     return out
+
+
+def total_sd(est: pd.DataFrame, nat: National, cfg: dict) -> np.ndarray:
+    """Each race's total forecast SD implied by the error components."""
+    return np.sqrt((est["load_nat"] * nat.sd) ** 2
+                   + (est["load_poll"] * cfg["national"]["shared_error_sd"]) ** 2
+                   + cfg["regional_sd"] ** 2 + est["idio_sd"] ** 2).to_numpy()
+
+
+def blend_external(est: pd.DataFrame, p_ext: pd.Series, weight: float,
+                   nat: National, cfg: dict) -> pd.DataFrame:
+    """Shift race means toward an external model's win probabilities.
+
+    An external P(Dem win) is converted to the margin that would give that
+    probability under this race's own error SD, then averaged with Electable's
+    mean using ``weight``. Races without an external probability are unchanged.
+    """
+    from statistics import NormalDist
+    if weight <= 0:
+        return est
+    est = est.copy()
+    sd = total_sd(est, nat, cfg)
+    p = p_ext.reindex(est["race_id"]).to_numpy(dtype=float)
+    ok = np.isfinite(p)
+    pc = np.clip(p[ok], 0.001, 0.999)
+    implied = np.array([NormalDist().inv_cdf(x) for x in pc]) * sd[ok]
+    mean = est["mean"].to_numpy(dtype=float, copy=True)
+    mean[ok] = (1 - weight) * mean[ok] + weight * implied
+    est["mean"] = mean
+    est["external_weight"] = np.where(ok, weight, 0.0)
+    return est

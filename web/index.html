@@ -36,6 +36,7 @@
         <button data-panel="tipping">Tipping point</button>
         <button data-panel="history">History</button>
         <button data-panel="errors">Historical error</button>
+        <button data-panel="electit">Harvard ElectIt</button>
       </div>
     </nav>
 
@@ -94,6 +95,26 @@
       <h3>Average polling miss by cycle (all race types)</h3>
       <p class="sub">Positive = polls overstated Democrats. Electable simulates a shared miss of this size every run.</p>
       <div class="chart" id="bias-chart"></div>
+    </section>
+
+    <section class="panel card" id="panel-electit" data-panel="electit">
+      <div class="card-head">
+        <div>
+          <h2>Electable vs. Harvard's ElectIt</h2>
+          <p class="sub">ElectIt is Gary King, Danny Ebanks and Jonathan Katz's forecast of every 2026 House and Senate race. Each dot is one race: ElectIt's chance of a Democratic win across, Electable's up. Dots off the diagonal are races where the two models disagree.</p>
+        </div>
+        <div class="filters">
+          <label class="check" for="electit-set">Forecast set
+            <select id="electit-set"></select>
+          </label>
+        </div>
+      </div>
+      <div class="tiles small" id="electit-tiles"></div>
+      <div class="chart" id="electit-chart"></div>
+      <details class="table-view">
+        <summary>Biggest disagreements</summary>
+        <div class="table-scroll"><table id="electit-table"></table></div>
+      </details>
     </section>
 
     <section class="card method" id="method">

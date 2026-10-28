@@ -1,0 +1,21 @@
+{
+  "_comment": "Harvard data sources. `python -m electable harvard` downloads every file in each listed Dataverse dataset to data/raw/dataverse/<doi>/ and every URL in electit.urls to data/raw/electit/. Add the ElectIt replication DOI or file links from https://gking.harvard.edu/electit/ once known.",
+
+  "dataverse_datasets": [
+    {"doi": "doi:10.7910/DVN/42MVDX", "name": "MIT Election Lab: U.S. President 1976-", "role": "results"},
+    {"doi": "doi:10.7910/DVN/PEJ5QU", "name": "MIT Election Lab: U.S. Senate 1976-", "role": "results"},
+    {"doi": "doi:10.7910/DVN/IG0UN2", "name": "MIT Election Lab: U.S. House 1976-", "role": "results"},
+    {"doi": "doi:10.7910/DVN/VOQCHQ", "name": "MIT Election Lab: County presidential returns 2000-", "role": "results"},
+    {"doi": "doi:10.7910/DVN/OMYW0P", "name": "Ebanks, Katz & King replication data (verify this DOI is the right one)", "role": "electit_history"}
+  ],
+
+  "electit": {
+    "urls": [],
+    "_urls_note": "Direct links to ElectIt's published forecast/input files (CSV, TSV, XLSX, JSON). Files can also be dropped into data/raw/electit/ by hand.",
+    "column_map": {},
+    "_column_map_note": "Only needed if auto-detection fails, e.g. {\"state\": \"st\", \"district\": \"cd\", \"p_dem\": \"prob_d\", \"chamber\": \"office\", \"set\": \"model\"}.",
+    "ensemble_weight": 0.0,
+    "_ensemble_note": "0 = show ElectIt beside Electable only. 0 < w <= 1 blends ElectIt's race probabilities into Electable's race means (see model.blend_external).",
+    "preferred_set": null
+  }
+}

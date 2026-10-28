@@ -67,3 +67,27 @@ def make(processed: Path, manual: Path, seed: int = 1, today: date = date(2026, 
         "fetched_at": "synthetic", "national_pres_margin_2024": -1.6,
         "national_house_margin_2024": -2.7, "warnings": ["SYNTHETIC DEMO DATA - not a forecast"],
         "sources": [{"name": "Synthetic fixture (tests/fixtures.py)", "url": ""}]}))
+
+
+def make_electit(directory: Path, races_csv: Path, house_csv: Path, seed: int = 7) -> None:
+    """SYNTHETIC ElectIt-style files (two forecast sets), with column names that
+    differ between files to exercise auto-detection. Not ElectIt's real data."""
+    rng = np.random.default_rng(seed)
+    directory.mkdir(parents=True, exist_ok=True)
+    from electable.config import STATES
+    races = pd.read_csv(races_csv)
+    sen = races[races["chamber"] == "senate"]
+    rows = []
+    for st, lean in zip(sen["state"], sen["lean"]):
+        for model_name, noise in (("No polls", 6), ("With polls", 4)):
+            z = (lean + 2 + rng.normal(0, noise)) / 8
+            rows.append({"State": STATES[st], "Model": model_name,
+                         "Prob_Dem_Win": round(100 / (1 + np.exp(-z * 1.7)), 1)})
+    pd.DataFrame(rows).to_csv(directory / "electit_senate_2026.csv", index=False)
+    hd = pd.read_csv(house_csv)
+    hrows = []
+    for st, d, m in zip(hd["state"], hd["district"], hd["pres_margin_2024"]):
+        for model_name, noise in (("No polls", 6), ("With polls", 4)):
+            z = (m + 1.6 + 2 + rng.normal(0, noise)) / 8
+            hrows.append({"st": st, "cd": d, "forecast_type": model_name, "p_d": round(1 / (1 + np.exp(-z * 1.7)), 3)})
+    pd.DataFrame(hrows).to_csv(directory / "electit_house_2026.tsv", sep="\t", index=False)

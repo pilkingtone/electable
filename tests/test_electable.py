@@ -182,3 +182,65 @@ def test_missing_lean_blocks_chamber(tmp_path: Path):
                        manual=tmp_path / "manual", out_dir=tmp_path / "web")
     assert f["chambers"]["senate"]["status"] == "incomplete"
     assert f["chambers"]["governor"]["status"] == "ok"
+
+
+# ------------------------------------------------------------ Harvard / ElectIt
+
+from electable import calibrate
+from electable.sources import harvard
+from tests.fixtures import make_electit
+
+
+def test_electit_column_detection_variants():
+    a = pd.DataFrame({"State": ["Georgia", "Maine"], "Prob_Dem_Win": [62.5, 40], "Model": ["x", "x"]})
+    out, notes = harvard.standardize_forecasts(a, file_name="electit_senate.csv")
+    assert not notes
+    assert out.set_index("race_id")["p_dem"].to_dict() == {"senate-GA": 0.625, "senate-ME": 0.40}
+    b = pd.DataFrame({"st": ["AK", "TX"], "cd": ["AL", "7"], "office": ["House", "House"], "p_rep": [0.9, 0.2]})
+    out, _ = harvard.standardize_forecasts(b, file_name="f.csv")
+    assert out.set_index("race_id")["p_dem"].round(3).to_dict() == {"house-AK-01": 0.1, "house-TX-07": 0.8}
+    c = pd.DataFrame({"foo": [1], "bar": [2]})
+    out, notes = harvard.standardize_forecasts(c, file_name="mystery.csv")
+    assert out.empty and "column_map" in notes[0]
+
+
+def test_electit_skips_past_years():
+    d = pd.DataFrame({"year": [2024, 2026], "state": ["GA", "GA"], "p_dem": [0.3, 0.6]})
+    out, _ = harvard.standardize_forecasts(d, file_name="senate.csv")
+    assert out["p_dem"].tolist() == [0.6]
+
+
+def test_blend_external_moves_toward_external():
+    cfg = model_config()
+    nat = model.National(0.0, 2.0, None, 0, 0.0, 5.0)
+    est = model.combine(_race_frame([0, 0]), {}, nat, cfg)
+    ext = pd.Series({"senate-X0": 0.9})
+    out = model.blend_external(est, ext, 0.5, nat, cfg)
+    assert out.loc[0, "mean"] > 2 and out.loc[1, "mean"] == est.loc[1, "mean"]
+    assert model.blend_external(est, ext, 0.0, nat, cfg) is est
+
+
+def test_history_errors_from_long_series():
+    rng = np.random.default_rng(0)
+    rows = []
+    for d in range(1, 60):
+        base = rng.normal(0, 20)
+        for y in range(1946, 2024, 2):
+            rows.append({"year": y, "chamber": "house", "state": "OH", "district": d,
+                         "margin": base + rng.normal(0, 6)})
+    out = calibrate.history_errors(pd.DataFrame(rows))
+    assert 7 < out["house"]["race_sd"] < 10       # diff of two N(0,6) draws ~ 8.5
+    assert out["house"]["years"].startswith("1948")
+
+
+def test_build_with_electit(tmp_path: Path):
+    make(tmp_path / "processed", tmp_path / "manual")
+    make_electit(tmp_path / "electit", tmp_path / "processed" / "races.csv", tmp_path / "manual" / "house_districts.csv")
+    f = pipeline.build(as_of=date(2026, 10, 28), processed=tmp_path / "processed", manual=tmp_path / "manual",
+                       out_dir=tmp_path / "web", electit_dir=tmp_path / "electit")
+    assert f["electit"]["sets"] == ["No polls", "With polls"]
+    s = f["chambers"]["senate"]
+    assert all("electit" in r for r in s["races"])
+    assert s["electit_summary"]["No polls"]["races"] == 35
+    assert f["chambers"]["house"]["electit_summary"]["With polls"]["expected_dem"] is not None
+    assert "electit_summary" not in f["chambers"]["governor"]

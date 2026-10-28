@@ -1,0 +1,64 @@
+{
+  "_comment": "Structural facts about the 2026 cycle: which seats are up and which party currently holds them. Candidates, polls, and lean are fetched by the pipeline (or supplied in data/manual/). Verify against official sources before publishing; override anything here via data/manual/*.csv.",
+  "election_date": "2026-11-03",
+  "president_party": "R",
+  "national_house_margin_2024": null,
+  "_national_house_margin_note": "Two-party D-R House popular vote margin in 2024 (fundamentals baseline). Leave null to derive from MEDSL House results; falls back to the 2024 presidential margin.",
+  "senate": {
+    "total_seats": 100,
+    "control_threshold_d": 51,
+    "control_note": "Vice President (R) breaks 50-50 ties, so Democrats (incl. caucusing independents) need 51.",
+    "not_up": {"D": 34, "R": 31},
+    "seats_up": [
+      {"state": "AL", "holder": "R"}, {"state": "AK", "holder": "R"},
+      {"state": "AR", "holder": "R"}, {"state": "CO", "holder": "D"},
+      {"state": "DE", "holder": "D"}, {"state": "FL", "holder": "R", "special": true},
+      {"state": "GA", "holder": "D"}, {"state": "ID", "holder": "R"},
+      {"state": "IL", "holder": "D"}, {"state": "IA", "holder": "R"},
+      {"state": "KS", "holder": "R"}, {"state": "KY", "holder": "R"},
+      {"state": "LA", "holder": "R"}, {"state": "ME", "holder": "R"},
+      {"state": "MA", "holder": "D"}, {"state": "MI", "holder": "D"},
+      {"state": "MN", "holder": "D"}, {"state": "MS", "holder": "R"},
+      {"state": "MT", "holder": "R"}, {"state": "NE", "holder": "R"},
+      {"state": "NH", "holder": "D"}, {"state": "NJ", "holder": "D"},
+      {"state": "NM", "holder": "D"}, {"state": "NC", "holder": "R"},
+      {"state": "OH", "holder": "R", "special": true}, {"state": "OK", "holder": "R"},
+      {"state": "OR", "holder": "D"}, {"state": "RI", "holder": "D"},
+      {"state": "SC", "holder": "R"}, {"state": "SD", "holder": "R"},
+      {"state": "TN", "holder": "R"}, {"state": "TX", "holder": "R"},
+      {"state": "VA", "holder": "D"}, {"state": "WV", "holder": "R"},
+      {"state": "WY", "holder": "R"}
+    ]
+  },
+  "governor": {
+    "control_threshold_d": 26,
+    "control_note": "Majority of the 50 governorships.",
+    "seats_up": [
+      {"state": "AL", "holder": "R"}, {"state": "AK", "holder": "R"},
+      {"state": "AZ", "holder": "D"}, {"state": "AR", "holder": "R"},
+      {"state": "CA", "holder": "D"}, {"state": "CO", "holder": "D"},
+      {"state": "CT", "holder": "D"}, {"state": "FL", "holder": "R"},
+      {"state": "GA", "holder": "R"}, {"state": "HI", "holder": "D"},
+      {"state": "ID", "holder": "R"}, {"state": "IL", "holder": "D"},
+      {"state": "IA", "holder": "R"}, {"state": "KS", "holder": "D"},
+      {"state": "ME", "holder": "D"}, {"state": "MD", "holder": "D"},
+      {"state": "MA", "holder": "D"}, {"state": "MI", "holder": "D"},
+      {"state": "MN", "holder": "D"}, {"state": "NE", "holder": "R"},
+      {"state": "NV", "holder": "R"}, {"state": "NH", "holder": "R"},
+      {"state": "NM", "holder": "D"}, {"state": "NY", "holder": "D"},
+      {"state": "OH", "holder": "R"}, {"state": "OK", "holder": "R"},
+      {"state": "OR", "holder": "D"}, {"state": "PA", "holder": "D"},
+      {"state": "RI", "holder": "D"}, {"state": "SC", "holder": "R"},
+      {"state": "SD", "holder": "R"}, {"state": "TN", "holder": "R"},
+      {"state": "TX", "holder": "R"}, {"state": "VT", "holder": "R"},
+      {"state": "WI", "holder": "D"}, {"state": "WY", "holder": "R"}
+    ],
+    "not_up": {"D": 6, "R": 8},
+    "_not_up_note": "D: DE, KY, NC, NJ, VA, WA. R: IN, LA, MS, MO, MT, ND, UT, WV."
+  },
+  "house": {
+    "total_seats": 435,
+    "control_threshold_d": 218,
+    "_note": "District list, current-lines presidential lean and incumbency come from data/manual/house_districts.csv (mid-decade redistricting in 2025-26 changed several states' maps)."
+  }
+}

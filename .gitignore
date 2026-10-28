@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+data/raw/http_cache/
+data/raw/medsl/

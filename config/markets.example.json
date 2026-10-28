@@ -1,0 +1,4 @@
+[
+  {"label": "Democrats win the Senate", "chamber": "senate", "outcome": "D", "venue": "kalshi", "ticker": "REPLACE-WITH-MARKET-TICKER"},
+  {"label": "Democrats win the House", "chamber": "house", "outcome": "D", "venue": "polymarket", "slug": "replace-with-market-slug"}
+]

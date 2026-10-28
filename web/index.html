@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Electable — 2026 Midterm Forecast</title>
+  <meta name="description" content="Electable: a transparent, poll-driven forecast of the 2026 U.S. House, Senate and governor elections.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-row">
+      <div>
+        <h1 class="wordmark">Electable</h1>
+        <p class="tagline">2026 U.S. midterm forecast · House · Senate · Governors</p>
+      </div>
+      <div class="meta" id="meta" aria-live="polite"></div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div id="demo-banner" class="banner banner-warn" hidden>
+      <strong>Demo data.</strong> This page is showing synthetic test inputs, not a forecast.
+    </div>
+
+    <nav class="controls" aria-label="Forecast views">
+      <div class="seg" role="tablist" id="chamber-tabs">
+        <button role="tab" data-chamber="senate">Senate</button>
+        <button role="tab" data-chamber="house">House</button>
+        <button role="tab" data-chamber="governor">Governors</button>
+      </div>
+      <div class="chips" id="panel-chips" aria-label="Panels">
+        <button data-panel="seats">Seats</button>
+        <button data-panel="races">Races</button>
+        <button data-panel="polls">Polls vs. model</button>
+        <button data-panel="tipping">Tipping point</button>
+        <button data-panel="history">History</button>
+        <button data-panel="errors">Historical error</button>
+      </div>
+    </nav>
+
+    <div id="empty" class="banner" hidden></div>
+
+    <section class="panel" id="panel-seats" data-panel="seats">
+      <div class="tiles" id="tiles"></div>
+      <div class="card">
+        <h2>Distribution of outcomes</h2>
+        <p class="sub" id="seats-sub"></p>
+        <div class="chart" id="seats-chart"></div>
+      </div>
+    </section>
+
+    <section class="panel card" id="panel-races" data-panel="races">
+      <div class="card-head">
+        <div>
+          <h2>Race-by-race forecast</h2>
+          <p class="sub">Dot = forecast margin; bar = 80% range. Sorted by closeness.</p>
+        </div>
+        <div class="filters">
+          <input type="search" id="race-search" placeholder="Filter by state or name" aria-label="Filter races">
+          <label class="check"><input type="checkbox" id="show-all"> Show safe seats</label>
+        </div>
+      </div>
+      <div class="chart" id="races-chart"></div>
+      <details class="table-view">
+        <summary>Table view</summary>
+        <div class="table-scroll"><table id="races-table"></table></div>
+      </details>
+    </section>
+
+    <section class="panel card" id="panel-polls" data-panel="polls">
+      <h2>Polling average vs. Electable forecast</h2>
+      <p class="sub">Hollow ring = raw polling average; filled dot = forecast after blending with fundamentals. Only races with polls.</p>
+      <div class="chart" id="polls-chart"></div>
+    </section>
+
+    <section class="panel card" id="panel-tipping" data-panel="tipping">
+      <h2>Tipping-point races</h2>
+      <p class="sub">How often each race supplies the seat that decides control, across all simulations.</p>
+      <div class="chart" id="tipping-chart"></div>
+    </section>
+
+    <section class="panel card" id="panel-history" data-panel="history">
+      <h2>Forecast over time</h2>
+      <p class="sub" id="history-sub"></p>
+      <div class="chart" id="history-chart"></div>
+    </section>
+
+    <section class="panel card" id="panel-errors" data-panel="errors">
+      <h2>How wrong have the polls been?</h2>
+      <p class="sub" id="errors-sub"></p>
+      <div class="tiles small" id="error-tiles"></div>
+      <div class="chart" id="errors-chart"></div>
+      <h3>Average polling miss by cycle (all race types)</h3>
+      <p class="sub">Positive = polls overstated Democrats. Electable simulates a shared miss of this size every run.</p>
+      <div class="chart" id="bias-chart"></div>
+    </section>
+
+    <section class="card method" id="method">
+      <h2>How Electable works</h2>
+      <ol>
+        <li><strong>National environment.</strong> A weighted generic-ballot polling average, blended with a fundamentals prior: the 2024 House vote, shifted by the historical midterm penalty against the president's party and by presidential approval.</li>
+        <li><strong>Race prior.</strong> Each state's or district's 2024 presidential lean relative to the nation, plus the national environment, incumbency and (for federal races) FEC fundraising.</li>
+        <li><strong>Race polls.</strong> Recency-, sample-, and pollster-quality-weighted average, adjusted for national movement since each poll; partisan sponsor polls are down-weighted.</li>
+        <li><strong>Blend.</strong> Prior and polls are combined by inverse variance, using error sizes estimated from 1998–2022 polls vs. results.</li>
+        <li><strong>Simulate.</strong> 20,000 correlated elections with fat-tailed national, polling, regional, and race-level errors give win probabilities, seat totals, and tipping points.</li>
+      </ol>
+      <p class="sub">Margins are Democratic minus Republican, two-party, in points. Independents running in place of a Democrat are shown in the Democratic column; they count toward Democratic control only if marked as caucusing with Democrats.</p>
+      <h3>Sources</h3>
+      <ul id="sources"></ul>
+      <div id="warnings"></div>
+    </section>
+  </main>
+
+  <footer class="wrap footer">
+    Electable is an independent statistical model. Probabilities are not certainties: a 20% outcome happens one time in five.
+  </footer>
+
+  <div class="tooltip" id="tooltip" role="status" hidden></div>
+  <script src="vendor/d3-7.9.0.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

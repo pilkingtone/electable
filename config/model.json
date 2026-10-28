@@ -1,0 +1,39 @@
+{
+  "_comment": "All margins are Democratic minus Republican, two-party, in percentage points. Defaults are conservative starting values; `python -m electable calibrate` re-estimates the *_sd values from MEDSL historical results and writes config/calibrated.json, which overrides these.",
+
+  "simulations": 20000,
+  "seed": 20261103,
+  "t_df": 5,
+
+  "national": {
+    "_doc": "National environment = precision-weighted blend of the generic-ballot average and a fundamentals prior.",
+    "midterm_penalty": 4.0,
+    "approval_coef": 0.25,
+    "fundamentals_sd": 5.0,
+    "generic_ballot_error_sd": 3.0,
+    "shared_error_sd": 2.5
+  },
+
+  "polls": {
+    "half_life_days": 21,
+    "max_age_days": 120,
+    "reference_sample": 600,
+    "population_weight": {"LV": 1.0, "RV": 0.85, "A": 0.6},
+    "partisan_sponsor_weight": 0.5,
+    "partisan_sponsor_shift": 2.0,
+    "national_trend_adjust": true,
+    "systematic_error_sd": {"senate": 4.5, "governor": 5.0, "house": 6.0}
+  },
+
+  "prior": {
+    "_doc": "Race prior = state/district lean + national environment + incumbency + fundraising.",
+    "lean_weight": {"senate": 0.85, "governor": 0.6, "house": 0.95},
+    "incumbency_bonus": {"senate": 2.5, "governor": 4.0, "house": 3.0},
+    "fundraising_coef": 1.5,
+    "fundraising_cap": 3.0,
+    "race_sd": {"senate": 7.0, "governor": 9.0, "house": 6.5}
+  },
+
+  "regional_sd": 1.5,
+  "min_race_sd": 1.5
+}

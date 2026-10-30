@@ -53,8 +53,9 @@ def national_environment(generic: dict | None, net_approval: float | None,
     if generic is None:
         return National(fund, fund_sd, None, 0, fund, fund_sd)
     g_var = nc["generic_ballot_error_sd"] ** 2 + generic["sampling_sd"] ** 2
+    g_mean = generic["mean"] - nc.get("generic_ballot_bias", 0.0)
     f_var = fund_sd ** 2
-    mean = (fund / f_var + generic["mean"] / g_var) / (1 / f_var + 1 / g_var)
+    mean = (fund / f_var + g_mean / g_var) / (1 / f_var + 1 / g_var)
     sd = (1 / f_var + 1 / g_var) ** -0.5
     return National(mean, sd, generic["mean"], generic["n_polls"], fund, fund_sd)
 
@@ -64,12 +65,26 @@ def race_prior(row: pd.Series, nat: National, cfg: dict) -> float:
     ch = row["chamber"]
     prior = pc["lean_weight"][ch] * float(row["lean"]) + nat.mean
     inc = row.get("incumbent_party")
-    if inc in ("D", "R"):
+    ce = row.get("cand_effect")
+    if ce is not None and pd.notna(ce):
+        # ElectIt's estimated candidate effects (incumbents' personal vote and
+        # challengers' quality), in place of a flat incumbency bonus.
+        prior += float(ce)
+    elif inc in ("D", "R"):
         prior += pc["incumbency_bonus"][ch] * (1 if inc == "D" else -1)
     d, r = row.get("dem_receipts"), row.get("rep_receipts")
     if pd.notna(d) and pd.notna(r) and d > 0 and r > 0:
         prior += float(np.clip(pc["fundraising_coef"] * np.log(d / r),
                                -pc["fundraising_cap"], pc["fundraising_cap"]))
+    # Expert ratings (Cook, Sabato, Inside Elections, ...) carry candidate-specific
+    # information the partisan lean misses, which matters most for governors
+    # (e.g. popular Republicans in blue states). Each rating step (Tossup -> Lean
+    # -> Likely -> Solid) is worth rating_step_points of margin.
+    w = pc.get("ratings_weight", {}).get(ch, 0.0)
+    ratings = row.get("ratings")
+    if w > 0 and isinstance(ratings, list) and ratings:
+        implied = float(np.mean([x["score"] for x in ratings])) * pc.get("rating_step_points", 6.0)
+        prior = (1 - w) * prior + w * implied
     return prior
 
 

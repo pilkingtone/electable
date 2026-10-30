@@ -19,6 +19,8 @@ Manual files (all optional except house_districts.csv for the House):
 from __future__ import annotations
 
 import json
+import os
+import re
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
@@ -43,20 +45,52 @@ def _read(path: Path) -> pd.DataFrame:
 
 # ====================================================================== fetch
 
+def _incumbent_from_holder_text(text) -> tuple[str | None, str | None]:
+    """ElectIt's 'Begich (R)' -> (holder 'R', incumbent running 'R'); 'open (R)' -> ('R', None)."""
+    m = re.match(r"\s*(.*?)\s*\((D|R|I)\)\s*$", str(text or ""))
+    if not m:
+        return None, None
+    holder = m.group(2)
+    return holder, (None if m.group(1).lower() in ("open", "vacant", "") else holder)
+
+
 def fetch(out_dir: Path = PROCESSED_DIR) -> dict:
+    """Pull every source into data/processed/. Each source fails independently and
+    is reported in meta.json's warnings instead of stopping the run."""
     rc = races_config()
     warnings, sources = [], []
     out_dir.mkdir(parents=True, exist_ok=True)
 
+    # --- Harvard: ElectIt (forecast, House seats and nominees, race polls, history)
+    electit = None
+    try:
+        electit = harvard.electit_live()
+        electit["forecasts"].to_csv(out_dir / "electit_forecasts.csv", index=False)
+        electit["seats"].to_csv(out_dir / "electit_seats.csv", index=False)
+        sources.append({"name": "ElectIt (King, Ebanks & Katz, Harvard): 2026 House & Senate forecast, nominees, race polls",
+                        "url": harvard.ELECTIT_BASE})
+        _log(f"ElectIt: {len(electit['forecasts'])} races, {len(electit['polls'])} race polls")
+    except Exception as e:  # noqa: BLE001
+        warnings.append(f"ElectIt forecast unavailable: {e}")
+    try:
+        hist = harvard.electit_results_history()
+        hist.to_csv(out_dir / "electit_history.csv", index=False)
+        sources.append({"name": "ElectIt results history (House 1866-2024, Senate 1918-2024)",
+                        "url": harvard.ELECTIT_BASE})
+    except Exception as e:  # noqa: BLE001
+        warnings.append(f"ElectIt results history unavailable: {e}")
+
+    # --- MIT Election Lab (Harvard Dataverse): 2024 presidential lean by state
     try:
         lean_df, nat_pres = medsl.state_presidential_lean(2024)
         lean = dict(zip(lean_df["state"], lean_df["lean"]))
-        sources.append({"name": "MIT Election Data + Science Lab (2024 president by state)",
+        sources.append({"name": "MIT Election Data + Science Lab, U.S. President 1976-2024 (Harvard Dataverse)",
                         "url": "https://doi.org/10.7910/DVN/42MVDX"})
     except Exception as e:  # noqa: BLE001
         lean, nat_pres = {}, None
         warnings.append(f"State presidential lean unavailable: {e}")
 
+    # --- Wikipedia: Senate and governor nominees, polls, expert ratings
     rows, poll_frames = [], []
     for ch in ("senate", "governor"):
         for seat in rc[ch]["seats_up"]:
@@ -65,7 +99,13 @@ def fetch(out_dir: Path = PROCESSED_DIR) -> dict:
             row = {"race_id": rid, "chamber": ch, "state": st, "district": None,
                    "holder": seat["holder"], "lean": lean.get(st)}
             try:
-                info = wikipedia.fetch_race(ch, st, seat.get("special", False))
+                prefer = None
+                if electit is not None and ch == "senate":
+                    es = electit["seats"]
+                    hit = es[es["race_id"] == rid]
+                    prefer = hit["dem_name"].iloc[0] if len(hit) else None
+                info = wikipedia.fetch_race(ch, st, seat.get("special", False),
+                                            prefer_dem=prefer if isinstance(prefer, str) else None)
                 _log(f"{rid}: {len(info['polls'])} polls, {len(info['ratings'])} ratings")
                 d, r = info["dem"], info["rep"]
                 row.update({"dem_name": d and d["name"], "rep_name": r and r["name"],
@@ -86,59 +126,107 @@ def fetch(out_dir: Path = PROCESSED_DIR) -> dict:
                 if not len(info["nominees"]):
                     warnings.append(f"{rid}: no nominees found in infobox")
                 if not info["polls"].empty:
-                    poll_frames.append(info["polls"].assign(race_id=rid))
+                    poll_frames.append(info["polls"].assign(race_id=rid, source_url=info["url"]))
             except Exception as e:  # noqa: BLE001
                 warnings.append(f"{rid}: Wikipedia fetch failed: {e}")
             rows.append(row)
-
-    # FEC fundraising for Senate (federal) races.
-    for row in rows:
-        if row["chamber"] != "senate" or not row.get("dem_name"):
-            continue
-        try:
-            res = fec.totals("S", row["state"])
-            row["dem_receipts"] = fec.receipts_for(res, row.get("dem_name"), "D")
-            row["rep_receipts"] = fec.receipts_for(res, row.get("rep_name"), "R")
-        except Exception as e:  # noqa: BLE001
-            warnings.append(f"{row['race_id']}: FEC fetch failed: {e}")
-            break   # one failure usually means the API is unreachable/rate-limited
-    else:
-        sources.append({"name": "Federal Election Commission (OpenFEC candidate totals)",
-                        "url": "https://api.open.fec.gov/developers/"})
-
-    races = pd.DataFrame(rows)
-    races.to_csv(out_dir / "races.csv", index=False)
-    pd.concat(poll_frames).to_csv(out_dir / "polls.csv", index=False) if poll_frames else \
-        (out_dir / "polls.csv").write_text("")
     if poll_frames or any("ratings" in r for r in rows):
-        sources.append({"name": "Wikipedia race articles (polls cited to each pollster; Cook, Sabato, Inside Elections ratings)",
+        sources.append({"name": "Wikipedia race articles (polls cited to each pollster; Cook, Sabato, Inside Elections and other ratings)",
                         "url": "https://en.wikipedia.org/wiki/2026_United_States_elections"})
 
+    # --- House: Cook 2026 PVI (current lines) + ElectIt's nominees and incumbents
+    house_html = None
     try:
-        gb = wikipedia.fetch_generic_ballot()
-        gb.to_csv(out_dir / "generic_ballot.csv", index=False)
-        _log(f"generic ballot: {len(gb)} polls")
-        sources.append({"name": "Wikipedia: generic ballot polling",
-                        "url": wikipedia.page_url(wikipedia.GENERIC_BALLOT_TITLE)})
+        house_html = wikipedia.fetch_html(wikipedia.HOUSE_TITLE)
+        pvi = wikipedia.parse_house_pvi(house_html)
+        _log(f"House: Cook 2026 PVI for {len(pvi)} districts")
+        sources.append({"name": "Cook Political Report 2026 PVI by district, via Wikipedia",
+                        "url": wikipedia.page_url(wikipedia.HOUSE_TITLE)})
     except Exception as e:  # noqa: BLE001
-        warnings.append(f"Generic ballot fetch failed: {e}")
+        pvi = pd.DataFrame()
+        warnings.append(f"House PVI unavailable: {e}")
+    if electit is not None and not pvi.empty:
+        lean_h = {race_id("house", s, d): l for s, d, l in zip(pvi["state"], pvi["district"], pvi["lean"])}
+        seats = electit["seats"][electit["seats"]["chamber"] == "house"]
+        for _, s in seats.iterrows():
+            holder, inc = _incumbent_from_holder_text(s["holder_text"])
+            sure = int(s["sure"])
+            rows.append({"race_id": s["race_id"], "chamber": "house", "state": s["state"],
+                         "district": int(s["race_id"].rsplit("-", 1)[1]), "holder": holder,
+                         "lean": lean_h.get(s["race_id"]),
+                         "dem_name": s["dem_name"], "rep_name": s["rep_name"], "dem_label": "D",
+                         "incumbent_party": inc,
+                         "uncontested": "D" if sure == 1 else "R" if sure == -1 else None,
+                         "source_url": harvard.ELECTIT_BASE})
+        missing = [s for s in seats["race_id"] if s not in lean_h]
+        if missing:
+            warnings.append(f"House: no Cook PVI for {len(missing)} districts: {', '.join(missing[:10])}")
+
+    # --- ElectIt's race polls: all House district polls, and Senate polls for
+    # races where Wikipedia had none (Wikipedia's carry sample and LV/RV details).
+    if electit is not None and not electit["polls"].empty:
+        ep = electit["polls"]
+        have = {f["race_id"].iloc[0] for f in poll_frames}
+        extra = ep[ep["race_id"].str.startswith("house-") | ~ep["race_id"].isin(have)]
+        if not extra.empty:
+            poll_frames.append(extra)
+
+    # --- FEC fundraising (Senate). DEMO_KEY allows ~30 calls/hour, so only with a key.
+    if os.environ.get("FEC_API_KEY"):
+        for row in rows:
+            if row["chamber"] != "senate" or not row.get("dem_name"):
+                continue
+            try:
+                res = fec.totals("S", row["state"])
+                row["dem_receipts"] = fec.receipts_for(res, row.get("dem_name"), "D")
+                row["rep_receipts"] = fec.receipts_for(res, row.get("rep_name"), "R")
+            except Exception as e:  # noqa: BLE001
+                warnings.append(f"{row['race_id']}: FEC fetch failed: {e}")
+                break
+        else:
+            sources.append({"name": "Federal Election Commission (OpenFEC candidate totals)",
+                            "url": "https://api.open.fec.gov/developers/"})
+    else:
+        warnings.append("FEC fundraising skipped: set FEC_API_KEY to include it (small prior adjustment).")
+
+    races = pd.DataFrame(rows)
+    if electit is not None and electit.get("cand_effect"):
+        races["cand_effect"] = races["race_id"].map(electit["cand_effect"])
+        sources.append({"name": "ElectIt candidate effects (each nominee's estimated personal vote)",
+                        "url": harvard.ELECTIT_BASE})
+    races.to_csv(out_dir / "races.csv", index=False)
+    polls = pd.concat(poll_frames, ignore_index=True) if poll_frames else pd.DataFrame()
+    polls.to_csv(out_dir / "polls.csv", index=False) if not polls.empty else (out_dir / "polls.csv").write_text("")
+
+    # --- National environment: the published generic-ballot averages
+    gb = pd.DataFrame()
+    if house_html is not None:
+        gb = wikipedia.parse_generic_aggregates(house_html, source_url=wikipedia.page_url(wikipedia.HOUSE_TITLE))
+    if electit is not None:
+        for k, a in electit["aggregates"].items():
+            name = a.get("source") or k
+            if a.get("dem") and a.get("rep") and not (not gb.empty and gb["pollster"].str.contains(name.split("'")[0], regex=False).any()):
+                gb = pd.concat([gb, pd.DataFrame([{"pollster": name, "partisan": None, "end_date": a.get("date"),
+                                                   "sample": 5000, "population": "LV", "dem_pct": a["dem"],
+                                                   "rep_pct": a["rep"], "source_url": a.get("url") or harvard.ELECTIT_BASE,
+                                                   "kind": "aggregate"}])], ignore_index=True)
+    if gb.empty:
+        warnings.append("No generic-ballot averages found; national environment uses fundamentals only.")
         (out_dir / "generic_ballot.csv").write_text("")
+    else:
+        gb.to_csv(out_dir / "generic_ballot.csv", index=False)
+        _log("generic ballot: " + ", ".join(f"{p} D{d - r:+.1f}" for p, d, r in zip(gb["pollster"], gb["dem_pct"], gb["rep_pct"])))
+        sources.append({"name": "Generic-ballot averages: " + ", ".join(gb["pollster"].str.replace(r"\[.*?\]", "", regex=True)),
+                        "url": wikipedia.page_url(wikipedia.HOUSE_TITLE)})
 
     h_sources, h_warn = harvard.mirror_all()
     sources += h_sources
     warnings += h_warn
 
     house_margin = rc.get("national_house_margin_2024")
-    if house_margin is None:
-        try:
-            h = medsl.load("house")
-            h = medsl.two_party(h[h["year"] == 2024], ["year"])
-            house_margin = float(h["margin"].iloc[0]) if len(h) else None
-        except Exception as e:  # noqa: BLE001
-            warnings.append(f"2024 House popular vote unavailable: {e}")
-
     meta = {"fetched_at": datetime.now(timezone.utc).replace(tzinfo=None).isoformat(timespec="seconds") + "Z",
             "national_pres_margin_2024": nat_pres, "national_house_margin_2024": house_margin,
+            "electit_chambers": electit["chambers"] if electit else None,
             "warnings": warnings, "sources": sources}
     (out_dir / "meta.json").write_text(json.dumps(meta, indent=2))
     for w in warnings:
@@ -161,8 +249,11 @@ def load_inputs(processed: Path = PROCESSED_DIR, manual: Path = MANUAL_DIR,
     races = _read(processed / "races.csv")
     nat_pres = meta.get("national_pres_margin_2024")
 
-    # House districts come from the manual file (current, post-redistricting lines).
+    # House districts come from fetch (Cook PVI + ElectIt nominees). A manual
+    # house_districts.csv, if present, replaces them (for corrections or offline use).
     hd = _read(manual / "house_districts.csv")
+    if not hd.empty and not races.empty:
+        races = races[races["chamber"] != "house"]
     if not hd.empty:
         if nat_pres is None:
             warnings.append("House lean needs the 2024 national presidential margin; House skipped.")
@@ -176,8 +267,9 @@ def load_inputs(processed: Path = PROCESSED_DIR, manual: Path = MANUAL_DIR,
                                  for h, run in zip(hd["holder"], hd.get("incumbent_running", [False] * len(hd)))])
             races = pd.concat([races, hd.drop(columns=["pres_margin_2024", "incumbent_running"],
                                               errors="ignore")], ignore_index=True)
-    else:
-        warnings.append("data/manual/house_districts.csv missing: House forecast not produced.")
+    elif races.empty or not (races["chamber"] == "house").any():
+        warnings.append("No House districts (fetch found no Cook PVI / ElectIt seats and "
+                        "data/manual/house_districts.csv is absent): House forecast not produced.")
 
     over = _read(manual / "races.csv")
     if not over.empty and not races.empty:
@@ -191,7 +283,7 @@ def load_inputs(processed: Path = PROCESSED_DIR, manual: Path = MANUAL_DIR,
         races = races.reset_index()
 
     if not races.empty:
-        for col in ("dem_label", "incumbent_party", "uncontested", "dem_caucus",
+        for col in ("dem_label", "incumbent_party", "uncontested", "dem_caucus", "cand_effect",
                     "dem_receipts", "rep_receipts", "ratings", "source_url", "dem_name", "rep_name"):
             if col not in races.columns:
                 races[col] = None
@@ -211,6 +303,9 @@ def load_inputs(processed: Path = PROCESSED_DIR, manual: Path = MANUAL_DIR,
         appr = appr.rename(columns={"approve": "dem_pct", "disapprove": "rep_pct"})
     electit, notes = harvard.load_electit(electit_dir or harvard.ELECTIT_DIR)
     warnings += notes
+    live = _read(processed / "electit_forecasts.csv")
+    if not live.empty:
+        electit = pd.concat([electit, live], ignore_index=True) if not electit.empty else live
     return {"meta": meta, "warnings": warnings, "races": races, "polls": polls,
             "generic": gb, "approval": appr, "electit": electit}
 
@@ -286,6 +381,11 @@ def run_model(inp: dict, as_of: date, n_sims: int | None = None) -> dict:
                                                                sims[:, idx], ccfg)}
         if ext_sets:
             _attach_electit(chambers_out[ch], ext, ext_sets, ccfg)
+            exact = (inp["meta"].get("electit_chambers") or {}).get(ch)
+            if exact and exact.get("set") in chambers_out[ch].get("electit_summary", {}):
+                # ElectIt's own simulations give its exact control odds and seat distribution.
+                chambers_out[ch]["electit_summary"][exact["set"]].update(
+                    {"p_dem_control": exact["p_dem_control"], "dem_seats": exact["dem_seats"]})
 
     # Joint control probability (same simulations, so correlation is preserved).
     if all(chambers_out.get(c, {}).get("status") == "ok" for c in ("senate", "house")):

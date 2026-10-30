@@ -18,7 +18,7 @@ from io import StringIO
 import pandas as pd
 from bs4 import BeautifulSoup
 
-from ..config import STATES
+from ..config import NAME_TO_ABBR, STATES
 from ..http import get, FetchError
 
 API = "https://en.wikipedia.org/w/api.php"
@@ -111,6 +111,20 @@ def parse_end_date(s, default_year: int = 2026) -> date | None:
         return None
 
 
+def _read_table(table) -> pd.DataFrame:
+    """pandas.read_html on one <table>, after repairing malformed rowspan/colspan
+    values (editors' typos such as rowspan='2"' otherwise make pandas skip the table)."""
+    for cell in table.find_all(["td", "th"]):
+        for attr in ("rowspan", "colspan"):
+            if cell.has_attr(attr):
+                digits = re.sub(r"\D", "", str(cell[attr]))
+                if digits:
+                    cell[attr] = digits
+                else:
+                    del cell[attr]
+    return _flatten_columns(pd.read_html(StringIO(str(table)))[0])
+
+
 def _flatten_columns(df: pd.DataFrame) -> pd.DataFrame:
     if isinstance(df.columns, pd.MultiIndex):
         cols = []
@@ -127,6 +141,19 @@ def _flatten_columns(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def _sponsor_side(pollster: str) -> str | None:
+    """Wikipedia marks partisan/campaign polls with a "(D)" or "(R)" after the
+    pollster's name; capital-letter footnotes only name a sponsor (often a news
+    outlet), so they don't count."""
+    m = re.search(r"\((D|R)\)", re.sub(r"\[[^\]]*\]", "", pollster))
+    return m.group(1) if m else None
+
+
+def display_name(name: str) -> str:
+    """'Troy Jackson (replacing Graham Platner )' -> 'Troy Jackson'."""
+    return re.sub(r"\s*\(.*?\)\s*", " ", _clean(name)).strip()
+
+
 def surname(name: str) -> str:
     name = re.sub(r"\(.*?\)|\b(Jr|Sr|II|III|IV)\.?$", "", _clean(name)).strip(" ,")
     return name.split()[-1] if name.split() else ""
@@ -141,7 +168,9 @@ PARTY_CODES = {"democratic": "D", "republican": "R", "independent": "I",
 def parse_nominees(html: str) -> list[dict]:
     """Read the election infobox's Nominee / Party rows.
 
-    Returns [{"name": ..., "party": "D"|"R"|"I"|...}] in infobox order.
+    Infoboxes nest a small table per group of candidates, so only rows whose
+    own (non-recursive) header cell says Nominee/Candidate or Party count, and
+    only their own cells. Returns [{"name": ..., "party": "D"|"R"|"I"|...}].
     """
     soup = BeautifulSoup(html, "lxml")
     box = soup.find("table", class_=re.compile(r"infobox"))
@@ -149,36 +178,38 @@ def parse_nominees(html: str) -> list[dict]:
         return []
     names, parties = [], []
     for tr in box.find_all("tr"):
-        th = tr.find("th")
+        th = tr.find("th", recursive=False)
         label = _clean(th.get_text(" ")) if th else ""
-        cells = [_clean(td.get_text(" ")) for td in tr.find_all("td")]
+        cells = [_clean(td.get_text(" ")) for td in tr.find_all("td", recursive=False)]
         if label in ("Nominee", "Candidate"):
-            names.extend(c for c in cells if c)
+            names.append([c for c in cells if c])
         elif label == "Party":
-            parties.extend(c for c in cells if c)
+            parties.append([c for c in cells if c])
     out = []
-    for i, n in enumerate(names):
-        p = parties[i].lower() if i < len(parties) else ""
-        code = next((v for k, v in PARTY_CODES.items() if k in p), "O")
-        out.append({"name": n, "party": code})
+    for i, group in enumerate(names):
+        pg = parties[i] if i < len(parties) else []
+        for j, n in enumerate(group):
+            p = pg[j].lower() if j < len(pg) else ""
+            code = next((v for k, v in PARTY_CODES.items() if k in p), "O")
+            out.append({"name": n, "party": code})
     return out
 
 
 def parse_incumbent(html: str) -> str | None:
-    """Name in the infobox's '... before election' row (the seat's incumbent)."""
+    """The infobox's 'Incumbent ...' name (the seat's current holder)."""
     soup = BeautifulSoup(html, "lxml")
     box = soup.find("table", class_=re.compile(r"infobox"))
     if box is None:
         return None
-    for tr in box.find_all("tr"):
-        th = tr.find("th")
-        if th and "before election" in th.get_text(" ").lower():
-            td = tr.find("td")
-            if td:
-                return _clean(td.get_text(" ")) or None
-            # Some infoboxes put the name in the following row.
-            nxt = tr.find_next_sibling("tr")
-            return _clean(nxt.get_text(" ")) if nxt else None
+    for b in box.find_all(["b", "th"]):
+        if _clean(b.get_text(" ")).lower().startswith("incumbent"):
+            cell = b.find_parent(["td", "th"]) or b.parent
+            a = cell.find("p").find("a") if cell.find("p") else None
+            if a is None:
+                links = [x for x in cell.find_all("a") if x not in b.find_all("a")]
+                a = links[0] if links else None
+            if a is not None:
+                return _clean(a.get_text(" ")) or None
     return None
 
 
@@ -198,7 +229,7 @@ def parse_poll_tables(html: str, dem: str, rep: str, *, source_url: str = "") ->
         if "poll source" not in head.lower():
             continue
         try:
-            df = _flatten_columns(pd.read_html(StringIO(str(table)))[0])
+            df = _read_table(table)
         except ValueError:
             continue
         cols = {c.lower(): c for c in df.columns}
@@ -218,18 +249,25 @@ def parse_poll_tables(html: str, dem: str, rep: str, *, source_url: str = "") ->
             n, pop = parse_sample(r[smp]) if smp else (None, None)
             rows.append({
                 "pollster": _clean(raw_src),
-                # Wikipedia marks sponsored/partisan polls with a capital-letter
-                # footnote (e.g. "[A]") or a "(D)"/"(R)" suffix.
-                "partisan": bool(re.search(r"\[[A-Z]\]|\((D|R)\)", raw_src)),
+                "partisan": _sponsor_side(raw_src),
                 "end_date": end.isoformat(),
                 "sample": n, "population": pop,
                 "dem_pct": d, "rep_pct": rp,
                 "source_url": source_url,
             })
-    out = pd.DataFrame(rows)
-    if not out.empty:
-        out = out.drop_duplicates(["pollster", "end_date", "dem_pct", "rep_pct"])
-    return out
+    return _one_version_per_poll(pd.DataFrame(rows))
+
+
+def _one_version_per_poll(out: pd.DataFrame) -> pd.DataFrame:
+    """A poll often reports likely- and registered-voter numbers on adjacent rows
+    (the second without a pollster name in some tables); keep one, preferring LV."""
+    if out.empty:
+        return out
+    out = out.drop_duplicates(["pollster", "end_date", "dem_pct", "rep_pct"])
+    rank = out["population"].map({"LV": 0, "RV": 1, "A": 2}).fillna(1)
+    out = out.assign(_r=rank).sort_values(["pollster", "end_date", "_r"])
+    out = out.drop_duplicates(["pollster", "end_date"], keep="first").drop(columns="_r")
+    return out.sort_values("end_date", ascending=False).reset_index(drop=True)
 
 
 def parse_generic_ballot(html: str, *, source_url: str = "") -> pd.DataFrame:
@@ -238,7 +276,7 @@ def parse_generic_ballot(html: str, *, source_url: str = "") -> pd.DataFrame:
     rows = []
     for table in soup.find_all("table", class_=re.compile(r"wikitable")):
         try:
-            df = _flatten_columns(pd.read_html(StringIO(str(table)))[0])
+            df = _read_table(table)
         except ValueError:
             continue
         cols = {c.lower(): c for c in df.columns}
@@ -257,13 +295,10 @@ def parse_generic_ballot(html: str, *, source_url: str = "") -> pd.DataFrame:
             raw_src = str(r[src])
             n, pop = parse_sample(r[smp]) if smp else (None, None)
             rows.append({"pollster": _clean(raw_src),
-                         "partisan": bool(re.search(r"\[[A-Z]\]|\((D|R)\)", raw_src)),
+                         "partisan": _sponsor_side(raw_src),
                          "end_date": end.isoformat(), "sample": n, "population": pop,
                          "dem_pct": d, "rep_pct": rp, "source_url": source_url})
-    out = pd.DataFrame(rows)
-    if not out.empty:
-        out = out.drop_duplicates(["pollster", "end_date", "dem_pct", "rep_pct"])
-    return out
+    return _one_version_per_poll(pd.DataFrame(rows))
 
 
 # ---------------------------------------------------------------- ratings
@@ -296,7 +331,7 @@ def parse_ratings(html: str) -> list[dict]:
         if "source" not in head or not ("ranking" in head or "rating" in head):
             continue
         try:
-            df = _flatten_columns(pd.read_html(StringIO(str(table)))[0])
+            df = _read_table(table)
         except ValueError:
             continue
         src = next((c for c in df.columns if "source" in c.lower()), None)
@@ -317,17 +352,26 @@ def parse_ratings(html: str) -> list[dict]:
 
 # ---------------------------------------------------------------- top level
 
-def fetch_race(chamber: str, state: str, special: bool = False) -> dict:
+def fetch_race(chamber: str, state: str, special: bool = False, prefer_dem: str | None = None) -> dict:
+    """prefer_dem: the anti-Republican candidate another source identifies as the
+    main challenger (e.g. ElectIt), used when the infobox lists both a Democrat
+    and a stronger independent."""
     title = page_title(chamber, state, special)
     html = fetch_html(title)
     url = page_url(title)
     nominees = parse_nominees(html)
+    nominees = [{**n, "name": display_name(n["name"])} for n in nominees]
     dem = next((n for n in nominees if n["party"] == "D"), None)
     rep = next((n for n in nominees if n["party"] == "R"), None)
     # No Democrat on the ballot but a major independent (e.g. NE 2024/2026):
     # treat the independent as the anti-Republican candidate.
     if dem is None:
         dem = next((n for n in nominees if n["party"] == "I"), None)
+    if prefer_dem:
+        want = surname(prefer_dem).lower()
+        alt = next((n for n in nominees if n["party"] != "R" and surname(n["name"]).lower() == want), None)
+        if alt is not None:
+            dem = alt
     polls = pd.DataFrame()
     if dem and rep:
         polls = parse_poll_tables(html, dem["name"], rep["name"], source_url=url)
@@ -340,3 +384,90 @@ def fetch_race(chamber: str, state: str, special: bool = False) -> dict:
 def fetch_generic_ballot() -> pd.DataFrame:
     html = fetch_html(GENERIC_BALLOT_TITLE)
     return parse_generic_ballot(html, source_url=page_url(GENERIC_BALLOT_TITLE))
+
+
+HOUSE_TITLE = "2026 United States House of Representatives elections"
+
+
+def parse_pvi(text: str) -> float | None:
+    """Cook PVI 'R+23' / 'D+4' / 'EVEN' -> signed share points (D positive)."""
+    t = _clean(text).upper().replace("−", "-")
+    if t.startswith("EVEN"):
+        return 0.0
+    m = re.match(r"([DR])\s*\+\s*(\d+(?:\.\d+)?)", t)
+    if not m:
+        return None
+    return float(m.group(2)) * (1 if m.group(1) == "D" else -1)
+
+
+def parse_house_pvi(html: str) -> pd.DataFrame:
+    """Every district's Cook 2026 PVI from the per-state district tables.
+
+    Returns state, district, pvi (share points, D positive) and lean (the
+    margin equivalent, 2 x PVI, comparable to a presidential-margin lean).
+    """
+    soup = BeautifulSoup(html, "lxml")
+    rows = []
+    for table in soup.find_all("table", class_=re.compile(r"wikitable")):
+        try:
+            df = _read_table(table)
+        except ValueError:
+            continue
+        loc = next((c for c in df.columns if c.lower().startswith("district") and "location" in c.lower()), None)
+        pvi = next((c for c in df.columns if "2026 pvi" in c.lower()), None)
+        if not (loc and pvi):
+            continue
+        for _, r in df.iterrows():
+            m = re.match(r"(.+?)\s+(at-large|\d+)$", _clean(r[loc]), re.I)
+            if not m:
+                continue
+            st = NAME_TO_ABBR.get(m.group(1).strip().upper())
+            v = parse_pvi(r[pvi])
+            if not st or v is None:
+                continue
+            d = 1 if m.group(2).lower() == "at-large" else int(m.group(2))
+            rows.append({"state": st, "district": d, "pvi": v, "lean": 2 * v})
+    out = pd.DataFrame(rows)
+    return out.drop_duplicates(["state", "district"], keep="first") if not out.empty else out
+
+
+def search_title(query: str) -> str | None:
+    data = get(API, {"action": "query", "list": "search", "srsearch": query, "srlimit": 5,
+                     "format": "json", "formatversion": 2}, as_json=True, max_age_hours=24)
+    hits = data.get("query", {}).get("search", [])
+    return hits[0]["title"] if hits else None
+
+
+def parse_generic_aggregates(html: str, *, source_url: str = "") -> pd.DataFrame:
+    """Generic-ballot averages from the 'Source of poll aggregation' table
+    (Decision Desk HQ, RealClearPolitics, Silver Bulletin, ...), one row per
+    aggregator, in the same columns as a poll. The table's own 'Average' row is
+    skipped so each aggregator counts once."""
+    soup = BeautifulSoup(html, "lxml")
+    for table in soup.find_all("table", class_=re.compile(r"wikitable")):
+        if "poll aggregation" not in table.get_text(" ").lower():
+            continue
+        df = _read_table(table)
+        src = next((c for c in df.columns if "aggregation" in c.lower()), None)
+        dcol = next((c for c in df.columns if c.lower().startswith("democrat")), None)
+        rcol = next((c for c in df.columns if c.lower().startswith("republican")), None)
+        upd = next((c for c in df.columns if "updated" in c.lower()), None)
+        if not (src and dcol and rcol):
+            continue
+        rows = []
+        for _, r in df.iterrows():
+            name = _clean(r[src])
+            if not name or name.lower().startswith("average"):
+                continue
+            d, rp = parse_pct(r[dcol]), parse_pct(r[rcol])
+            end = parse_end_date(r[upd]) if upd else None
+            if d is None or rp is None:
+                continue
+            rows.append({"pollster": name, "partisan": None,
+                         "end_date": (end or date.today()).isoformat(),
+                         # An average of many polls: a large nominal sample keeps its
+                         # sampling term negligible next to the calibrated error.
+                         "sample": 5000, "population": "LV",
+                         "dem_pct": d, "rep_pct": rp, "source_url": source_url, "kind": "aggregate"})
+        return pd.DataFrame(rows)
+    return pd.DataFrame()

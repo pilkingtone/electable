@@ -34,13 +34,23 @@ def load(office: str) -> pd.DataFrame:
     # The results file is the largest tabular file in the dataset.
     tab = max((f for f in files if f["dataFile"].get("filename", "").endswith((".tab", ".csv"))),
               key=lambda f: f["dataFile"].get("filesize", 0))
-    body = get(f"{DATAVERSE}/access/datafile/{tab['dataFile']['id']}",
-               {"format": "original"}, binary=True, max_age_hours=24 * 7, timeout=120)
+    body = _datafile(tab["dataFile"]["id"])
     sep = "\t" if body[:2000].count(b"\t") > body[:2000].count(b",") else ","
     df = pd.read_csv(BytesIO(body), sep=sep, low_memory=False)
     local.parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(local, index=False)
     return df
+
+
+def _datafile(file_id: int) -> bytes:
+    """A Dataverse file, in its originally uploaded format where Dataverse has one."""
+    from ..http import FetchError
+    url = f"{DATAVERSE}/access/datafile/{file_id}"
+    try:
+        return get(url, {"format": "original"}, binary=True, max_age_hours=24 * 7, timeout=300)
+    except FetchError:
+        # Files that were never ingested as tables reject format=original (HTTP 400).
+        return get(url, binary=True, max_age_hours=24 * 7, timeout=300)
 
 
 def two_party(df: pd.DataFrame, keys: list[str]) -> pd.DataFrame:

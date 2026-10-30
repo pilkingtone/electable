@@ -51,6 +51,17 @@ def _fit_fe(y: pd.Series, x: pd.Series, year: pd.Series) -> tuple[float, float, 
     return b, float(np.sqrt((resid ** 2).sum() / max(dof, 1))), resid
 
 
+MODERN_FROM = 2004
+
+
+def _robust_sd(resid) -> float:
+    """1.4826 x median absolute deviation: the SD a normal would have, ignoring the
+    heavy tail of blowouts against token opposition (the simulation's Student-t
+    errors model that tail separately)."""
+    r = np.asarray(resid, float)
+    return float(1.4826 * np.median(np.abs(r - np.median(r))))
+
+
 def history_errors(hist: pd.DataFrame) -> dict:
     """Prior residual SDs from long-run race history (ElectIt: House 1946-, Senate 1954-).
 
@@ -59,15 +70,16 @@ def history_errors(hist: pd.DataFrame) -> dict:
     recent earlier Senate margin. Uncontested races (|margin| > 90) are dropped.
     """
     out = {}
-    h = hist[(hist["margin"].abs() < 90)]
+    h = hist[(hist["margin"].abs() < 60) & (hist["year"] >= MODERN_FROM)]
     house = h[h["chamber"] == "house"].dropna(subset=["district"])
     if len(house):
         prev = house[["year", "state", "district", "margin"]].copy()
         prev["year"] += 2
         m = house.merge(prev.rename(columns={"margin": "prev"}), on=["year", "state", "district"])
-        m = m[m["year"] % 10 != 2]          # new maps take effect in years ending in 2
+        m = m[(m["year"] % 10 != 2) & (m["prev"].abs() < 60)]   # new maps take effect in years ending in 2
         if len(m) > 100:
-            b, sd, resid = _fit_fe(m["margin"], m["prev"], m["year"])
+            b, _, resid = _fit_fe(m["margin"], m["prev"], m["year"])
+            sd = _robust_sd(resid)
             out["house"] = {"lean_weight": b, "race_sd": sd, "n": len(m), "residuals": resid.tolist(),
                             "years": f"{int(m['year'].min())}-{int(m['year'].max())}"}
     sen = h[h["chamber"] == "senate"].sort_values("year")
@@ -76,50 +88,52 @@ def history_errors(hist: pd.DataFrame) -> dict:
         sen["prev"] = sen.groupby("state")["margin"].shift(1)
         m = sen.dropna(subset=["prev"])
         if len(m) > 50:
-            b, sd, resid = _fit_fe(m["margin"], m["prev"], m["year"])
+            b, _, resid = _fit_fe(m["margin"], m["prev"], m["year"])
+            sd = _robust_sd(resid)
             out["senate"] = {"lean_weight": b, "race_sd": sd, "n": len(m), "residuals": resid.tolist(),
                              "years": f"{int(m['year'].min())}-{int(m['year'].max())}"}
     return out
 
 
 def fundamentals_errors() -> dict:
-    """Prior residual SDs from ElectIt history if present, else MEDSL."""
+    """How far results land from the model's prior, 2004 onward.
+
+    Senate: MEDSL results against the state's presidential lean (the model's
+    own predictor), so both the error size and the lean weight are estimated.
+    House: ElectIt's district results against the district's previous result
+    (no presidential-by-district history is freely downloadable), an upper bound
+    for a PVI-based prior; only the error size is used.
+    """
+    from .config import PROCESSED_DIR
     from .sources import harvard, medsl
-    hist = harvard.load_history()
-    if not hist.empty:
-        out = history_errors(hist)
-        if out:
-            out["source"] = "ElectIt historical results (King, Ebanks & Katz)"
-            return out
-    out = {"source": "MIT Election Data + Science Lab"}
+    out: dict = {}
+    sources = []
     try:
         pres = medsl.two_party(medsl.load("president"), ["year", "state_po"])
         nat = pres.groupby("year")[["dem", "rep"]].sum()
-        nat_m = _two_party(nat["dem"], nat["rep"])
-        pres["lean"] = pres["margin"] - pres["year"].map(nat_m)
+        pres["lean"] = pres["margin"] - pres["year"].map(_two_party(nat["dem"], nat["rep"]))
         sen = medsl.two_party(medsl.load("senate"), ["year", "state_po", "special"])
-        sen = sen[(sen["dem"] > 0) & (sen["rep"] > 0)]
-        # Lean from the most recent presidential election on or before the year.
+        sen = sen[(sen["dem"] > 0) & (sen["rep"] > 0) & (sen["year"] >= MODERN_FROM)].copy()
         sen["pres_year"] = sen["year"] - (sen["year"] % 4)
         sen = sen.merge(pres[["year", "state_po", "lean"]].rename(columns={"year": "pres_year"}),
                         on=["pres_year", "state_po"])
-        b, sd, resid = _fit_fe(sen["margin"], sen["lean"], sen["year"])
-        out["senate"] = {"lean_weight": b, "race_sd": sd, "n": len(sen),
-                         "residuals": resid.tolist(), "lean_is_pres": True}
+        b, _, resid = _fit_fe(sen["margin"], sen["lean"], sen["year"])
+        out["senate"] = {"lean_weight": b, "race_sd": _robust_sd(resid), "n": len(sen),
+                         "residuals": resid.tolist(), "lean_is_pres": True,
+                         "years": f"{int(sen['year'].min())}-{int(sen['year'].max())}"}
+        sources.append("MIT Election Data + Science Lab (Senate vs presidential lean)")
     except Exception as e:  # noqa: BLE001
         out["senate_error"] = str(e)
-    try:
-        h = medsl.two_party(medsl.load("house"), ["year", "state_po", "district"])
-        h = h[(h["dem"] > 0) & (h["rep"] > 0)]
-        prev = h[["year", "state_po", "district", "margin"]].copy()
-        prev["year"] += 2
-        h = h.merge(prev.rename(columns={"margin": "prev"}), on=["year", "state_po", "district"])
-        h = h[~h["year"].isin([1982, 1992, 2002, 2012, 2022])]   # new maps
-        b, sd, resid = _fit_fe(h["margin"], h["prev"], h["year"])
-        out["house"] = {"lean_weight": b, "race_sd": sd, "n": len(h),
-                        "residuals": resid.tolist()}
-    except Exception as e:  # noqa: BLE001
-        out["house_error"] = str(e)
+    path = PROCESSED_DIR / "electit_history.csv"
+    hist = pd.read_csv(path) if path.exists() else harvard.load_history()
+    if not hist.empty:
+        h = history_errors(hist)
+        if "house" in h:
+            out["house"] = h["house"]
+            sources.append("ElectIt results history (House vs previous result)")
+    else:
+        out["house_error"] = "no House results history available"
+    out["source"] = "; ".join(sources)
     return out
 
 
@@ -201,9 +215,14 @@ def run() -> dict:
 
     gb = errs[errs["type_simple"] == "House-G-US"]
     if len(gb) >= 4:
-        gsd = float(np.sqrt((gb["error"] ** 2).mean()))
+        bias = float(gb["error"].mean())
+        gsd = float(np.sqrt(((gb["error"] - bias) ** 2).mean()))
         overrides["national"]["generic_ballot_error_sd"] = round(gsd, 2)
-        panel["generic_ballot"] = {"n_cycles": int(len(gb)), "rmse": round(gsd, 2),
+        # Final generic-ballot polling has overstated Democrats in most cycles; the
+        # model subtracts the historical average miss (see model.national_environment).
+        overrides["national"]["generic_ballot_bias"] = round(bias, 2)
+        panel["generic_ballot"] = {"n_cycles": int(len(gb)), "rmse": round(float(np.sqrt((gb["error"] ** 2).mean())), 2),
+                                   "bias": round(bias, 2), "sd_after_bias": round(gsd, 2),
                                    "by_cycle": [{"cycle": int(c), "error": round(float(e), 2)}
                                                 for c, e in zip(gb["cycle"], gb["error"])]}
 

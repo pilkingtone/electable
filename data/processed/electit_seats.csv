@@ -1,0 +1,471 @@
+race_id,chamber,label,state,holder_text,dem_name,rep_name,contest,sure
+house-AK-01,house,AK-AL,AK,Begich (R),Bill Hill,Nick Begich III,D vs R,0
+house-AL-06,house,AL-6,AL,Palmer (R),Maurice Mercer,Gary Palmer,D vs R,0
+house-AR-01,house,AR-1,AR,Crawford (R),Terri Green,Rick Crawford,D vs R,0
+house-AR-02,house,AR-2,AR,Hill (R),Chris Jones,French Hill,D vs R,0
+house-AR-03,house,AR-3,AR,Womack (R),Robb Ryerse,Steve Womack,D vs R,0
+house-AR-04,house,AR-4,AR,Westerman (R),James Russell,Bruce Westerman,D vs R,0
+house-AZ-01,house,AZ-1,AZ,open (R),Amish Shah,Jay Feely,D vs R,0
+house-AZ-02,house,AZ-2,AZ,Crane (R),Jonathan Nez,Eli Crane,D vs R,0
+house-AZ-03,house,AZ-3,AZ,Ansari (D),Yassamin Ansari,,D vs non-major,1
+house-AZ-04,house,AZ-4,AZ,Stanton (D),Greg Stanton,Zuhdi Jasser,D vs R,0
+house-AZ-05,house,AZ-5,AZ,open (R),Elizabeth Lee,Mark Lamb,D vs R,0
+house-AZ-06,house,AZ-6,AZ,Ciscomani (R),JoAnna Mendoza,Juan Ciscomani,D vs R,0
+house-AZ-07,house,AZ-7,AZ,Grijalva (D),Adelita Grijalva,Daniel Butierez,D vs R,0
+house-AZ-08,house,AZ-8,AZ,Hamadeh (R),Bernadette Greene-Placentia,Abraham Hamadeh,D vs R,0
+house-AZ-09,house,AZ-9,AZ,Gosar (R),Dani Sterbinsky,Paul Gosar,D vs R,0
+house-CA-11,house,CA-11,CA,open (D),,,D vs D,1
+house-CA-15,house,CA-15,CA,Mullin (D),Kevin Mullin,Charles Hoelter,D vs R,0
+house-CA-19,house,CA-19,CA,Panetta (D),Jimmy Panetta,Peter Coe Verbica,D vs R,0
+house-CA-24,house,CA-24,CA,Carbajal (D),Salud Carbajal,Bob Smith,D vs R,0
+house-CA-36,house,CA-36,CA,Lieu (D),Ted Lieu,Houston Brignano,D vs R,0
+house-CA-43,house,CA-43,CA,Waters (D),Maxine Waters,Cristian Morales,D vs R,0
+house-CO-01,house,CO-1,CO,open (D),Melat Kiros,Christy Peterson,D vs R,0
+house-CO-02,house,CO-2,CO,Neguse (D),Joe Neguse,Kelley Dennison,D vs R,0
+house-CO-03,house,CO-3,CO,Hurd (R),Dwayne Romero,Jeff Hurd,D vs R,0
+house-CO-04,house,CO-4,CO,Boebert (R),Eileen Laubacher,Lauren Boebert,D vs R,0
+house-CO-05,house,CO-5,CO,Crank (R),Jessica Killin,Jeff Crank,D vs R,0
+house-CO-06,house,CO-6,CO,Crow (D),Jason Crow,Jason Clark,D vs R,0
+house-CO-07,house,CO-7,CO,Pettersen (D),Brittany Pettersen,Tim Bennett,D vs R,0
+house-CO-08,house,CO-8,CO,Evans (R),Manny Rutinel,Gabe Evans,D vs R,0
+house-CT-01,house,CT-1,CT,open (D),Luke Bronin,Amy Chai,D vs R,0
+house-CT-02,house,CT-2,CT,Courtney (D),Joe Courtney,George Austin,D vs R,0
+house-CT-03,house,CT-3,CT,DeLauro (D),Rosa DeLauro,Chris Lancia,D vs R,0
+house-CT-04,house,CT-4,CT,Himes (D),Jim Himes,Michael Goldstein,D vs R,0
+house-CT-05,house,CT-5,CT,Hayes (D),Jahana Hayes,Chris Shea,D vs R,0
+house-DE-01,house,DE-AL,DE,McBride (D),Sarah McBride,Joseph Arminio,D vs R,0
+house-FL-01,house,FL-1,FL,Patronis (R),Gay Valimont,Jimmy Patronis,D vs R,0
+house-FL-02,house,FL-2,FL,open (R),Amanda Green,Austin Rogers,D vs R,0
+house-FL-03,house,FL-3,FL,Cammack (R),Seth Harp,Kat Cammack,D vs R,0
+house-FL-04,house,FL-4,FL,Bean (R),LaShonda Holloway,Aaron Bean,D vs R,0
+house-FL-05,house,FL-5,FL,Rutherford (R),Rachel Grage,John Rutherford,D vs R,0
+house-FL-06,house,FL-6,FL,Fine (R),Eric Yonce,Randy Fine,D vs R,0
+house-FL-07,house,FL-7,FL,open (R),Bale Dalton,Ryan Elijah,D vs R,0
+house-FL-21,house,FL-21,FL,Mast (R),James Martin,Brian Mast,D vs R,0
+house-FL-27,house,FL-27,FL,Salazar (R),Eliott Rodriguez,María Elvira Salazar,D vs R,0
+house-FL-28,house,FL-28,FL,Gimenez (R),Phil Ehr,Carlos Giménez,D vs R,0
+house-GA-01,house,GA-1,GA,open (R),Amanda Hollowell,Jim Kingston,D vs R,0
+house-GA-02,house,GA-2,GA,Bishop (D),Sanford Bishop,Matt Day,D vs R,0
+house-GA-03,house,GA-3,GA,Jack (R),Maura Keller,Brian Jack,D vs R,0
+house-GA-04,house,GA-4,GA,Johnson (D),Hank Johnson,James Duffie,D vs R,0
+house-GA-05,house,GA-5,GA,Williams (D),Nikema Williams,John Oscar Salvesen,D vs R,0
+house-GA-06,house,GA-6,GA,McBath (D),Lucy McBath,Kevin Martin,D vs R,0
+house-GA-07,house,GA-7,GA,McCormick (R),Tony Kozycki,Rich McCormick,D vs R,0
+house-GA-08,house,GA-8,GA,Scott (R),Kelly Esti,Austin Scott,D vs R,0
+house-GA-09,house,GA-9,GA,Clyde (R),Caitlyn Gegen,Andrew Clyde,D vs R,0
+house-GA-10,house,GA-10,GA,open (R),Pam Delancy,Houston Gaines,D vs R,0
+house-GA-11,house,GA-11,GA,open (R),Chris Harden,John Cowan,D vs R,0
+house-GA-12,house,GA-12,GA,Allen (R),Ceretta Smith,Rick Allen,D vs R,0
+house-GA-13,house,GA-13,GA,open (D),Jasmine Clark,Jonathan Chavez,D vs R,0
+house-GA-14,house,GA-14,GA,Fuller (R),Shawn Harris,Clay Fuller,D vs R,0
+house-HI-01,house,HI-1,HI,Case (D),Ed Case,Adriel Lam,D vs R,0
+house-HI-02,house,HI-2,HI,Tokuda (D),Jill Tokuda,Brenton Awa,D vs R,0
+house-IA-01,house,IA-1,IA,Miller-Meeks (R),Christina Bohannan,Mariannette Miller-Meeks,D vs R,0
+house-IA-02,house,IA-2,IA,open (R),Lindsay James,Joe Mitchell,D vs R,0
+house-IA-03,house,IA-3,IA,Nunn (R),Sarah Trone Garriott,Zach Nunn,D vs R,0
+house-IA-04,house,IA-4,IA,open (R),David Dawson,Chris McGowan,D vs R,0
+house-ID-01,house,ID-1,ID,Fulcher (R),Kaylee Peterson,Russ Fulcher,D vs R,0
+house-ID-02,house,ID-2,ID,Simpson (R),Ellie Gilbreath,Mike Simpson,D vs R,0
+house-IL-01,house,IL-1,IL,Jackson (D),Jonathan Jackson,Christian Maxwell,D vs R,0
+house-IL-02,house,IL-2,IL,open (D),Donna Miller,Michael Noack,D vs R,0
+house-IL-03,house,IL-3,IL,Ramirez (D),Delia Ramirez,Angel Oakley,D vs R,0
+house-IL-04,house,IL-4,IL,open (D),Patty Garcia,Lupe Castillo,D vs R,0
+house-IL-05,house,IL-5,IL,Quigley (D),Mike Quigley,Tommy Hanson,D vs R,0
+house-IL-06,house,IL-6,IL,Casten (D),Sean Casten,Niki Conforti,D vs R,0
+house-IL-07,house,IL-7,IL,open (D),La Shawn Ford,Chad Koppie,D vs R,0
+house-IL-08,house,IL-8,IL,open (D),Melissa Bean,Jennifer Davis,D vs R,0
+house-IL-09,house,IL-9,IL,open (D),Daniel Biss,John Elleson,D vs R,0
+house-IL-10,house,IL-10,IL,Schneider (D),Brad Schneider,Carl Lambrecht,D vs R,0
+house-IL-11,house,IL-11,IL,Foster (D),Bill Foster,Jeff Walter,D vs R,0
+house-IL-12,house,IL-12,IL,Bost (R),Julie Fortier,Mike Bost,D vs R,0
+house-IL-13,house,IL-13,IL,Budzinski (D),Nikki Budzinski,Jeff Wilson,D vs R,0
+house-IL-14,house,IL-14,IL,Underwood (D),Lauren Underwood,James Marter,D vs R,0
+house-IL-17,house,IL-17,IL,Sorensen (D),Eric Sorensen,Dillan Vancil,D vs R,0
+house-IN-01,house,IN-1,IN,Mrvan (D),Frank Mrvan,Barb Regnitz,D vs R,0
+house-IN-02,house,IN-2,IN,Yakym (R),Jamee Decio,Rudy Yakym,D vs R,0
+house-IN-03,house,IN-3,IN,Stutzman (R),Kelly Thompson,Marlin Stutzman,D vs R,0
+house-IN-04,house,IN-4,IN,Baird (R),Drew Cox,Jim Baird,D vs R,0
+house-IN-05,house,IN-5,IN,Spartz (R),J. D. Ford,Victoria Spartz,D vs R,0
+house-IN-06,house,IN-6,IN,Shreve (R),Cinde Wirth,Jefferson Shreve,D vs R,0
+house-IN-07,house,IN-7,IN,Carson (D),André Carson,Patrick McAuley,D vs R,0
+house-IN-08,house,IN-8,IN,Messmer (R),Mary Allen,Mark Messmer,D vs R,0
+house-IN-09,house,IN-9,IN,Houchin (R),Brad Meyer,Erin Houchin,D vs R,0
+house-KS-01,house,KS-1,KS,Mann (R),Lauren Reinhold,Tracey Mann,D vs R,0
+house-KS-02,house,KS-2,KS,Schmidt (R),Don Coover,Derek Schmidt,D vs R,0
+house-KS-03,house,KS-3,KS,Davids (D),Sharice Davids,Eric Jenkins,D vs R,0
+house-KS-04,house,KS-4,KS,Estes (R),Katy Tyndell,Ron Estes,D vs R,0
+house-KY-01,house,KY-1,KY,Comer (R),Drew Williams,James Comer,D vs R,0
+house-KY-02,house,KY-2,KY,Guthrie (R),Megan Wingfield,Brett Guthrie,D vs R,0
+house-KY-03,house,KY-3,KY,McGarvey (D),Morgan McGarvey,Maria Rodriquez,D vs R,0
+house-KY-06,house,KY-6,KY,open (R),Zach Dembo,Ralph Alvarado,D vs R,0
+house-MA-08,house,MA-8,MA,Lynch (D),Stephen Lynch,Robert Burke,D vs R,0
+house-MA-09,house,MA-9,MA,Keating (D),Bill Keating,Tyler MacAllister,D vs R,0
+house-MD-01,house,MD-1,MD,Harris (R),Dan Schwartz,Andy Harris,D vs R,0
+house-MD-02,house,MD-2,MD,Olszewski (D),Johnny Olszewski,Dave Wallace,D vs R,0
+house-MD-03,house,MD-3,MD,Elfreth (D),Sarah Elfreth,Berney Flowers,D vs R,0
+house-MD-04,house,MD-4,MD,Ivey (D),Glenn Ivey,George McDermott,D vs R,0
+house-MD-05,house,MD-5,MD,open (D),Adrian Boafo,Chris Chaffee,D vs R,0
+house-MD-06,house,MD-6,MD,McClain Delaney (D),April McClain Delaney,Robin Ficker,D vs R,0
+house-MD-07,house,MD-7,MD,Mfume (D),Kweisi Mfume,Scott Collier,D vs R,0
+house-MD-08,house,MD-8,MD,Raskin (D),Jamie Raskin,Cheryl Riley,D vs R,0
+house-ME-01,house,ME-1,ME,Pingree (D),Chellie Pingree,Ronald Russell,D vs R,0
+house-ME-02,house,ME-2,ME,open (D),Matthew Dunlap,Paul LePage,D vs R,0
+house-MI-01,house,MI-1,MI,Bergman (R),Callie Barr,Jack Bergman,D vs R,0
+house-MI-02,house,MI-2,MI,Moolenaar (R),Ben Ambrose,John Moolenaar,D vs R,0
+house-MI-03,house,MI-3,MI,Scholten (D),Hillary Scholten,Terri DeBoer,D vs R,0
+house-MI-04,house,MI-4,MI,Huizenga (R),Sean McCann,Bill Huizenga,D vs R,0
+house-MI-05,house,MI-5,MI,Walberg (R),Christian Vukasovich,Tim Walberg,D vs R,0
+house-MI-06,house,MI-6,MI,Dingell (D),Debbie Dingell,Heather Smiley,D vs R,0
+house-MI-07,house,MI-7,MI,Barrett (R),William Lawrence,Tom Barrett,D vs R,0
+house-MI-08,house,MI-8,MI,McDonald Rivet (D),Kristen McDonald Rivet,Thomas Smith,D vs R,0
+house-MI-09,house,MI-9,MI,McClain (R),Ray Pooley,Lisa McClain,D vs R,0
+house-MI-10,house,MI-10,MI,open (R),Christina Hines,Mike Bouchard,D vs R,0
+house-MI-11,house,MI-11,MI,open (D),Jeremy Moss,Ethan Baker,D vs R,0
+house-MI-12,house,MI-12,MI,Tlaib (D),Rashida Tlaib,James Hooper,D vs R,0
+house-MI-13,house,MI-13,MI,open (D),Donavan McKinney,T. P. Nykoriak,D vs R,0
+house-MN-01,house,MN-1,MN,Finstad (R),Jake Johnson,Brad Finstad,D vs R,0
+house-MN-02,house,MN-2,MN,open (D),Matt Little,Eric Pratt,D vs R,0
+house-MN-03,house,MN-3,MN,Morrison (D),Kelly Morrison,Tyler Bass,D vs R,0
+house-MN-04,house,MN-4,MN,McCollum (D),Betty McCollum,Paul Wikstrom,D vs R,0
+house-MN-05,house,MN-5,MN,Omar (D),Ilhan Omar,John Nagel,D vs R,0
+house-MN-06,house,MN-6,MN,Emmer (R),Doug Chapin,Tom Emmer,D vs R,0
+house-MN-07,house,MN-7,MN,Fischbach (R),Erik Osberg,Michelle Fischbach,D vs R,0
+house-MN-08,house,MN-8,MN,Stauber (R),Trina Swanson,Pete Stauber,D vs R,0
+house-MO-01,house,MO-1,MO,Bell (D),Wesley Bell,Paul Berry,D vs R,0
+house-MO-02,house,MO-2,MO,Wagner (R),Fred Wellman,Ann Wagner,D vs R,0
+house-MO-03,house,MO-3,MO,Onder (R),Bethany Mann,Bob Onder,D vs R,0
+house-MO-04,house,MO-4,MO,Alford (R),Jordan Herrera,Mark Alford,D vs R,0
+house-MO-05,house,MO-5,MO,Cleaver (D),Emanuel Cleaver,Rick Brattin,D vs R,0
+house-MO-06,house,MO-6,MO,open (R),Josh Smead,Chris Stigall,D vs R,0
+house-MO-07,house,MO-7,MO,Burlison (R),Missi Hesketh,Eric Burlison,D vs R,0
+house-MO-08,house,MO-8,MO,Smith (R),Chris Reichard,Jason Smith,D vs R,0
+house-MS-01,house,MS-1,MS,Kelly (R),Cliff Johnson,Trent Kelly,D vs R,0
+house-MS-02,house,MS-2,MS,Thompson (D),Bennie Thompson,Ron Eller,D vs R,0
+house-MS-04,house,MS-4,MS,Ezell (R),Jeffrey Hulum III,Mike Ezell,D vs R,0
+house-MT-01,house,MT-1,MT,open (R),Sam Forstag,Aaron Flint,D vs R,0
+house-MT-02,house,MT-2,MT,Downing (R),Brian Miller,Troy Downing,D vs R,0
+house-NC-02,house,NC-2,NC,Ross (D),Deborah Ross,Eugene Douglass,D vs R,0
+house-NC-04,house,NC-4,NC,Foushee (D),Valerie Foushee,Max Ganorkar,D vs R,0
+house-NC-05,house,NC-5,NC,Foxx (R),Chuck Hubbard,Virginia Foxx,D vs R,0
+house-NC-07,house,NC-7,NC,Rouzer (R),Kimberly Hardy,David Rouzer,D vs R,0
+house-NC-08,house,NC-8,NC,Harris (R),Colby Watson,Mark Harris,D vs R,0
+house-NC-09,house,NC-9,NC,Hudson (R),Richard Ojeda,Richard Hudson,D vs R,0
+house-NC-10,house,NC-10,NC,Harrigan (R),Ashley Bell,Pat Harrigan,D vs R,0
+house-NC-11,house,NC-11,NC,open (R),Jamie Ager,Jennifer Balkcom,D vs R,0
+house-NC-12,house,NC-12,NC,Adams (D),Alma Adams,Jack Codiga,D vs R,0
+house-NC-13,house,NC-13,NC,Knott (R),Paul Barringer,Brad Knott,D vs R,0
+house-NC-14,house,NC-14,NC,Moore (R),Lakesha Womack,Tim Moore,D vs R,0
+house-ND-01,house,ND-AL,ND,Fedorchak (R),Trygve Hammer,Julie Fedorchak,D vs R,0
+house-NE-01,house,NE-1,NE,Flood (R),Chris Backemeyer,Mike Flood,D vs R,0
+house-NE-02,house,NE-2,NE,open (R),Denise Powell,Brinker Harding,D vs R,0
+house-NE-03,house,NE-3,NE,Smith (R),Becky Stille,Adrian Smith,D vs R,0
+house-NH-01,house,NH-1,NH,open (D),Stefany Shaheen,Anthony DiLorenzo,D vs R,0
+house-NH-02,house,NH-2,NH,Goodlander (D),Maggie Goodlander,Lily Tang Williams,D vs R,0
+house-NJ-01,house,NJ-1,NJ,Norcross (D),Donald Norcross,Damon Galdo,D vs R,0
+house-NJ-02,house,NJ-2,NJ,Van Drew (R),Zack Mullock,Jeff Van Drew,D vs R,0
+house-NJ-03,house,NJ-3,NJ,Conaway (D),Herb Conaway,Michael McGuire,D vs R,0
+house-NJ-04,house,NJ-4,NJ,Smith (R),Rachel Peace,Chris Smith,D vs R,0
+house-NJ-05,house,NJ-5,NJ,Gottheimer (D),Josh Gottheimer,Sean Kirrane,D vs R,0
+house-NJ-06,house,NJ-6,NJ,Pallone (D),Frank Pallone,Hillary Herzig,D vs R,0
+house-NJ-07,house,NJ-7,NJ,Kean (R),Rebecca Bennett,Thomas Kean Jr.,D vs R,0
+house-NJ-08,house,NJ-8,NJ,Menendez (D),Rob Menendez,,D vs non-major,1
+house-NJ-09,house,NJ-9,NJ,Pou (D),Nellie Pou,Rosie Pino,D vs R,0
+house-NJ-10,house,NJ-10,NJ,McIver (D),LaMonica McIver,Carmen Bucco,D vs R,0
+house-NJ-11,house,NJ-11,NJ,Mejia (D),Analilia Mejia,Joe Hathaway,D vs R,0
+house-NJ-12,house,NJ-12,NJ,open (D),Adam Hamawy,Gregg Mele,D vs R,0
+house-NM-01,house,NM-1,NM,Stansbury (D),Melanie Stansbury,Didi Okpareke,D vs R,0
+house-NM-02,house,NM-2,NM,Vasquez (D),Gabe Vasquez,Greg Cunningham,D vs R,0
+house-NM-03,house,NM-3,NM,Leger Fernandez (D),Teresa Leger Fernández,Martin Zamora,D vs R,0
+house-NV-01,house,NV-1,NV,Titus (D),Dina Titus,Carrie Buck,D vs R,0
+house-NV-03,house,NV-3,NV,Lee (D),Susie Lee,Martin O'Donnell,D vs R,0
+house-NV-04,house,NV-4,NV,Horsford (D),Steven Horsford,Cody Whipple,D vs R,0
+house-NY-01,house,NY-1,NY,LaLota (R),Chris Gallant,Nick LaLota,D vs R,0
+house-NY-02,house,NY-2,NY,Garbarino (R),Patrick Halpin,Andrew Garbarino,D vs R,0
+house-NY-03,house,NY-3,NY,Suozzi (D),Tom Suozzi,Mike LiPetri,D vs R,0
+house-NY-04,house,NY-4,NY,Gillen (D),Laura Gillen,Jeanine Driscoll,D vs R,0
+house-NY-05,house,NY-5,NY,Meeks (D),Gregory Meeks,George Marsh,D vs R,0
+house-NY-06,house,NY-6,NY,Meng (D),Grace Meng,Joseph Chou,D vs R,0
+house-NY-07,house,NY-7,NY,open (D),Claire Valdez,Melvin Rivera,D vs R,0
+house-NY-08,house,NY-8,NY,Jeffries (D),Hakeem Jeffries,Lewis Mizrahi,D vs R,0
+house-NY-09,house,NY-9,NY,Clarke (D),Yvette Clarke,Joel Azumah,D vs R,0
+house-NY-10,house,NY-10,NY,open (D),Brad Lander,Jennifer Moore,D vs R,0
+house-NY-11,house,NY-11,NY,Malliotakis (R),Michael DeCillis,Nicole Malliotakis,D vs R,0
+house-NY-12,house,NY-12,NY,open (D),Micah Lasher,Caroline Shinkle,D vs R,0
+house-NY-13,house,NY-13,NY,open (D),Darializa Avila Chevalier,Jomo Williams,D vs R,0
+house-NY-14,house,NY-14,NY,Ocasio-Cortez (D),Alexandria Ocasio-Cortez,Diamant Hysenaj,D vs R,0
+house-NY-15,house,NY-15,NY,Torres (D),Ritchie Torres,Stylo Sapaskis,D vs R,0
+house-NY-16,house,NY-16,NY,Latimer (D),George Latimer,Joseph Cinquemani,D vs R,0
+house-NY-17,house,NY-17,NY,Lawler (R),Cait Conley,Mike Lawler,D vs R,0
+house-NY-18,house,NY-18,NY,Ryan (D),Pat Ryan,Jacqueline Auringer,D vs R,0
+house-NY-19,house,NY-19,NY,Riley (D),Josh Riley,Peter Oberacker,D vs R,0
+house-NY-20,house,NY-20,NY,Tonko (D),Paul Tonko,Ralph Ambrosio,D vs R,0
+house-NY-21,house,NY-21,NY,open (R),Blake Gendebien,Anthony Constantino,D vs R,0
+house-NY-22,house,NY-22,NY,Mannion (D),John Mannion,Kailee Buller,D vs R,0
+house-NY-23,house,NY-23,NY,Langworthy (R),Aaron Gies,Nick Langworthy,D vs R,0
+house-NY-24,house,NY-24,NY,Tenney (R),Alissa Ellman,Claudia Tenney,D vs R,0
+house-NY-25,house,NY-25,NY,Morelle (D),Joseph Morelle,Virginia McIntyre,D vs R,0
+house-NY-26,house,NY-26,NY,Kennedy (D),Tim Kennedy,Dennis Hannon,D vs R,0
+house-OH-03,house,OH-3,OH,Beatty (D),Joyce Beatty,Cleophus Dulaney,D vs R,0
+house-OH-11,house,OH-11,OH,Brown (D),Shontel Brown,Mike Kirchner,D vs R,0
+house-OK-01,house,OK-1,OK,open (R),John Croisant,Mark Tedford,D vs R,0
+house-OK-02,house,OK-2,OK,Brecheen (R),Brandon Wade,Josh Brecheen,D vs R,0
+house-OK-04,house,OK-4,OK,Cole (R),Mitchell Jacob,Tom Cole,D vs R,0
+house-OK-05,house,OK-5,OK,Bice (R),Jena Nelson,Stephanie Bice,D vs R,0
+house-OR-01,house,OR-1,OR,Bonamici (D),Suzanne Bonamici,Barbara Kahl,D vs R,0
+house-OR-02,house,OR-2,OR,Bentz (R),Chris Beck,Cliff Bentz,D vs R,0
+house-OR-03,house,OR-3,OR,Dexter (D),Maxine Dexter,Loran Ayles,D vs R,0
+house-OR-04,house,OR-4,OR,Hoyle (D),Val Hoyle,Monique DeSpain,D vs R,0
+house-OR-05,house,OR-5,OR,Bynum (D),Janelle Bynum,Patti Adair,D vs R,0
+house-OR-06,house,OR-6,OR,Salinas (D),Andrea Salinas,David Russ,D vs R,0
+house-PA-01,house,PA-1,PA,Fitzpatrick (R),Bob Harvie,Brian Fitzpatrick,D vs R,0
+house-PA-02,house,PA-2,PA,Boyle (D),Brendan Boyle,Jessica Arriaga,D vs R,0
+house-PA-04,house,PA-4,PA,Dean (D),Madeleine Dean,Aurora Stuski,D vs R,0
+house-PA-05,house,PA-5,PA,Scanlon (D),Mary Gay Scanlon,Nicholas Manganaro,D vs R,0
+house-PA-06,house,PA-6,PA,Houlahan (D),Chrissy Houlahan,Marty Young,D vs R,0
+house-PA-07,house,PA-7,PA,Mackenzie (R),Bob Brooks,Ryan Mackenzie,D vs R,0
+house-PA-08,house,PA-8,PA,Bresnahan (R),Paige Cognetti,Rob Bresnahan,D vs R,0
+house-PA-09,house,PA-9,PA,Meuser (R),Rachel Wallace,Dan Meuser,D vs R,0
+house-PA-10,house,PA-10,PA,Perry (R),Janelle Stelson,Scott Perry,D vs R,0
+house-PA-11,house,PA-11,PA,Smucker (R),Nancy Mannion,Lloyd Smucker,D vs R,0
+house-PA-12,house,PA-12,PA,Lee (D),Summer Lee,James Hayes,D vs R,0
+house-PA-13,house,PA-13,PA,Joyce (R),Beth Farnham,John Joyce,D vs R,0
+house-PA-14,house,PA-14,PA,Reschenthaler (R),Alan Bradstock,Guy Reschenthaler,D vs R,0
+house-PA-15,house,PA-15,PA,Thompson (R),Ray Bilger,Glenn Thompson,D vs R,0
+house-PA-16,house,PA-16,PA,Kelly (R),Justin Wagner,Mike Kelly,D vs R,0
+house-PA-17,house,PA-17,PA,Deluzio (D),Chris Deluzio,Tony Guy,D vs R,0
+house-RI-01,house,RI-1,RI,Amo (D),Gabe Amo,Kellie Keenan,D vs R,0
+house-RI-02,house,RI-2,RI,Magaziner (D),Seth Magaziner,Vic Mellor,D vs R,0
+house-SC-01,house,SC-1,SC,open (R),Nancy Lacore,Jenny Costa Honeycutt,D vs R,0
+house-SC-02,house,SC-2,SC,Wilson (R),Zyon Khalifa,Joe Wilson,D vs R,0
+house-SC-03,house,SC-3,SC,Biggs (R),Eunice Lehmacher,Sheri Biggs,D vs R,0
+house-SC-04,house,SC-4,SC,Timmons (R),Courtney McClain,William Timmons,D vs R,0
+house-SC-05,house,SC-5,SC,open (R),Mallory Dittmer,Wes Climer,D vs R,0
+house-SC-06,house,SC-6,SC,Clyburn (D),Jim Clyburn,John Peterson,D vs R,0
+house-SC-07,house,SC-7,SC,Fry (R),John Vincent,Russell Fry,D vs R,0
+house-SD-01,house,SD-AL,SD,open (R),Nikki Gronli,Marty Jackley,D vs R,0
+house-TN-01,house,TN-1,TN,Harshbarger (R),Kristi Burke,Diana Harshbarger,D vs R,0
+house-TN-02,house,TN-2,TN,Burchett (R),Michaela Barnett,Tim Burchett,D vs R,0
+house-TX-23,house,TX-23,TX,open (R),Katy Padilla Stout,Brandon Herrera,D vs R,0
+house-VA-01,house,VA-1,VA,Wittman (R),Shannon Taylor,Rob Wittman,D vs R,0
+house-VA-02,house,VA-2,VA,Kiggans (R),Elaine Luria,Jen Kiggans,D vs R,0
+house-VA-03,house,VA-3,VA,Scott (D),Bobby Scott,Edwin Rivera,D vs R,0
+house-VA-04,house,VA-4,VA,McClellan (D),Jennifer McClellan,Robert Murray,D vs R,0
+house-VA-05,house,VA-5,VA,McGuire (R),Tom Perriello,John McGuire,D vs R,0
+house-VA-06,house,VA-6,VA,Cline (R),Beth Macy,Ben Cline,D vs R,0
+house-VA-07,house,VA-7,VA,Vindman (D),Eugene Vindman,Doug Ollivant,D vs R,0
+house-VA-08,house,VA-8,VA,Beyer (D),Don Beyer,Tony Sabio,D vs R,0
+house-VA-09,house,VA-9,VA,Griffith (R),Joy Powers,Morgan Griffith,D vs R,0
+house-VA-10,house,VA-10,VA,Subramanyam (D),Suhas Subramanyam,Dave Beckwith,D vs R,0
+house-VA-11,house,VA-11,VA,Walkinshaw (D),James Walkinshaw,Arthur Purves,D vs R,0
+house-VT-01,house,VT-AL,VT,Balint (D),Becca Balint,Gerald Malloy,D vs R,0
+house-WA-01,house,WA-1,WA,DelBene (D),Suzan DelBene,Mary Silva,D vs R,0
+house-WA-02,house,WA-2,WA,Larsen (D),Rick Larsen,Edwin Feller,D vs R,0
+house-WA-03,house,WA-3,WA,Gluesenkamp Perez (D),Marie Gluesenkamp Perez,John Braun,D vs R,0
+house-WA-05,house,WA-5,WA,Baumgartner (R),Carmela Conroy,Michael Baumgartner,D vs R,0
+house-WA-06,house,WA-6,WA,Randall (D),Emily Randall,Teresa Fox,D vs R,0
+house-WA-07,house,WA-7,WA,Jayapal (D),Pramila Jayapal,Nirav Sheth,D vs R,0
+house-WA-08,house,WA-8,WA,Schrier (D),Kim Schrier,Spencer Meline,D vs R,0
+house-WA-10,house,WA-10,WA,Strickland (D),Marilyn Strickland,Chris Chung,D vs R,0
+house-WI-01,house,WI-1,WI,Steil (R),Mitchell Berman,Bryan Steil,D vs R,0
+house-WI-02,house,WI-2,WI,Pocan (D),Mark Pocan,,D unopposed,1
+house-WI-03,house,WI-3,WI,Van Orden (R),Rebecca Cooke,Derrick Van Orden,D vs R,0
+house-WI-04,house,WI-4,WI,Moore (D),Gwen Moore,Tim Rogers,D vs R,0
+house-WI-05,house,WI-5,WI,Fitzgerald (R),Andrew Beck,Scott Fitzgerald,D vs R,0
+house-WI-06,house,WI-6,WI,Grothman (R),Brad Smith,Glenn Grothman,D vs R,0
+house-WI-07,house,WI-7,WI,open (R),Fred Clark,Michael Alfonso,D vs R,0
+house-WI-08,house,WI-8,WI,Wied (R),Rick Crosson,Tony Wied,D vs R,0
+house-WV-01,house,WV-1,WV,Miller (R),Vince George,Carol Miller,D vs R,0
+house-WV-02,house,WV-2,WV,Moore (R),Ace Parsi,Riley Moore,D vs R,0
+house-WY-01,house,WY-AL,WY,open (R),Lisa Kinney,Chuck Gray,D vs R,0
+house-AL-01,house,AL-1,AL,new seat,Clyde Jones Jr.,Jerry Carl,D vs R,0
+house-AL-02,house,AL-2,AL,Figures (D),Shomari Figures,Rhett Marques,D vs R,0
+house-AL-07,house,AL-7,AL,Sewell (D),Terri Sewell,Ammie Akin,D vs R,0
+house-AL-03,house,AL-3,AL,Rogers (R),Lee McInnis,Mike Rogers,D vs R,0
+house-AL-04,house,AL-4,AL,Aderholt (R),Amanda Pusczek,Robert Aderholt,D vs R,0
+house-AL-05,house,AL-5,AL,Strong (R),Andrew Sneed,Dale Strong,D vs R,0
+house-CA-01,house,CA-1,CA,Gallagher (R),Mike McGuire,James Gallagher,D vs R,0
+house-CA-02,house,CA-2,CA,Huffman (D),Jared Huffman,Robin Littau,D vs R,0
+house-CA-03,house,CA-3,CA,Bera (D),Ami Bera,Robb Tucker,D vs R,0
+house-CA-04,house,CA-4,CA,Thompson (D),Mike Thompson,,D vs D,1
+house-CA-05,house,CA-5,CA,McClintock (R),Michael Masuda,Tom McClintock,D vs R,0
+house-CA-06,house,CA-6,CA,Kiley (I),Richard Pan,Kevin Kiley,D vs non-major,0
+house-CA-07,house,CA-7,CA,Matsui (D),Doris Matsui,,D vs D,1
+house-CA-08,house,CA-8,CA,Garamendi (D),John Garamendi,Rudy Recile,D vs R,0
+house-CA-09,house,CA-9,CA,Harder (D),Josh Harder,John McBride,D vs R,0
+house-CA-10,house,CA-10,CA,DeSaulnier (D),Mark DeSaulnier,Jeff Frese,D vs R,0
+house-CA-13,house,CA-13,CA,Gray (D),Adam Gray,Kevin Lincoln,D vs R,0
+house-CA-14,house,CA-14,CA,Wahab (D),Aisha Wahab,,D vs D,1
+house-CA-17,house,CA-17,CA,Khanna (D),Ro Khanna,Ritesh Tandon,D vs R,0
+house-CA-18,house,CA-18,CA,Lofgren (D),Zoe Lofgren,Shane Lewis,D vs R,0
+house-CA-20,house,CA-20,CA,Fong (R),Sandra Van Scotter,Vince Fong,D vs R,0
+house-CA-21,house,CA-21,CA,Costa (D),Jim Costa,Kyle Kirkland,D vs R,0
+house-CA-22,house,CA-22,CA,Valadao (R),Randy Villegas,David Valadao,D vs R,0
+house-CA-23,house,CA-23,CA,Obernolte (R),Tessa Lynn Hodge,Jay Obernolte,D vs R,0
+house-CA-25,house,CA-25,CA,Ruiz (D),Raul Ruiz,Joe Males,D vs R,0
+house-CA-26,house,CA-26,CA,open (D),Jacqui Irwin,Sam Gallucci,D vs R,0
+house-CA-27,house,CA-27,CA,Whitesides (D),George Whitesides,Jason Gibbs,D vs R,0
+house-CA-28,house,CA-28,CA,Chu (D),Judy Chu,April Verlato,D vs R,0
+house-CA-29,house,CA-29,CA,Rivas (D),Luz Rivas,,D vs D,1
+house-CA-30,house,CA-30,CA,Friedman (D),Laura Friedman,Scott Meyers,D vs R,0
+house-CA-31,house,CA-31,CA,Cisneros (D),Gil Cisneros,Eric Ching,D vs R,0
+house-CA-32,house,CA-32,CA,Sherman (D),Brad Sherman,Larry Thompson,D vs R,0
+house-CA-33,house,CA-33,CA,Aguilar (D),Pete Aguilar,Stephanie Vargas,D vs R,0
+house-CA-35,house,CA-35,CA,Torres (D),Norma Torres,Mike Cargile,D vs R,0
+house-CA-38,house,CA-38,CA,new seat,Hilda Solis,Pedro Casas,D vs R,0
+house-CA-39,house,CA-39,CA,Takano (D),Mark Takano,Steve Manos,D vs R,0
+house-CA-40,house,CA-40,CA,Kim & Calvert (R),,Young Kim,R vs R,-1
+house-CA-41,house,CA-41,CA,Sánchez (D),Linda Sánchez,Mitch Clemmons,D vs R,0
+house-CA-42,house,CA-42,CA,Garcia (D),Robert Garcia,Brian Burley,D vs R,0
+house-CA-44,house,CA-44,CA,Barragán (D),Nanette Barragán,Genevieve Angel,D vs R,0
+house-CA-45,house,CA-45,CA,Tran (D),Derek Tran,Chuong Vo,D vs R,0
+house-CA-46,house,CA-46,CA,Correa (D),Lou Correa,David Pan,D vs R,0
+house-CA-47,house,CA-47,CA,Min (D),Dave Min,Jenny Le Roux,D vs R,0
+house-CA-48,house,CA-48,CA,open (R),Marni von Wilpert,Jim Desmond,D vs R,0
+house-CA-49,house,CA-49,CA,Levin (D),Mike Levin,Armen Kurdian,D vs R,0
+house-CA-50,house,CA-50,CA,Peters (D),Scott Peters,Steve Cohen,D vs R,0
+house-CA-51,house,CA-51,CA,Jacobs (D),Sara Jacobs,Ricardo Cabrera,D vs R,0
+house-CA-52,house,CA-52,CA,Vargas (D),Juan Vargas,Jeff Belle,D vs R,0
+house-CA-12,house,CA-12,CA,Simon (D),Lateefah Simon,,D vs D,1
+house-CA-16,house,CA-16,CA,Liccardo (D),Sam Liccardo,Peter Soulé,D vs R,0
+house-CA-34,house,CA-34,CA,Gomez (D),Jimmy Gomez,,D vs D,1
+house-CA-37,house,CA-37,CA,Kamlager-Dove (D),Sydney Kamlager-Dove,,D vs D,1
+house-FL-08,house,FL-8,FL,Haridopolos (R),Jennifer Jenkins,Mike Haridopolos,D vs R,0
+house-FL-09,house,FL-9,FL,Soto (D),Darren Soto,Dan Green,D vs R,0
+house-FL-10,house,FL-10,FL,Frost (D),Maxwell Frost,,D unopposed,1
+house-FL-11,house,FL-11,FL,open (R),James Pericola,Joe Strada,D vs R,0
+house-FL-12,house,FL-12,FL,Bilirakis (R),Kimberly Overman,Gus Bilirakis,D vs R,0
+house-FL-13,house,FL-13,FL,Luna (R),Leela Gray,Anna Paulina Luna,D vs R,0
+house-FL-14,house,FL-14,FL,Castor (D),Kathy Castor,Mike Beltran,D vs R,0
+house-FL-15,house,FL-15,FL,Lee (R),Robert People,Laurel Lee,D vs R,0
+house-FL-16,house,FL-16,FL,open (R),Kelly Kirschner,Sydney Gruters,D vs R,0
+house-FL-17,house,FL-17,FL,Steube (R),Matthew Montavon,Greg Steube,D vs R,0
+house-FL-18,house,FL-18,FL,Franklin (R),Curtis Gibson,Scott Franklin,D vs R,0
+house-FL-19,house,FL-19,FL,open (R),Victor Arias,Jim Schwartzel,D vs R,0
+house-FL-20,house,FL-20,FL,Wasserman Schultz (D),Debbie Wasserman Schultz,Brent Andersen,D vs R,0
+house-FL-22,house,FL-22,FL,new seat,Pia Dandiya,Casey Askar,D vs R,0
+house-FL-23,house,FL-23,FL,Frankel (D),Lois Frankel,Deborah Adeimy,D vs R,0
+house-FL-24,house,FL-24,FL,open (D),Oliver Gilbert,Te Mayonna Brown,D vs R,0
+house-FL-25,house,FL-25,FL,Moskowitz (D),Jared Moskowitz,Scott Singer,D vs R,0
+house-FL-26,house,FL-26,FL,Diaz-Balart (R),Nicole Locklin,Mario Díaz-Balart,D vs R,0
+house-IL-15,house,IL-15,IL,Miller (R),Jennifer Todd,Mary Miller,D vs R,0
+house-IL-16,house,IL-16,IL,LaHood (R),Paul Nolley,Darin LaHood,D vs R,0
+house-KY-04,house,KY-4,KY,open (R),Melissa Strange,Ed Gallrein,D vs R,0
+house-KY-05,house,KY-5,KY,Rogers (R),Ned Pillersdorf,Hal Rogers,D vs R,0
+house-LA-01,house,LA-1,LA,Scalise (R),Lauren Jewett,Steve Scalise,primary pending,0
+house-LA-02,house,LA-2,LA,Carter (D),Troy Carter,Peter Williams,primary pending,0
+house-LA-03,house,LA-3,LA,Higgins (R),,Clay Higgins,primary pending,0
+house-LA-04,house,LA-4,LA,Johnson (R),,Mike Johnson,primary pending,0
+house-LA-05,house,LA-5,LA,open (R),,,primary pending,0
+house-LA-06,house,LA-6,LA,open (D),,,primary pending,0
+house-MA-01,house,MA-1,MA,Neal (D),Richard Neal,,D vs non-major,1
+house-MA-02,house,MA-2,MA,McGovern (D),Jim McGovern,,D unopposed,1
+house-MA-03,house,MA-3,MA,Trahan (D),Lori Trahan,Gary Grossi,D vs R,0
+house-MA-04,house,MA-4,MA,Auchincloss (D),Jake Auchincloss,Thomas Stalcup,D vs R,0
+house-MA-05,house,MA-5,MA,Clark (D),Katherine Clark,,D unopposed,1
+house-MA-06,house,MA-6,MA,open (D),Dan Koh,Micah Jones,D vs R,0
+house-MA-07,house,MA-7,MA,Pressley (D),Ayanna Pressley,,D unopposed,1
+house-MS-03,house,MS-3,MS,Guest (R),Michael Chiaradio,Michael Guest,D vs R,0
+house-NC-01,house,NC-1,NC,Davis (D),Don Davis,Laurie Buckhout,D vs R,0
+house-NC-03,house,NC-3,NC,Murphy (R),Raymond Smith Jr.,Greg Murphy,D vs R,0
+house-NC-06,house,NC-6,NC,McDowell (R),Cyril Jefferson,Addison McDowell,D vs R,0
+house-NV-02,house,NV-2,NV,open (R),Teresa Benitez-Thompson,David Flippo,D vs R,0
+house-OH-01,house,OH-1,OH,Landsman (D),Greg Landsman,Eric Conroy,D vs R,0
+house-OH-02,house,OH-2,OH,Taylor (R),Jennifer Mazzuckelli,David Taylor,D vs R,0
+house-OH-04,house,OH-4,OH,Jordan (R),Joshua Kolasinski,Jim Jordan,D vs R,0
+house-OH-05,house,OH-5,OH,Latta (R),Brian Shaver,Bob Latta,D vs R,0
+house-OH-06,house,OH-6,OH,Rulli (R),Elizabeth Kirtley,Michael Rulli,D vs R,0
+house-OH-07,house,OH-7,OH,Miller (R),Brian Poindexter,Max Miller,D vs R,0
+house-OH-08,house,OH-8,OH,Davidson (R),Vanessa Enoch,Warren Davidson,D vs R,0
+house-OH-09,house,OH-9,OH,Kaptur (D),Marcy Kaptur,Derek Merrin,D vs R,0
+house-OH-10,house,OH-10,OH,Turner (R),Kristina Knickerbocker,Mike Turner,D vs R,0
+house-OH-12,house,OH-12,OH,Balderson (R),Jerrad Christian,Troy Balderson,D vs R,0
+house-OH-13,house,OH-13,OH,Sykes (D),Emilia Sykes,Carey Coleman,D vs R,0
+house-OH-14,house,OH-14,OH,Joyce (R),Maria Jukic,David Joyce,D vs R,0
+house-OH-15,house,OH-15,OH,Carey (R),Don Leonard,Mike Carey,D vs R,0
+house-OK-03,house,OK-3,OK,Lucas (R),Suzie Byrd,Frank Lucas,D vs R,0
+house-PA-03,house,PA-3,PA,open (D),Chris Rabb,,D vs non-major,1
+house-TN-03,house,TN-3,TN,Fleischmann (R),Anna Golladay,Chuck Fleischmann,D vs R,0
+house-TN-04,house,TN-4,TN,DesJarlais (R),Victoria Broderick,Scott DesJarlais,D vs R,0
+house-TN-05,house,TN-5,TN,open (R),Chaz Molder,Charlie Hatcher,D vs R,0
+house-TN-06,house,TN-6,TN,open (R),Mike Croley,Johnny Garrett,D vs R,0
+house-TN-07,house,TN-7,TN,Van Epps (R),Darden Copeland,Matt Van Epps,D vs R,0
+house-TN-08,house,TN-8,TN,Kustoff (R),Heidi Kuhn,David Kustoff,D vs R,0
+house-TN-09,house,TN-9,TN,open (D),Justin Pearson,Brent Taylor,D vs R,0
+house-TX-01,house,TX-1,TX,Moran (R),Yolanda Prince,Nathaniel Moran,D vs R,0
+house-TX-02,house,TX-2,TX,open (R),Shaun Finnie,Steve Toth,D vs R,0
+house-TX-03,house,TX-3,TX,Self (R),Evan Hunt,Keith Self,D vs R,0
+house-TX-04,house,TX-4,TX,Fallon (R),Jason Pearce,Pat Fallon,D vs R,0
+house-TX-05,house,TX-5,TX,Gooden (R),Chelsey Hockett,Lance Gooden,D vs R,0
+house-TX-06,house,TX-6,TX,Ellzey (R),Danny Minton,Jake Ellzey,D vs R,0
+house-TX-07,house,TX-7,TX,Fletcher (D),Lizzie Fletcher,Alexander Hale,D vs R,0
+house-TX-08,house,TX-8,TX,open (R),Laura Jones,Jessica Hart Steinmann,D vs R,0
+house-TX-09,house,TX-9,TX,new seat,Leticia Gutierrez,Alex Mealer,D vs R,0
+house-TX-10,house,TX-10,TX,open (R),Caitlin Rourk,Chris Gober,D vs R,0
+house-TX-11,house,TX-11,TX,Pfluger (R),Claire Reynolds,August Pfluger,D vs R,0
+house-TX-12,house,TX-12,TX,Goldman (R),Angela Rodriguez Prilliman,Craig Goldman,D vs R,0
+house-TX-14,house,TX-14,TX,Weber (R),Thurman Bartie,Randy Weber,D vs R,0
+house-TX-15,house,TX-15,TX,De La Cruz (R),Bobby Pulido,Monica De La Cruz,D vs R,0
+house-TX-16,house,TX-16,TX,Escobar (D),Veronica Escobar,Adam Bauman,D vs R,0
+house-TX-17,house,TX-17,TX,Sessions (R),Casey Shepard,Pete Sessions,D vs R,0
+house-TX-18,house,TX-18,TX,Menefee (D),Christian Menefee,Ronald Whitfield,D vs R,0
+house-TX-20,house,TX-20,TX,Castro (D),Joaquin Castro,Edgardo Rafael Baez,D vs R,0
+house-TX-21,house,TX-21,TX,open (R),Kristin Hook,Mark Teixeira,D vs R,0
+house-TX-22,house,TX-22,TX,open (R),Marquette Greene-Scott,Trever Nehls,D vs R,0
+house-TX-24,house,TX-24,TX,Van Duyne (R),Kevin Burge,Beth Van Duyne,D vs R,0
+house-TX-25,house,TX-25,TX,Williams (R),Dione Sims,Roger Williams,D vs R,0
+house-TX-26,house,TX-26,TX,Gill (R),Steven Shook,Brandon Gill,D vs R,0
+house-TX-27,house,TX-27,TX,Cloud (R),Tanya Lloyd,Michael Cloud,D vs R,0
+house-TX-28,house,TX-28,TX,Cuellar (D),Henry Cuellar,Tano Tijerina,D vs R,0
+house-TX-29,house,TX-29,TX,Garcia (D),Sylvia Garcia,Martha Fierro,D vs R,0
+house-TX-30,house,TX-30,TX,new seat,Frederick Haynes III,Everett Jackson,D vs R,0
+house-TX-31,house,TX-31,TX,Carter (R),Justin Early,John Carter,D vs R,0
+house-TX-32,house,TX-32,TX,new seat,Dan Barrios,Jace Yarbrough,D vs R,0
+house-TX-33,house,TX-33,TX,open (D),Colin Allred,Patrick Gillespie,D vs R,0
+house-TX-34,house,TX-34,TX,Gonzalez (D),Vicente Gonzalez,Eric Flores,D vs R,0
+house-TX-35,house,TX-35,TX,new seat,Johnny Garcia,Carlos De La Cruz,D vs R,0
+house-TX-36,house,TX-36,TX,Babin (R),Rhonda Hart,Brian Babin,D vs R,0
+house-TX-37,house,TX-37,TX,Casar (D),Greg Casar,Lauren Peña,D vs R,0
+house-TX-38,house,TX-38,TX,open (R),Melissa McDonough,Jon Bonck,D vs R,0
+house-TX-13,house,TX-13,TX,Jackson (R),Mark Nair,Ronny Jackson,D vs R,0
+house-TX-19,house,TX-19,TX,open (R),Kyle Rable,Tom Sell,D vs R,0
+house-UT-01,house,UT-1,UT,new seat,Ben McAdams,Riley Owen,D vs R,0
+house-UT-02,house,UT-2,UT,Moore (R),Peter Crosby,Blake Moore,D vs R,0
+house-UT-03,house,UT-3,UT,Maloy (R),Kent Udell,Celeste Maloy,D vs R,0
+house-UT-04,house,UT-4,UT,Kennedy (R),Jonny Larsen,Mike Kennedy,D vs R,0
+house-WA-04,house,WA-4,WA,open (R),John Duresky,Amanda McKinney,D vs R,0
+house-WA-09,house,WA-9,WA,Smith (D),Adam Smith,Doug Basler,D vs R,0
+senate-AK,senate,AK-Sen,AK,Sullivan (R),Mary Peltola,Dan S. Sullivan,D vs R,0
+senate-AL,senate,AL-Sen,AL,open (R),Everett Wess,Barry Moore,D vs R,0
+senate-AR,senate,AR-Sen,AR,Cotton (R),Hallie Shoffner,Tom Cotton,D vs R,0
+senate-CO,senate,CO-Sen,CO,Hickenlooper (D),John Hickenlooper,Mark Baisley,D vs R,0
+senate-DE,senate,DE-Sen,DE,Coons (D),Chris Coons,Michael Katz,D vs R,0
+senate-FL,senate,FL-Sen,FL,Moody (R),Angie Nixon,Ashley Moody,D vs R,0
+senate-GA,senate,GA-Sen,GA,Ossoff (D),Jon Ossoff,Mike Collins,D vs R,0
+senate-IA,senate,IA-Sen,IA,open (R),Josh Turek,Ashley Hinson,D vs R,0
+senate-ID,senate,ID-Sen,ID,Risch (R),Todd Achilles,Jim Risch,R vs non-major,0
+senate-IL,senate,IL-Sen,IL,open (D),Juliana Stratton,Don Tracy,D vs R,0
+senate-KS,senate,KS-Sen,KS,Marshall (R),Adam Hamilton,Roger Marshall,D vs R,0
+senate-KY,senate,KY-Sen,KY,open (R),Charles Booker,Andy Barr,D vs R,0
+senate-LA,senate,LA-Sen,LA,open (R),Jamie Davis,Julia Letlow,D vs R,0
+senate-MA,senate,MA-Sen,MA,Markey (D),Ed Markey,John Deaton,D vs R,0
+senate-ME,senate,ME-Sen,ME,Collins (R),Troy Jackson,Susan Collins,D vs R,0
+senate-MI,senate,MI-Sen,MI,open (D),Abdul El-Sayed,Mike Rogers,D vs R,0
+senate-MN,senate,MN-Sen,MN,open (D),Peggy Flanagan,Michele Tafoya,D vs R,0
+senate-MS,senate,MS-Sen,MS,Hyde-Smith (R),Scott Colom,Cindy Hyde-Smith,D vs R,0
+senate-MT,senate,MT-Sen,MT,open (R),Seth Bodnar,Kurt Alme,D vs R,0
+senate-NC,senate,NC-Sen,NC,open (R),Roy Cooper,Michael Whatley,D vs R,0
+senate-NE,senate,NE-Sen,NE,Ricketts (R),Dan Osborn,Pete Ricketts,R vs non-major,0
+senate-NH,senate,NH-Sen,NH,open (D),Chris Pappas,John E. Sununu,D vs R,0
+senate-NJ,senate,NJ-Sen,NJ,Booker (D),Cory Booker,Justin Murphy,D vs R,0
+senate-NM,senate,NM-Sen,NM,Luján (D),Ben Ray Luján,Larry Marker,D vs R,0
+senate-OH,senate,OH-Sen,OH,Husted (R),Sherrod Brown,Jon Husted,D vs R,0
+senate-OK,senate,OK-Sen,OK,open (R),N'Kiyla Jasmine Thomas,Kevin Hern,D vs R,0
+senate-OR,senate,OR-Sen,OR,Merkley (D),Jeff Merkley,David Brock Smith,D vs R,0
+senate-RI,senate,RI-Sen,RI,Reed (D),Jack Reed,Raymond McKay,D vs R,0
+senate-SC,senate,SC-Sen,SC,Graham Nordone (R),Annie Andrews,Darline Graham,D vs R,0
+senate-SD,senate,SD-Sen,SD,Rounds (R),Brian Bengs,Mike Rounds,R vs non-major,0
+senate-TN,senate,TN-Sen,TN,Hagerty (R),Marquita Bradshaw,Bill Hagerty,D vs R,0
+senate-TX,senate,TX-Sen,TX,open (R),James Talarico,Ken Paxton,D vs R,0
+senate-VA,senate,VA-Sen,VA,Warner (D),Mark Warner,Bert Mizusawa,D vs R,0
+senate-WV,senate,WV-Sen,WV,Capito (R),Rachel Fetty Anderson,Shelley Moore Capito,D vs R,0
+senate-WY,senate,WY-Sen,WY,open (R),James W. Byrd,Harriet Hageman,D vs R,0

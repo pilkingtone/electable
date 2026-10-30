@@ -126,8 +126,11 @@
               note: `80% range ${s.lo80}–${s.hi80}` + (c.base_dem ? ` · incl. ${c.base_dem} not up` : "")});
     const j = state.forecast.joint;
     if (j && ch !== "governor") {
-      tile(el, {label: "Congress outcome", value: pct(Math.max(j.rep_both, j.dem_both, j.dem_house_rep_senate, j.dem_senate_rep_house)),
-                note: `R both ${pct(j.rep_both)} · D both ${pct(j.dem_both)} · split ${pct(j.dem_house_rep_senate + j.dem_senate_rep_house)}`});
+      const outcomes = [["Democrats control both chambers", j.dem_both], ["Republicans control both chambers", j.rep_both],
+        ["Split: Dem House, Rep Senate", j.dem_house_rep_senate], ["Split: Rep House, Dem Senate", j.dem_senate_rep_house]];
+      const top = outcomes.reduce((a, b) => b[1] > a[1] ? b : a);
+      tile(el, {label: `Most likely Congress: ${top[0]}`, value: pct(top[1]),
+                note: outcomes.filter((o) => o !== top).map((o) => `${o[0].replace(" chambers", "")} ${pct(o[1])}`).join(" · ")});
     }
   }
 
@@ -420,7 +423,10 @@
     const sum = (c.electit_summary || {})[state.electitSet];
     const pts = c.races.map((r) => ({r, e: electitFor(r)})).filter((d) => d.e && d.e.p_dem != null);
     if (!sum || !pts.length) { message(el, `ElectIt has no win probabilities for the ${CHAMBER_LABEL[state.chamber]} in this set.`); return; }
-    if (sum.expected_dem != null) tile(tiles, {label: `ElectIt expected Dem ${UNIT[state.chamber]}`, value: sum.expected_dem.toFixed(1),
+    if (sum.p_dem_control != null) tile(tiles, {label: `ElectIt: Democrats win the ${CHAMBER_LABEL[state.chamber]}`, value: pct(sum.p_dem_control),
+      note: `Electable: ${pct(c.p_dem_control)}`});
+    const exp = sum.dem_seats ? sum.dem_seats.mean : sum.expected_dem;
+    if (exp != null) tile(tiles, {label: `ElectIt expected Dem ${UNIT[state.chamber]}`, value: exp.toFixed(1),
       note: `Electable: ${c.dem_seats.mean.toFixed(1)}`});
     tile(tiles, {label: "Races with a different favorite", value: String(sum.disagree), note: `of ${sum.races} races both models cover`});
     tile(tiles, {label: "Average gap in win probability", value: Math.round(sum.mean_abs_diff * 100) + " pts"});

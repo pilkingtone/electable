@@ -3,3 +3,5 @@ __pycache__/
 .pytest_cache/
 data/raw/http_cache/
 data/raw/medsl/
+data/raw/dataverse/
+data/raw/electit/

@@ -53,9 +53,8 @@ def mirror_dataset(doi: str) -> list[Path]:
         df = f["dataFile"]
         # Tabular ingests are served as .tab unless we ask for the original upload.
         name = df.get("originalFileName") or df["filename"]
-        params = {"format": "original"} if df.get("originalFileFormat") else None
-        body = get(f"{DATAVERSE}/access/datafile/{df['id']}", params,
-                   binary=True, max_age_hours=24 * 7, timeout=300)
+        from .medsl import _datafile
+        body = _datafile(df["id"])
         p = out_dir / name
         p.write_bytes(body)
         paths.append(p)
@@ -282,3 +281,185 @@ def load_history(directory: Path = ELECTIT_DIR / "history") -> pd.DataFrame:
             d["margin"] = 100 * (a - b) / (a + b)
         frames.append(d.dropna(subset=["year", "state", "margin"]))
     return pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()
+
+
+# ------------------------------------------------------------- ElectIt site files
+#
+# ElectIt (gking.harvard.edu/electit/) publishes its forecast as JSON/CSV files
+# beside the page. Large files are packed (their pack.py): {"split": [parts]}
+# whose texts are joined in order; {"gz": "<base64 or 'b85:' RFC 1924 base85>"}
+# holding gzipped text. These helpers mirror the page's own getData()/inflate().
+
+ELECTIT_BASE = "https://gking.harvard.edu/electit/"
+_B85 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{|}~"
+_B85_IDX = {c: i for i, c in enumerate(_B85)}
+
+
+def b85decode(s: str) -> bytes:
+    """ElectIt's base85: 'b85:' prefix, RFC 1924 alphabet, a short final group padded with '~'."""
+    body = s[4:] if s.startswith("b85:") else s
+    n = len(body)
+    out_len = (n // 5) * 4 + max(0, n % 5 - 1)
+    out = bytearray(out_len)
+    o = 0
+    for i in range(0, n, 5):
+        v = 0
+        for j in range(i, i + 5):
+            v = v * 85 + (_B85_IDX[body[j]] if j < n else 84)
+        for k in range(4):
+            if o + k < out_len:
+                out[o + k] = (v >> (24 - 8 * k)) & 255
+        o += 4
+    return bytes(out)
+
+
+def inflate(packed: str) -> bytes:
+    import base64
+    import gzip
+    raw = b85decode(packed) if packed.startswith("b85:") else base64.b64decode(packed)
+    return gzip.decompress(raw)
+
+
+def electit_get(path: str, as_text: bool = False, max_age_hours: float = 3):
+    """Fetch an ElectIt data file by its path under /electit/, unpacked."""
+    url = ELECTIT_BASE + path
+
+    def fetch_text(u: str) -> str:
+        return get(u, max_age_hours=max_age_hours, timeout=120)
+
+    text = fetch_text(url)
+    try:
+        j = json.loads(text)
+    except json.JSONDecodeError:
+        return text
+    if isinstance(j, dict) and "split" in j and len(j) == 1:
+        text = "".join(fetch_text(ELECTIT_BASE + p) for p in j["split"])
+        try:
+            j = json.loads(text)
+        except json.JSONDecodeError:
+            return text
+    if isinstance(j, dict) and isinstance(j.get("gz"), str):
+        text = inflate(j["gz"]).decode("utf-8")
+        if as_text:
+            return text
+        try:
+            return json.loads(text)
+        except json.JSONDecodeError:
+            return text
+    return text if as_text else j
+
+
+def _electit_page_data() -> dict:
+    """The DATA object embedded in the ElectIt page (seats, nominees, polls, aggregates)."""
+    html = get(ELECTIT_BASE, max_age_hours=3, timeout=120)
+    m = re.search(r"(?:const|let|var)\s+DATA\s*=\s*", html)
+    if not m:
+        raise ValueError("ElectIt page layout changed: no DATA object found")
+    data, _ = json.JSONDecoder().raw_decode(html[m.end():])
+    return data
+
+
+def _seat_race_id(chamber: str, label: str) -> str:
+    st, rest = label.split("-", 1)
+    if chamber == "senate":
+        return race_id("senate", st)
+    return race_id("house", st, 1 if rest == "AL" else int(rest))
+
+
+def electit_live() -> dict:
+    """ElectIt's current 2026 forecast, read from its published files.
+
+    Returns
+      forecasts : race_id, chamber, set, p_dem, dem_share, lo, hi
+                  (p_dem = share of ElectIt's 320,000 simulations the Democrat wins;
+                  dem_share/lo/hi = median and 80% range of the two-party vote)
+      chambers  : {house|senate: {p_dem_control, dem_seats mean/lo80/hi80, dist}}
+      seats     : race_id, label, holder text, dem/rep nominees, contest type, sure (+1 D / -1 R)
+      polls     : race polls as ElectIt lists them (margin D-R, sample, pollster, sponsor)
+      aggregates: generic-ballot averages ElectIt reads (Silver Bulletin, RealClearPolitics)
+    """
+    import numpy as np
+    D = _electit_page_data()
+    sims = electit_get("sims-2026.json")
+    n = int(D["n"])
+    words = n // 32
+    set_name = "ElectIt model"
+    rows, seats_rows, poll_rows, chambers = [], [], [], {}
+    for ch in ("house", "senate"):
+        seats = D[ch]["seats"]
+        v = sims["versions"]["model"][ch]
+        bits = np.frombuffer(inflate(v["bits"]), dtype=np.uint8)
+        dem_seats = np.full(n, int(D[ch]["held"]), dtype=np.int32)
+        for i, s in enumerate(seats):
+            rid = _seat_race_id(ch, s["l"])
+            k = v["k"][i]
+            if k >= 0:
+                won = np.unpackbits(bits[k * words * 4:(k + 1) * words * 4], bitorder="little")[:n]
+                p = float(won.mean())
+                dem_seats += won
+            else:
+                p = 1.0 if k == -2 else 0.0
+                dem_seats += int(k == -2)
+            if s.get("dc"):
+                dem_seats += 1 - (1 if k == -2 else 0)
+            rows.append({"race_id": rid, "chamber": ch, "set": set_name, "p_dem": p,
+                         "dem_share": v["m"][i], "lo": v["lo"][i], "hi": v["hi"][i]})
+            seats_rows.append({"race_id": rid, "chamber": ch, "label": s["l"], "state": s["s"],
+                               "holder_text": s.get("w"), "dem_name": s.get("d") or None,
+                               "rep_name": s.get("r") or None, "contest": s.get("c"),
+                               "sure": int(s.get("u") or 0)})
+        vals, cnt = np.unique(dem_seats, return_counts=True)
+        need = int(D[ch]["need"])
+        chambers[ch] = {"set": set_name, "need": need,
+                        "p_dem_control": float((dem_seats >= need).mean()),
+                        "dem_seats": {"mean": float(dem_seats.mean()),
+                                      "lo80": float(np.percentile(dem_seats, 10)),
+                                      "hi80": float(np.percentile(dem_seats, 90)),
+                                      "dist": [{"seats": int(a), "p": float(b / n)} for a, b in zip(vals, cnt)]}}
+        for p in D.get("race", {}).get("polls", {}).get(ch, []):
+            i, start, end, margin, size, pollster, sponsor = (list(p) + [None] * 7)[:7]
+            if i is None or i >= len(seats) or margin is None:
+                continue
+            poll_rows.append({"race_id": _seat_race_id(ch, seats[i]["l"]), "pollster": pollster,
+                              "partisan": sponsor or None, "start_date": start, "end_date": end,
+                              "sample": size, "population": None,
+                              # ElectIt lists two-party margins; express them as shares.
+                              "dem_pct": 50 + margin / 2, "rep_pct": 50 - margin / 2,
+                              "source_url": ELECTIT_BASE})
+    # Candidate effects (ElectIt's estimate of each nominee's personal vote, in
+    # vote-share points): net margin effect = 2 x (Democrat's - Republican's).
+    effects = {}
+    for ch in ("house", "senate"):
+        for c in D.get("cands", {}).get(ch, []):
+            label = c["r"] if ch == "house" else f"{c['r']}-Sen"
+            try:
+                rid = _seat_race_id(ch, label)
+            except (ValueError, IndexError):
+                continue
+            e = effects.setdefault(rid, {"D": 0.0, "R": 0.0})
+            if c.get("p") in ("D", "R"):
+                e[c["p"]] += float(c["e"])
+    cand_effect = {rid: 2 * (e["D"] - e["R"]) for rid, e in effects.items()}
+    agg = {k: {kk: D[k].get(kk) for kk in ("margin", "dem", "rep", "date", "source", "url")}
+           for k in ("feed", "rcp") if isinstance(D.get(k), dict)}
+    return {"forecasts": pd.DataFrame(rows), "chambers": chambers, "seats": pd.DataFrame(seats_rows),
+            "polls": pd.DataFrame(poll_rows), "aggregates": agg, "n_sims": n, "cand_effect": cand_effect,
+            "election": D.get("election")}
+
+
+def electit_results_history() -> pd.DataFrame:
+    """ElectIt's results file (House since 1866, Senate) as year, chamber, state,
+    district, margin (D-R two-party points); uncontested races dropped."""
+    res = electit_get("results.json", max_age_hours=24)
+    rows = []
+    for ch in ("house", "senate"):
+        for year, block in res.get(ch, {}).items():
+            for r in block.get("rows", []):
+                label, _holder, _d, _r, unc, share = r[:6]
+                if unc or share is None:
+                    continue
+                st, rest = (label.split("-", 1) + [""])[:2]
+                dist = None if ch == "senate" else (1 if rest == "AL" else int(re.sub(r"\D", "", rest) or 1))
+                rows.append({"year": int(year), "chamber": ch, "state": st, "district": dist,
+                             "margin": 100 * (2 * float(share) - 1)})
+    return pd.DataFrame(rows)

@@ -19,37 +19,17 @@ Panels: `seats` `races` `polls` `tipping` `history` `errors` `electit`. Chambers
 
 ## Data sources
 
-| Source | Used for | Access |
-|---|---|---|
-| Wikipedia race articles (MediaWiki API) | Nominees, incumbents, published polls (each cited to its pollster), Cook / Sabato / Inside Elections ratings | automatic |
-| Wikipedia generic-ballot polling page | National environment | automatic |
-| [MIT Election Data + Science Lab](https://electionlab.mit.edu/data) (Harvard Dataverse, CC0) | 2024 state presidential lean; historical Senate/House results for prior calibration | automatic |
-| [OpenFEC API](https://api.open.fec.gov/developers/) | Senate fundraising (small prior adjustment) | set `FEC_API_KEY` |
-| [FiveThirtyEight pollster ratings & raw polls](https://github.com/fivethirtyeight/data/tree/master/pollster-ratings) (CC BY 4.0) | Pollster quality weights; historical polling error 1998–2023 | bundled in `data/raw/538/` |
-| Kalshi / Polymarket (optional) | Side-by-side comparison only, never a model input | `config/markets.json` |
+| Source | Used for |
+|---|---|
+| [ElectIt](https://gking.harvard.edu/electit/) (Gary King, Danny Ebanks, Jonathan Katz; Harvard) | House & Senate nominees and incumbents; 784 race polls (all House district polls); each nominee's estimated personal vote (candidate effects); ElectIt's own forecast, read exactly from its 320,000 published simulations, for comparison; House & Senate results history for calibration |
+| Cook Political Report 2026 PVI, via Wikipedia | Every House district's partisan lean on the current (post-2025 redistricting) lines |
+| Wikipedia race articles (MediaWiki API) | Senate & governor nominees, incumbents, published polls (each cited to its pollster), expert ratings (Cook, Sabato, Inside Elections, DDHQ, ...) |
+| Generic-ballot averages (Decision Desk HQ, FiftyPlusOne, NBC News, RealClearPolitics, Silver Bulletin), via Wikipedia and ElectIt | National environment |
+| [MIT Election Data + Science Lab](https://electionlab.mit.edu/data) (Harvard Dataverse) | 2024 presidential lean by state; Senate results for calibration |
+| [FiveThirtyEight pollster ratings & raw polls](https://github.com/fivethirtyeight/data/tree/master/pollster-ratings) (CC BY 4.0, bundled) | Pollster quality weights; historical polling error 1998–2022 |
+| [OpenFEC](https://api.open.fec.gov/developers/) (optional, set `FEC_API_KEY`) | Senate fundraising (small prior adjustment) |
 
-### Harvard data
-
-`config/harvard.json` lists Harvard sources, and `python -m electable fetch` mirrors all of them:
-
-- **Harvard Dataverse:** every file of each listed dataset goes to `data/raw/dataverse/<doi>/`. The list includes MIT Election Lab president, Senate, House and county files, plus Ebanks, Katz & King replication data. Add any DOI to the list.
-- **[ElectIt](https://gking.harvard.edu/electit/)** (Gary King, Danny Ebanks, Jonathan Katz): their 2026 House and Senate race forecasts, and their historical results (House since 1946, Senate since 1954). Put file links in `electit.urls`, or drop the files into `data/raw/electit/` (historical results into `data/raw/electit/history/`). Electable recognises columns by name: state, district, office, win probability or vote share, forecast set. If a file isn't recognised, the "Data notes" list says so, and you set `electit.column_map`.
-  - **Comparison:** the *Harvard ElectIt* panel plots Electable's and ElectIt's win probabilities race by race and lists the biggest disagreements. The race table gains an ElectIt column.
-  - **Optional blend:** set `electit.ensemble_weight` (e.g. `0.3`) to pull Electable's race forecasts toward ElectIt's. Each ElectIt probability is converted to the margin it implies under that race's own error size, then averaged.
-  - **Calibration:** when ElectIt's historical results are present, `calibrate` estimates race-level error from that longer series instead of MEDSL's 1976+ data.
-
-Anything the scrapers miss or get wrong can be fixed in `data/manual/` (templates in `data/manual/templates/`). Manual files are merged on top of fetched data at build time, so you can correct inputs and re-run `build` without re-fetching.
-
-### Required by hand: House districts
-
-Several states redrew their maps in 2025–26, so House district lean has to reflect the **current lines**. Create `data/manual/house_districts.csv`, one row for each of the 435 districts:
-
-```
-state,district,holder,incumbent_running,dem_name,rep_name,pres_margin_2024,uncontested
-GA,2,D,true,Sanford Bishop,Wayne Johnson,6.2,
-```
-
-`pres_margin_2024` is the 2024 presidential two-party margin (D − R, points) on the new lines. Sources include The Downballot's and Dave's Redistricting presidential-results-by-district tables. Until this file exists, the House panel says so instead of showing a forecast.
+Anything a source gets wrong can be corrected in `data/manual/` (templates in `data/manual/templates/`); manual files are merged on top at build time. `data/manual/house_districts.csv`, if present, replaces the automatic House district data.
 
 ## Model
 

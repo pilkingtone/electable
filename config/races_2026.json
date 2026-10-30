@@ -2,8 +2,8 @@
   "_comment": "Structural facts about the 2026 cycle: which seats are up and which party currently holds them. Candidates, polls, and lean are fetched by the pipeline (or supplied in data/manual/). Verify against official sources before publishing; override anything here via data/manual/*.csv.",
   "election_date": "2026-11-03",
   "president_party": "R",
-  "national_house_margin_2024": null,
-  "_national_house_margin_note": "Two-party D-R House popular vote margin in 2024 (fundamentals baseline). Leave null to derive from MEDSL House results; falls back to the 2024 presidential margin.",
+  "national_house_margin_2024": -2.635,
+  "_national_house_margin_note": "Two-party D-R House popular vote margin in 2024 (fundamentals baseline): D 70,571,330 vs R 74,390,864 (Wikipedia, 2024 United States House of Representatives elections, citing official results).",
   "senate": {
     "total_seats": 100,
     "control_threshold_d": 51,

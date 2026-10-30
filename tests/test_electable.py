@@ -15,9 +15,13 @@ from tests.fixtures import make
 
 INFOBOX = """
 <table class="infobox"><tbody>
-<tr><th>Incumbent U.S. senator before election</th><td>Jane Smith</td></tr>
-<tr><th>Nominee</th><td>Jane Smith</td><td>Bob Jones Jr.</td></tr>
-<tr><th>Party</th><td>Democratic</td><td>Republican</td></tr>
+<tr><td><table><tbody>
+<tr><th>Nominee</th><td><a>Jane Smith</a></td><td><a>Bob Jones Jr.</a></td><td></td></tr>
+<tr><th>Party</th><td><a>Democratic</a></td><td><a>Republican</a></td></tr>
+</tbody></table></td></tr>
+<tr><td class="infobox-full-data"><table><tbody><tr>
+<td><b>Incumbent <a>U.S. senator</a></b><br/><p><a>Jane Smith</a><br/><a>Democratic</a></p></td>
+<td></td></tr></tbody></table></td></tr>
 </tbody></table>
 """
 
@@ -26,7 +30,7 @@ POLLS = """
 <tr><th>Poll source</th><th>Date(s) administered</th><th>Sample size</th>
     <th>Margin of error</th><th>Jane Smith (D)</th><th>Bob Jones Jr. (R)</th><th>Undecided</th></tr>
 <tr><td>Emerson College</td><td>October 1–5, 2026</td><td>1,000 (LV)</td><td>± 3.0%</td><td>48%</td><td>45%</td><td>7%</td></tr>
-<tr><td>Some Campaign Poll<sup>[A]</sup></td><td>Sep 28 – Oct 2, 2026</td><td>600 (RV)</td><td>± 4.0%</td><td>50%</td><td>42%</td><td>8%</td></tr>
+<tr><td>Some Campaign Poll (R)<sup>[A]</sup></td><td>Sep 28 – Oct 2, 2026</td><td>600 (RV)</td><td>± 4.0%</td><td>50%</td><td>42%</td><td>8%</td></tr>
 <tr><td>Bad row</td><td>TBD</td><td>–</td><td>–</td><td>–</td><td>–</td><td>–</td></tr>
 </tbody></table>
 <table class="wikitable"><tbody>
@@ -65,7 +69,7 @@ def test_parse_poll_tables_matches_nominees_only():
     assert len(df) == 2
     first = df.iloc[0]
     assert (first.dem_pct, first.rep_pct, first["sample"], first.population) == (48, 45, 1000, "LV")
-    assert not first.partisan and df.iloc[1].partisan
+    assert pd.isna(first.partisan) and df.iloc[1].partisan == "R"
 
 
 def test_parse_ratings():
@@ -230,7 +234,7 @@ def test_history_errors_from_long_series():
                          "margin": base + rng.normal(0, 6)})
     out = calibrate.history_errors(pd.DataFrame(rows))
     assert 7 < out["house"]["race_sd"] < 10       # diff of two N(0,6) draws ~ 8.5
-    assert out["house"]["years"].startswith("1948")
+    assert out["house"]["years"].startswith(str(calibrate.MODERN_FROM + 2))   # modern era only
 
 
 def test_build_with_electit(tmp_path: Path):
@@ -244,3 +248,14 @@ def test_build_with_electit(tmp_path: Path):
     assert s["electit_summary"]["No polls"]["races"] == 35
     assert f["chambers"]["house"]["electit_summary"]["With polls"]["expected_dem"] is not None
     assert "electit_summary" not in f["chambers"]["governor"]
+
+
+def test_governor_prior_uses_ratings():
+    cfg = model_config()
+    nat = model.National(0.0, 2.0, None, 0, 0.0, 5.0)
+    row = pd.Series({"chamber": "governor", "lean": 30.0, "incumbent_party": "R",
+                     "dem_receipts": np.nan, "rep_receipts": np.nan,
+                     "ratings": [{"score": -2}, {"score": -2}]})
+    with_r = model.race_prior(row, nat, cfg)
+    row["ratings"] = []
+    assert with_r < model.race_prior(row, nat, cfg) - 10

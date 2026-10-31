@@ -483,7 +483,15 @@ def build(as_of: date | None = None, backfill_days: int = 0, step: int = 7,
         # Backfill: re-run using only polls published by each earlier date.
         for k in range(step, backfill_days + 1, step):
             d = as_of - timedelta(days=k)
-            if d.isoformat() not in points and (old := _history_point(run_model(inp, d, n_sims=5000))):
+            if d.isoformat() in points:
+                continue
+            past = run_model(inp, d, n_sims=5000)
+            # Generic-ballot averages are published as today's values only; a past
+            # date without them would run on fundamentals alone and draw a false jump.
+            if (f.get("national") or {}).get("generic_avg") is not None and \
+                    (past.get("national") or {}).get("generic_avg") is None:
+                continue
+            if (old := _history_point(past)):
                 points[d.isoformat()] = old
     hist_path.write_text(_dumps(sorted(points.values(), key=lambda h: h["date"])))
 

@@ -25,7 +25,7 @@ jobs:
       - run: pip install -r requirements.txt
       - run: python -m pytest -q
       - run: python -m electable calibrate
-      - run: python -m electable all --backfill-days 92 --step 1
+      - run: python -m electable all --backfill-days 31 --step 1
         env:
           FEC_API_KEY: ${{ secrets.FEC_API_KEY }}
       - name: Commit updated forecast

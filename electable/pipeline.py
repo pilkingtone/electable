@@ -219,6 +219,17 @@ def fetch(out_dir: Path = PROCESSED_DIR) -> dict:
         sources.append({"name": "Generic-ballot averages: " + ", ".join(gb["pollster"].str.replace(r"\[.*?\]", "", regex=True)),
                         "url": wikipedia.page_url(wikipedia.HOUSE_TITLE)})
 
+    # Dated generic-ballot polls: rebuild the national average for past dates (history chart).
+    try:
+        gp = wikipedia.fetch_generic_ballot()
+        gp.to_csv(out_dir / "generic_polls.csv", index=False)
+        _log(f"generic-ballot polls with dates: {len(gp)} ({gp['end_date'].min()} to {gp['end_date'].max()})")
+        sources.append({"name": f"Generic-ballot polls ({len(gp)}, each cited to its pollster), via Wikipedia",
+                        "url": wikipedia.page_url(wikipedia.GENERIC_BALLOT_TITLE)})
+    except Exception as e:  # noqa: BLE001
+        warnings.append(f"Dated generic-ballot polls unavailable (history limited to live runs): {e}")
+        (out_dir / "generic_polls.csv").write_text("")
+
     h_sources, h_warn = harvard.mirror_all()
     sources += h_sources
     warnings += h_warn
@@ -307,7 +318,8 @@ def load_inputs(processed: Path = PROCESSED_DIR, manual: Path = MANUAL_DIR,
     if not live.empty:
         electit = pd.concat([electit, live], ignore_index=True) if not electit.empty else live
     return {"meta": meta, "warnings": warnings, "races": races, "polls": polls,
-            "generic": gb, "approval": appr, "electit": electit}
+            "generic": gb, "generic_polls": _read(processed / "generic_polls.csv"),
+            "approval": appr, "electit": electit}
 
 
 def run_model(inp: dict, as_of: date, n_sims: int | None = None) -> dict:
@@ -316,8 +328,16 @@ def run_model(inp: dict, as_of: date, n_sims: int | None = None) -> dict:
     grades = P.load_pollster_grades()
     warnings = list(inp["warnings"])
     gb = inp["generic"]
-    trend = P.national_trend(gb, cfg, grades)
+    gp = inp.get("generic_polls", pd.DataFrame())
+    trend = P.national_trend(gp if len(gp) >= 10 else gb, cfg, grades)
     generic = P.average(gb, as_of, cfg, grades) if not gb.empty else None
+    if generic is None and not gp.empty:
+        # A past date, before today's published averages existed: average the
+        # generic-ballot polls released by then, shifted by the gap between that
+        # average and the published averages today so the series joins up.
+        generic = P.average(gp, as_of, cfg, grades)
+        if generic is not None:
+            generic = {**generic, "mean": generic["mean"] + inp.get("generic_offset", 0.0)}
     if generic is None:
         warnings.append("No generic-ballot polls: national environment uses fundamentals only.")
 
@@ -467,6 +487,12 @@ def build(as_of: date | None = None, backfill_days: int = 0, step: int = 7,
     rc = races_config()
     as_of = as_of or date.today()
     inp = load_inputs(processed, manual, electit_dir)
+    cfg, grades = model_config(), P.load_pollster_grades()
+    if not inp["generic"].empty and not inp["generic_polls"].empty:
+        agg = P.average(inp["generic"], as_of, cfg, grades)
+        own = P.average(inp["generic_polls"], as_of, cfg, grades)
+        if agg and own:
+            inp["generic_offset"] = agg["mean"] - own["mean"]
     f = run_model(inp, as_of)
     f.update({"generated_at": datetime.now(timezone.utc).replace(tzinfo=None).isoformat(timespec="seconds") + "Z",
               "election_date": rc["election_date"], "demo": demo,

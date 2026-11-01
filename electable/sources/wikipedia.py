@@ -42,7 +42,8 @@ def page_title(chamber: str, state: str, special: bool = False) -> str:
     raise ValueError(chamber)
 
 
-GENERIC_BALLOT_TITLE = "Opinion polling for the 2026 United States House of Representatives elections"
+# Individual generic-ballot polls (with field dates) are listed on the cycle overview article.
+GENERIC_BALLOT_TITLE = "2026 United States elections"
 
 
 def fetch_html(title: str) -> str:

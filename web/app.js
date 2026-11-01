@@ -10,7 +10,7 @@
   const CHAMBER_LABEL = {senate: "Senate", house: "House", governor: "Governors"};
   const UNIT = {senate: "seats", house: "seats", governor: "governorships"};
 
-  const state = {electitSet: null, chamber: "senate", panels: new Set(DEFAULT_PANELS), forecast: null, history: [], calibration: null};
+  const state = {historyDays: 30, electitSet: null, chamber: "senate", panels: new Set(DEFAULT_PANELS), forecast: null, history: [], calibration: null};
   const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
   const pct = (p) => p == null ? "—" : p > 0.99 ? ">99%" : p < 0.01 ? "<1%" : Math.round(p * 100) + "%";
   const margin = (m) => m == null ? "—" : (m >= 0 ? "D+" : "R+") + Math.abs(m).toFixed(1);
@@ -291,16 +291,22 @@
   /* ---------------- history ---------------- */
   function renderHistory() {
     const el = document.getElementById("history-chart"), ch = state.chamber;
-    const pts = state.history.filter((h) => h[ch] && h[ch].p_dem != null).map((h) => ({date: new Date(h.date + "T12:00:00"), ...h[ch]}));
-    document.getElementById("history-sub").textContent = "Chance Democrats win control, by forecast date. Earlier points use only the polls published by that date.";
-    if (pts.length < 2) { message(el, "History builds up as the forecast is re-run each day (or backfill with --backfill-days)."); return; }
+    document.querySelectorAll("#history-range button").forEach((b) => b.setAttribute("aria-pressed", +b.dataset.days === state.historyDays));
+    const all = state.history.filter((h) => h[ch] && h[ch].p_dem != null).map((h) => ({date: new Date(h.date + "T12:00:00"), ...h[ch]}));
+    const end = all.length ? all[all.length - 1].date : new Date();
+    const start = new Date(end.getTime() - state.historyDays * 864e5);
+    const pts = all.filter((d) => d.date >= start);
+    const short = all.length && all[0].date > start;
+    document.getElementById("history-sub").textContent = "Chance Democrats win control, by forecast date. Earlier points re-run the model with only the polls published by that date."
+      + (short ? ` History starts ${all[0].date.toLocaleDateString(undefined, {month: "short", day: "numeric"})}.` : "");
+    if (pts.length < 2) { message(el, "Not enough history for this range yet. It builds up as the forecast re-runs twice a day."); return; }
     const h = 240, m = {t: 16, r: 56, b: 30, l: 40}, svg = svgIn(el, h), w = +svg.attr("width");
     const x = d3.scaleTime().domain(d3.extent(pts, (d) => d.date)).range([m.l, w - m.r]);
     const y = d3.scaleLinear().domain([0, 1]).range([h - m.b, m.t]);
     svg.append("g").attr("class", "grid").attr("transform", `translate(${m.l},0)`)
       .call(d3.axisLeft(y).tickValues([0, 0.25, 0.5, 0.75, 1]).tickSize(-(w - m.l - m.r)).tickFormat(d3.format(".0%")))
       .call((g) => g.select(".domain").remove());
-    svg.append("g").attr("class", "axis").attr("transform", `translate(0,${h - m.b})`).call(d3.axisBottom(x).ticks(Math.min(6, pts.length)).tickSizeOuter(0));
+    svg.append("g").attr("class", "axis").attr("transform", `translate(0,${h - m.b})`).call(d3.axisBottom(x).ticks(Math.min(state.historyDays <= 7 ? 7 : 6, pts.length)).tickFormat(d3.timeFormat("%b %-d")).tickSizeOuter(0));
     svg.append("path").datum(pts).attr("fill", "none").attr("stroke", css("--dem")).attr("stroke-width", 2)
       .attr("d", d3.line().x((d) => x(d.date)).y((d) => y(d.p_dem)));
     svg.append("path").datum(pts).attr("fill", "none").attr("stroke", css("--rep")).attr("stroke-width", 2)
@@ -500,6 +506,9 @@
     document.querySelectorAll("#panel-chips button").forEach((b) => b.addEventListener("click", () => {
       const p = b.dataset.panel; state.panels.has(p) ? state.panels.delete(p) : state.panels.add(p);
       if (!state.panels.size) state.panels.add(p); render();
+    }));
+    document.querySelectorAll("#history-range button").forEach((b) => b.addEventListener("click", () => {
+      state.historyDays = +b.dataset.days; renderHistory();
     }));
     document.getElementById("electit-set").addEventListener("change", (e) => { state.electitSet = e.target.value; render(); });
     document.getElementById("race-search").addEventListener("input", () => renderRaces(state.forecast.chambers[state.chamber]));

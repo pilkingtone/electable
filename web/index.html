@@ -82,8 +82,17 @@
     </section>
 
     <section class="panel card" id="panel-history" data-panel="history">
-      <h2>Forecast over time</h2>
-      <p class="sub" id="history-sub"></p>
+      <div class="card-head">
+        <div>
+          <h2>Forecast over time</h2>
+          <p class="sub" id="history-sub"></p>
+        </div>
+        <div class="seg seg-sm" role="group" aria-label="Time range" id="history-range">
+          <button type="button" data-days="7">1W</button>
+          <button type="button" data-days="30">1M</button>
+          <button type="button" data-days="92">3M</button>
+        </div>
+      </div>
       <div class="chart" id="history-chart"></div>
     </section>
 

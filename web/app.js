@@ -88,7 +88,14 @@
     const days = Math.ceil((new Date(f.election_date + "T00:00:00") - new Date()) / 864e5);
     const a = document.createElement("div");
     a.append("Updated ");
-    const s = document.createElement("strong"); s.textContent = fmtDate(f.as_of); a.appendChild(s);
+    // generated_at is the build time in UTC; show it in the visitor's own time zone.
+    const built = f.generated_at ? new Date(f.generated_at) : null;
+    const s = document.createElement("strong");
+    s.textContent = built && !isNaN(built)
+      ? built.toLocaleString(undefined, {month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit", timeZoneName: "short"})
+      : fmtDate(f.as_of);
+    if (built && !isNaN(built)) { const t = document.createElement("time"); t.dateTime = f.generated_at; t.appendChild(s); a.appendChild(t); }
+    else a.appendChild(s);
     const b = document.createElement("div");
     b.textContent = days > 0 ? `${days} day${days === 1 ? "" : "s"} until Nov 3, 2026` : "Election day: Nov 3, 2026";
     el.append(a, b);

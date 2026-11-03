@@ -1,6 +1,6 @@
 pollster,partisan,end_date,sample,population,dem_pct,rep_pct,source_url,kind
-Decision Desk HQ,,2026-11-01,5000,LV,51.2,42.3,https://en.wikipedia.org/wiki/2026_United_States_House_of_Representatives_elections,aggregate
-FiftyPlusOne,,2026-11-01,5000,LV,52.3,43.7,https://en.wikipedia.org/wiki/2026_United_States_House_of_Representatives_elections,aggregate
-NBC News,,2026-11-01,5000,LV,52.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_House_of_Representatives_elections,aggregate
-RealClearPolitics,,2026-11-01,5000,LV,52.0,43.1,https://en.wikipedia.org/wiki/2026_United_States_House_of_Representatives_elections,aggregate
-Silver Bulletin,,2026-11-01,5000,LV,51.4,42.6,https://en.wikipedia.org/wiki/2026_United_States_House_of_Representatives_elections,aggregate
+Decision Desk HQ,,2026-11-03,5000,LV,51.4,42.8,https://en.wikipedia.org/wiki/2026_United_States_House_of_Representatives_elections,aggregate
+FiftyPlusOne,,2026-11-03,5000,LV,52.8,44.1,https://en.wikipedia.org/wiki/2026_United_States_House_of_Representatives_elections,aggregate
+NBC News,,2026-11-03,5000,LV,52.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_House_of_Representatives_elections,aggregate
+RealClearPolitics,,2026-11-03,5000,LV,52.1,43.3,https://en.wikipedia.org/wiki/2026_United_States_House_of_Representatives_elections,aggregate
+Silver Bulletin,,2026-11-03,5000,LV,51.8,43.0,https://en.wikipedia.org/wiki/2026_United_States_House_of_Representatives_elections,aggregate

@@ -1,114 +1,121 @@
 pollster,partisan,end_date,sample,population,dem_pct,rep_pct,source_url
+Reuters/Ipsos,,2026-11-02,1212.0,LV,52.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+John Zogby Strategies,,2026-11-02,1001.0,LV,53.0,47.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Focaldata/Financial Times,,2026-11-01,2090.0,LV,52.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+I&I/TIPP Insights (R),R,2026-10-30,1158.0,LV,52.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Big Data Poll,,2026-10-30,3214.0,LV,51.0,39.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Hart Research Associates (D)/Public Opinion Strategies (R),D,2026-10-30,1000.0,RV,52.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 ActiVote,,2026-10-30,2000.0,LV,53.5,46.5,https://en.wikipedia.org/wiki/2026_United_States_elections
+YouGov,,2026-10-30,3915.0,LV,53.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Ipsos,,2026-10-28,1209.0,LV,50.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Tufts University/YouGov,,2026-10-27,499.0,LV,52.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Reuters/Ipsos,,2026-10-26,1164.0,LV,53.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-NPR/PBS/Marist University,,2026-10-26,,LV,52.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Harvard/Harris Poll/HarrisX,,2026-10-26,,LV,52.0,48.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-The Economist/YouGov,,2026-10-26,1123.0,LV,52.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Emerson College,,2026-10-26,1000.0,LV,52.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+The Economist/YouGov,,2026-10-26,1123.0,LV,52.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+NPR/PBS/Marist University,,2026-10-26,,LV,52.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Reuters/Ipsos,,2026-10-26,1164.0,LV,53.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Cygnal (R),R,2026-10-24,1500.0,LV,52.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Echelon Insights,,2026-10-23,3644.0,LV,51.0,46.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 CBS/YouGov,,2026-10-23,1749.0,LV,53.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Targoz Market Research,,2026-10-22,1118.0,LV,49.0,46.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Echelon Insights,,2026-10-23,3644.0,LV,51.0,46.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Prolific,,2026-10-22,713.0,LV,53.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Targoz Market Research,,2026-10-22,1118.0,LV,49.0,46.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 ActiVote,,2026-10-21,1000.0,LV,53.0,47.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Clarity Campaign Labs,,2026-10-21,1016.0,LV,52.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Focaldata/Financial Times,,2026-10-20,1594.0,LV,53.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Pennsylvania State University/YouGov,,2026-10-20,724.0,LV,47.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Morning Consult,,2026-10-20,2050.0,RV,48.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-The Economist/YouGov,,2026-10-20,1179.0,LV,52.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Rainey Center,,2026-10-20,1279.0,RV,52.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Focaldata/Financial Times,,2026-10-20,1594.0,LV,53.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Morning Consult,,2026-10-20,2050.0,RV,48.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Pennsylvania State University/YouGov,,2026-10-20,724.0,LV,47.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+The Economist/YouGov,,2026-10-20,1179.0,LV,52.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Reuters/Ipsos,,2026-10-19,1279.0,RV,47.0,35.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The New York Times/Siena University,,2026-10-19,3494.0,LV,52.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Hart Research Associates (D)/Public Opinion Strategies (R),D,2026-10-18,1000.0,RV,52.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 CNN/SSRS,,2026-10-18,1206.0,RV,49.0,39.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-RMG Research,,2026-10-14,2000.0,RV,51.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Hart Research Associates (D)/Public Opinion Strategies (R),D,2026-10-18,1000.0,RV,52.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 ActiVote,,2026-10-14,1000.0,LV,53.0,47.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+RMG Research,,2026-10-14,2000.0,RV,51.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Washington Post/ABC News/Ipsos,,2026-10-13,2032.0,LV,52.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-SurveyMonkey,,2026-10-12,17649.0,RV,55.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Beacon Research (D)/ Shaw & Co. Research (R),D,2026-10-12,1202.0,RV,54.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+SurveyMonkey,,2026-10-12,17649.0,RV,55.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Economist/YouGov,,2026-10-12,1403.0,RV,46.0,39.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2026-10-11,17654.0,LV,50.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Cygnal (R),R,2026-10-10,1500.0,LV,51.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 TrueDot,,2026-10-09,974.0,LV,49.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Reuters/Ipsos,,2026-10-05,3526.0,RV,44.0,37.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Focaldata/Financial Times,,2026-10-05,2201.0,LV,52.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Economist/YouGov,,2026-10-05,995.0,LV,52.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Reuters/Ipsos,,2026-10-05,3526.0,RV,44.0,37.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-University of Massachusetts Lowell/YouGov,,2026-10-04,1000.0,LV,52.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2026-10-04,17659.0,LV,50.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Pew Research Center,,2026-10-04,3917.0,RV,44.0,36.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+University of Massachusetts Lowell/YouGov,,2026-10-04,1000.0,LV,52.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 CBS News/YouGov,,2026-10-02,1572.0,LV,54.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Cygnal (R),R,2026-10-02,1500.0,LV,52.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 ActiVote,,2026-10-02,1000.0,LV,52.0,48.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Cygnal (R),R,2026-10-02,1500.0,LV,52.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Centerline Research & Strategy,,2026-10-01,930.0,LV,50.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 I&I/TIPP Insights (R),R,2026-10-01,1328.0,RV,46.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Rasmussen Reports (R),R,2026-09-30,1794.0,LV,47.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-The Economist/YouGov,,2026-09-28,1003.0,LV,53.0,38.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Harvard/Harris Poll/HarrisX,,2026-09-28,,LV,51.0,49.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 AlphaROC,,2026-09-28,1000.0,A,43.0,37.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Morning Consult,,2026-09-27,18786.0,LV,50.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Harvard/Harris Poll/HarrisX,,2026-09-28,,LV,51.0,49.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+The Economist/YouGov,,2026-09-28,1003.0,LV,53.0,38.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Quinnipiac University,,2026-09-27,1032.0,RV,51.0,39.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Morning Consult,,2026-09-27,18786.0,LV,50.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Angus Reid Global,,2026-09-25,919.0,RV,56.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-GBAO (D),D,2026-09-24,2000.0,RV,50.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Change Research (D),D,2026-09-24,2021.0,RV,46.0,39.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+GBAO (D),D,2026-09-24,2000.0,RV,50.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Rasmussen Reports (R),R,2026-09-23,1819.0,LV,48.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+The Argument/Verasight,,2026-09-22,,LV,55.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 McLaughlin & Associates (R),R,2026-09-22,1000.0,LV,48.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Emerson College,,2026-09-22,1000.0,LV,53.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-The Argument/Verasight,,2026-09-22,,LV,55.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 ActiVote,,2026-09-21,1000.0,LV,53.0,47.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Strength In Numbers/Verasight,,2026-09-21,,LV,52.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 KFF,,2026-09-21,1013.0,RV,45.0,35.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-The Economist/YouGov,,2026-09-21,975.0,LV,52.0,38.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Strength In Numbers/Verasight,,2026-09-21,,LV,52.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Impact Research (D)/ National Research Inc. (R),D,2026-09-21,1500.0,RV,50.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+The Economist/YouGov,,2026-09-21,975.0,LV,52.0,38.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Echelon Insights,,2026-09-21,1002.0,LV,51.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Reuters/Ipsos,,2026-09-20,979.0,RV,43.0,35.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2026-09-20,18336.0,LV,50.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Quantus Insights (R),R,2026-09-18,1389.0,LV,50.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-John Zogby Strategies,,2026-09-17,1007.0,LV,46.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 CNN/SSRS,,2026-09-17,867.0,RV,49.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+John Zogby Strategies,,2026-09-17,1007.0,LV,46.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Winston Group (R),R,2026-09-16,1000.0,RV,51.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Rasmussen Reports (R),R,2026-09-16,1746.0,LV,49.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Clarity Campaign Labs (D),D,2026-09-16,1046.0,LV,50.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Marist University,,2026-09-15,1280.0,RV,53.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Morning Consult,,2026-09-15,2102.0,RV,46.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Rasmussen Reports (R),R,2026-09-16,1746.0,LV,49.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 RMG Research,,2026-09-15,2000.0,RV,51.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Hart Research Associates (D)/ Public Opinion Strategies (R),D,2026-09-15,1000.0,RV,50.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Emerson College/ RealClear Opinion Research,,2026-09-15,1500.0,RV,37.0,29.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Marist University,,2026-09-15,1280.0,RV,53.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Hart Research Associates (D)/ Public Opinion Strategies (R),D,2026-09-15,1000.0,RV,50.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Big Data Poll (R),R,2026-09-15,2633.0,LV,48.0,37.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Reuters/Ipsos,,2026-09-14,896.0,RV,44.0,37.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Morning Consult,,2026-09-15,2102.0,RV,46.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Rainey Center,,2026-09-14,1004.0,RV,48.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-The Economist/YouGov,,2026-09-14,1051.0,LV,51.0,39.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Beacon Research (D)/ Shaw & Co. Research (R),D,2026-09-14,1211.0,RV,51.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-New York Times/Siena College,,2026-09-13,1503.0,LV,51.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+The Economist/YouGov,,2026-09-14,1051.0,LV,51.0,39.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Reuters/Ipsos,,2026-09-14,896.0,RV,44.0,37.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2026-09-13,,LV,49.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+New York Times/Siena College,,2026-09-13,1503.0,LV,51.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 CBS News/YouGov,,2026-09-11,1750.0,LV,54.0,46.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 ActiVote,,2026-09-10,1000.0,LV,52.0,48.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Marquette University Law School,,2026-09-09,581.0,LV,54.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Rasmussen Reports (R),R,2026-09-09,1905.0,LV,47.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Catawba College/YouGov,,2026-09-09,779.0,LV,49.0,38.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Marquette University Law School,,2026-09-09,581.0,LV,54.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Economist/YouGov,,2026-09-08,1015.0,LV,49.0,38.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Public Religion Research Institute,,2026-09-07,,RV,43.0,36.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Quinnipiac University,,2026-09-06,970.0,RV,49.0,38.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2026-09-06,2203.0,RV,46.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Quinnipiac University,,2026-09-06,970.0,RV,49.0,38.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Focaldata/Financial Times,,2026-09-02,1837.0,LV,52.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Cygnal (R),R,2026-09-02,1500.0,LV,51.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Reuters/Ipsos,,2026-08-31,924.0,RV,43.0,38.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Rasmussen Reports (R),R,2026-08-30,2231.0,LV,41.0,36.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Harvard/Harris Poll/HarrisX,,2026-08-30,,LV,49.0,51.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Rasmussen Reports (R),R,2026-08-30,2231.0,LV,41.0,36.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 UMass Amherst/YouGov,,2026-08-26,1000.0,A,42.0,34.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-McLaughlin & Associates (R),R,2026-08-24,1000.0,LV,48.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 ActiVote,,2026-08-24,1000.0,LV,52.0,48.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+McLaughlin & Associates (R),R,2026-08-24,1000.0,LV,48.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Echelon Insights,,2026-08-17,1002.0,LV,50.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Reuters/Ipsos,,2026-08-17,876.0,RV,41.0,36.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Emerson College,,2026-08-17,1000.0,LV,51.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-The Economist/YouGov,,2026-08-17,1449.0,RV,46.0,39.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Bullfinch Group,,2026-08-17,1000.0,RV,42.0,37.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Noble Predictive Insights/ The Center Square,,2026-08-16,2533.0,RV,47.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+The Economist/YouGov,,2026-08-17,1449.0,RV,46.0,39.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Emerson College,,2026-08-17,1000.0,LV,51.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Reuters/Ipsos,,2026-08-17,876.0,RV,41.0,36.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult/Cato Institute,,2026-08-16,4150.0,RV,47.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2026-08-16,29719.0,RV,46.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Focaldata/Financial Times,,2026-08-11,1857.0,LV,51.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Noble Predictive Insights/ The Center Square,,2026-08-16,2533.0,RV,47.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Angus Reid Global,,2026-08-11,1525.0,A,45.0,36.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Focaldata/Financial Times,,2026-08-11,1857.0,LV,51.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Wave Polling/Verasight,,2026-08-11,1591.0,RV,50.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Economist/YouGov,,2026-08-10,1419.0,RV,46.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 AlphaROC,,2026-08-10,1000.0,A,41.0,37.0,https://en.wikipedia.org/wiki/2026_United_States_elections
@@ -117,8 +124,8 @@ ActiVote,,2026-08-08,1000.0,LV,52.5,47.5,https://en.wikipedia.org/wiki/2026_Unit
 Cygnal (R),R,2026-08-07,1500.0,LV,49.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 John Zogby Strategies,,2026-08-05,921.0,LV,51.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Quantus Insights (R),R,2026-08-04,1048.0,LV,49.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Reuters/Ipsos,,2026-08-03,3542.0,RV,42.0,37.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Economist/YouGov,,2026-08-03,1472.0,RV,46.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Reuters/Ipsos,,2026-08-03,3542.0,RV,42.0,37.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2026-08-02,24000.0,RV,46.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Marquette University Law School,,2026-07-29,572.0,LV,51.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Big Data Poll (R),R,2026-07-29,2617.0,LV,50.0,39.0,https://en.wikipedia.org/wiki/2026_United_States_elections
@@ -130,18 +137,18 @@ Reuters/Ipsos,,2026-07-26,1003.0,RV,40.0,38.0,https://en.wikipedia.org/wiki/2026
 CBS News/YouGov,,2026-07-24,1474.0,RV,47.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Clarity Campaign Labs (D),D,2026-07-22,1000.0,LV,52.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 McLaughlin & Associates (R),R,2026-07-21,1000.0,LV,46.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-The Economist/YouGov,,2026-07-20,1432.0,RV,46.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Beacon Research (D)/ Shaw & Co. Research (R),D,2026-07-20,1003.0,RV,53.0,46.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Emerson College,,2026-07-20,1100.0,LV,53.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+The Economist/YouGov,,2026-07-20,1432.0,RV,46.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Focaldata,,2026-07-20,2064.0,A,44.0,36.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2026-07-19,2200.0,RV,46.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Strength In Numbers/Verasight,,2026-07-17,1364.0,RV,50.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-RMG Research,,2026-07-14,2000.0,RV,47.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 AlphaROC,,2026-07-14,1000.0,A,42.0,37.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-The Economist/YouGov,,2026-07-13,1447.0,RV,46.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Echelon Insights,,2026-07-13,1004.0,LV,50.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-The Washington Post/Ipsos,,2026-07-13,1483.0,LV,53.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+RMG Research,,2026-07-14,2000.0,RV,47.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2026-07-13,2200.0,RV,46.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+The Washington Post/Ipsos,,2026-07-13,1483.0,LV,53.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Echelon Insights,,2026-07-13,1004.0,LV,50.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+The Economist/YouGov,,2026-07-13,1447.0,RV,46.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Hart Research Associates (D)/ Public Opinion Strategies (R),D,2026-07-12,1000.0,RV,49.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Pew Research Center,,2026-07-12,2779.0,RV,43.0,37.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Harvard/Harris Poll/HarrisX,,2026-07-12,,LV,51.0,49.0,https://en.wikipedia.org/wiki/2026_United_States_elections
@@ -155,30 +162,30 @@ Cygnal (R),R,2026-07-01,1500.0,LV,50.0,44.0,https://en.wikipedia.org/wiki/2026_U
 Rasmussen Reports (R),R,2026-07-01,2224.0,LV,46.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Focaldata/Financial Times,,2026-06-30,1723.0,RV,51.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Economist/YouGov,,2026-06-29,1426.0,RV,45.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Big Data Poll (R),R,2026-06-28,2604.0,LV,50.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 ActiVote,,2026-06-28,1000.0,LV,53.0,47.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 AlphaROC,,2026-06-28,1000.0,A,43.0,37.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2026-06-28,2202.0,RV,46.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Big Data Poll (R),R,2026-06-28,2604.0,LV,50.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult/Cato Institute,,2026-06-26,1797.0,RV,45.0,39.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 McLaughlin & Associates (R),R,2026-06-23,1000.0,LV,46.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-The Economist/YouGov,,2026-06-22,1517.0,RV,45.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Reuters/Ipsos,,2026-06-22,978.0,RV,41.0,36.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Echelon Insights,,2026-06-22,1008.0,LV,51.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2026-06-22,,RV,46.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Quinnipiac University,,2026-06-22,1165.0,RV,49.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+The Economist/YouGov,,2026-06-22,1517.0,RV,45.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Strength In Numbers/Verasight,,2026-06-22,1896.0,RV,50.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Quinnipiac University,,2026-06-22,1165.0,RV,49.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Reuters/Ipsos,,2026-06-22,978.0,RV,41.0,36.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Data for Progress (D),D,2026-06-21,5809.0,LV,51.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Quantus Insights (R),R,2026-06-17,1000.0,LV,47.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Bullfinch Group,,2026-06-16,1000.0,RV,44.0,36.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Economist/YouGov,,2026-06-15,1402.0,RV,46.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Echelon Insights,,2026-06-14,1012.0,LV,50.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2026-06-14,24000.0,RV,46.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Echelon Insights,,2026-06-14,1012.0,LV,50.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Emerson College,,2026-06-08,1200.0,LV,50.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Reuters/Ipsos,,2026-06-08,3578.0,RV,41.0,37.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Economist/YouGov,,2026-06-08,1393.0,RV,45.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Emerson College,,2026-06-08,1200.0,LV,50.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Morning Consult,,2026-06-07,24849.0,RV,46.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Hart Research Associates (D)/ Public Opinion Strategies (R),D,2026-06-07,2400.0,RV,49.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 HarrisX/Forbes,,2026-06-07,1565.0,LV,46.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Morning Consult,,2026-06-07,24849.0,RV,46.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Research Co.,,2026-06-06,1001.0,A,38.0,33.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Clarity Campaign Labs (D),D,2026-06-05,1045.0,LV,48.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 RMG Research,,2026-06-04,2000.0,RV,49.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
@@ -186,60 +193,60 @@ Noble Predictive Insights/ The Center Square,,2026-06-04,2585.0,RV,47.0,41.0,htt
 Cygnal (R),R,2026-06-03,1500.0,LV,49.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Argument/Verasight,,2026-06-03,3008.0,RV,53.0,47.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Quantus Insights (R),R,2026-06-02,1050.0,LV,47.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-The Winston Group (R),R,2026-06-02,1000.0,RV,48.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Bullfinch Group,,2026-06-02,1000.0,RV,42.0,36.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+The Winston Group (R),R,2026-06-02,1000.0,RV,48.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Economist/YouGov,,2026-06-01,1452.0,RV,46.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Focaldata/Financial Times,,2026-06-01,1483.0,RV,50.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2026-05-31,,RV,45.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Harvard/Harris Poll/HarrisX,,2026-05-31,,LV,52.0,48.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 I&I/TIPP Insights (R),R,2026-05-28,1332.0,RV,46.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Big Data Poll (R),R,2026-05-27,2784.0,LV,51.0,38.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Marquette University Law School,,2026-05-26,576.0,LV,49.0,48.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Economist/YouGov,,2026-05-26,1393.0,RV,46.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Marquette University Law School,,2026-05-26,576.0,LV,49.0,48.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Pennsylvania State University/YouGov,,2026-05-26,862.0,RV,41.0,37.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Emerson College,,2026-05-25,1000.0,LV,50.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 John Zogby Strategies,,2026-05-22,,LV,49.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Rasmussen Reports (R),R,2026-05-20,2161.0,LV,47.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morris Predictive Insights/Verasight,,2026-05-20,2000.0,A,52.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Rasmussen Reports (R),R,2026-05-20,2161.0,LV,47.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Strength In Numbers/Verasight,,2026-05-19,1413.0,RV,51.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Rainey Center,,2026-05-18,1010.0,RV,45.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+McLaughlin & Associates (R),R,2026-05-18,1000.0,LV,46.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Reuters/Ipsos,,2026-05-18,984.0,RV,39.0,38.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Echelon Insights,,2026-05-18,1008.0,LV,51.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Impact Research (D)/ National Research Inc. (R),D,2026-05-18,1500.0,RV,48.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-McLaughlin & Associates (R),R,2026-05-18,1000.0,LV,46.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Data for Progress (D),D,2026-05-18,1149.0,LV,51.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-The Economist/YouGov,,2026-05-18,1375.0,RV,46.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Quinnipiac University,,2026-05-18,1106.0,RV,50.0,39.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+The Economist/YouGov,,2026-05-18,1375.0,RV,46.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Data for Progress (D),D,2026-05-18,1149.0,LV,51.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Impact Research (D)/ National Research Inc. (R),D,2026-05-18,1500.0,RV,48.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2026-05-17,2203.0,RV,47.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 New York Times/Siena College,,2026-05-15,1507.0,RV,50.0,39.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 CBS News/YouGov,,2026-05-15,1397.0,RV,45.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Economist/YouGov,,2026-05-11,1406.0,RV,45.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Reuters/Ipsos,,2026-05-11,993.0,RV,41.0,35.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-AtlasIntel,,2026-05-07,2069.0,A,55.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Cygnal (R),R,2026-05-07,1500.0,LV,48.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+AtlasIntel,,2026-05-07,2069.0,A,55.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 RMG Research,,2026-05-06,2000.0,RV,50.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Cygnal (R),R,2026-05-06,1500.0,LV,49.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Focaldata/Financial Times,,2026-05-05,3017.0,RV,52.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 HarrisX/Forbes,,2026-05-05,1891.0,LV,48.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Focaldata/Financial Times,,2026-05-05,3017.0,RV,52.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 CNN/SSRS,,2026-05-04,,RV,45.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Economist/YouGov,,2026-05-04,1406.0,RV,44.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2026-05-03,2201.0,RV,46.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Marist University,,2026-04-30,1155.0,RV,52.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Big Data Poll (R),R,2026-04-28,2874.0,LV,50.0,39.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Washington Post/ABC News/Ipsos,,2026-04-28,2059.0,RV,49.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Morning Consult,,2026-04-27,2201.0,RV,45.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Big Data Poll (R),R,2026-04-28,2874.0,LV,50.0,39.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Economist/YouGov,,2026-04-27,1645.0,RV,46.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Reuters/Ipsos,,2026-04-27,1014.0,RV,41.0,37.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Public Opinion Strategies (R),R,2026-04-27,1000.0,RV,44.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Morning Consult,,2026-04-27,2201.0,RV,45.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Emerson College,,2026-04-26,1000.0,LV,50.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Harvard/Harris Poll/HarrisX,,2026-04-26,2745.0,RV,50.0,50.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Clarity Campaign Labs (D),D,2026-04-24,1000.0,LV,50.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Quantus Insights (R),R,2026-04-23,1452.0,LV,47.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Argument/Verasight,,2026-04-23,1516.0,RV,53.0,47.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-The Economist/YouGov,,2026-04-20,1549.0,RV,45.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Reuters/Ipsos,,2026-04-20,3577.0,RV,41.0,38.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Echelon Insights,,2026-04-20,1012.0,LV,50.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Beacon Research (D)/ Shaw & Co. Research (R),D,2026-04-20,1001.0,RV,52.0,47.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+The Economist/YouGov,,2026-04-20,1549.0,RV,45.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Echelon Insights,,2026-04-20,1012.0,LV,50.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2026-04-19,27869.0,RV,45.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 KFF,,2026-04-19,1107.0,RV,43.0,34.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 John Zogby Strategies,,2026-04-18,1001.0,LV,48.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
@@ -249,42 +256,42 @@ McLaughlin & Associates (R),R,2026-04-15,1000.0,LV,47.0,43.0,https://en.wikipedi
 Strength In Numbers/Verasight,,2026-04-14,1386.0,RV,50.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Survey 160,,2026-04-13,1539.0,RV,47.0,37.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2026-04-12,12505.0,RV,46.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-RMG Research,,2026-04-09,2000.0,RV,49.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2026-04-09,2200.0,RV,46.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Tavern Research (D),D,2026-04-09,502.0,LV,44.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Echelon Insights,,2026-04-09,2880.0,LV,50.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+RMG Research,,2026-04-09,2000.0,RV,49.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Tavern Research (D),D,2026-04-09,502.0,LV,44.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Economist/YouGov,,2026-04-06,1558.0,RV,44.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2026-04-05,12505.0,RV,45.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2026-04-04,2203.0,RV,45.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Cygnal (R),R,2026-04-03,1500.0,LV,49.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-UMass Lowell/YouGov,,2026-03-30,1000.0,A,38.0,35.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 CNN/SSRS,,2026-03-30,951.0,RV,48.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+UMass Lowell/YouGov,,2026-03-30,1000.0,A,38.0,35.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Quantus Insights (R),R,2026-03-26,1472.0,LV,47.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Harvard/Harris Poll/HarrisX,,2026-03-26,,LV,52.0,48.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Big Data Poll (R),R,2026-03-24,3003.0,RV,48.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-The Economist/YouGov,,2026-03-23,1501.0,RV,45.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Rasmussen Reports (R),R,2026-03-23,2222.0,LV,45.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Yale Youth Poll,,2026-03-23,3429.0,RV,46.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+The Economist/YouGov,,2026-03-23,1501.0,RV,45.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Quinnipiac University,,2026-03-23,1191.0,RV,51.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2026-03-22,26406.0,RV,45.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Reuters/Ipsos,,2026-03-22,985.0,RV,40.0,38.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Impact Research (D)/ BSP Research (D),D,2026-03-20,1000.0,LV,45.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Reuters/Ipsos,,2026-03-19,1206.0,RV,40.0,37.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Quantus Insights (R),R,2026-03-18,1064.0,LV,47.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Strength In Numbers/Verasight,,2026-03-18,1370.0,RV,49.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 John Zogby Strategies,,2026-03-18,1000.0,LV,46.0,46.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Quantus Insights (R),R,2026-03-18,1064.0,LV,47.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-The Winston Group (R),R,2026-03-17,1000.0,RV,49.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Argument/Verasight,,2026-03-17,1519.0,RV,54.0,46.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Emerson College,,2026-03-17,1000.0,LV,49.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-The Economist/YouGov,,2026-03-16,1427.0,RV,43.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Yahoo News/YouGov,,2026-03-16,1147.0,RV,44.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Morning Consult,,2026-03-16,2201.0,RV,48.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+The Winston Group (R),R,2026-03-17,1000.0,RV,49.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Echelon Insights,,2026-03-16,1033.0,LV,49.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+The Economist/YouGov,,2026-03-16,1427.0,RV,43.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Morning Consult,,2026-03-16,2201.0,RV,48.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Yahoo News/YouGov,,2026-03-16,1147.0,RV,44.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Survey 160,,2026-03-15,1546.0,RV,48.0,38.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2026-03-15,2663.0,RV,45.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Focaldata,,2026-03-10,1456.0,RV,50.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-The Economist/YouGov,,2026-03-09,1403.0,RV,45.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 McLaughlin & Associates (R),R,2026-03-09,1000.0,LV,47.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+The Economist/YouGov,,2026-03-09,1403.0,RV,45.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2026-03-08,25948.0,RV,45.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Clarity Campaign Labs (D),D,2026-03-07,1004.0,LV,47.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 RMG Research,,2026-03-05,2000.0,RV,46.0,46.0,https://en.wikipedia.org/wiki/2026_United_States_elections
@@ -299,29 +306,29 @@ I&I/TIPP Insights (R),R,2026-02-27,1264.0,RV,46.0,44.0,https://en.wikipedia.org/
 CBS News/YouGov,,2026-02-27,1523.0,RV,45.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Harvard/Harris Poll/HarrisX,,2026-02-26,1999.0,RV,50.0,50.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Cygnal (R),R,2026-02-26,1048.0,LV,48.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Echelon Insights,,2026-02-23,1002.0,LV,50.0,46.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-GrayHouse (R),R,2026-02-23,1394.0,RV,43.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Pennsylvania State University/YouGov,,2026-02-23,824.0,LV,42.0,37.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Reuters/Ipsos,,2026-02-23,3686.0,RV,40.0,38.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Economist/YouGov,,2026-02-23,1402.0,RV,45.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Morning Consult,,2026-02-22,2202.0,RV,46.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Global Strategy Group (D),D,2026-02-22,1051.0,LV,48.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Pennsylvania State University/YouGov,,2026-02-23,824.0,LV,42.0,37.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Echelon Insights,,2026-02-23,1002.0,LV,50.0,46.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+GrayHouse (R),R,2026-02-23,1394.0,RV,43.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Emerson College,,2026-02-22,1000.0,LV,50.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Global Strategy Group (D),D,2026-02-22,1051.0,LV,48.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Morning Consult,,2026-02-22,2202.0,RV,46.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Strength In Numbers/Verasight,,2026-02-20,1401.0,RV,52.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Talker Research,,2026-02-19,1000.0,A,42.0,36.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 BGSU/YouGov,,2026-02-18,1200.0,RV,49.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Big Data Poll (R),R,2026-02-18,1805.0,LV,50.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Washington Post/ABC News/Ipsos,,2026-02-17,2087.0,RV,47.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2026-02-16,2200.0,RV,45.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Reuters/Ipsos,,2026-02-16,846.0,RV,41.0,37.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Economist/YouGov,,2026-02-16,1509.0,RV,47.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Reuters/Ipsos,,2026-02-16,846.0,RV,41.0,37.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Quantus Insights (R),R,2026-02-13,1515.0,LV,48.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Yahoo News/YouGov,,2026-02-12,1149.0,RV,44.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 RMG Research,,2026-02-12,2000.0,RV,45.0,47.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-The Argument/Verasight,,2026-02-10,3003.0,RV,53.0,47.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Yahoo News/YouGov,,2026-02-12,1149.0,RV,44.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Focaldata,,2026-02-10,,LV,51.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Morning Consult,,2026-02-09,2200.0,RV,45.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+The Argument/Verasight,,2026-02-10,3003.0,RV,53.0,47.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Economist/YouGov,,2026-02-09,1549.0,RV,44.0,38.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Morning Consult,,2026-02-09,2200.0,RV,45.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2026-02-08,29303.0,RV,45.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 John Zogby Strategies,,2026-02-05,1000.0,LV,47.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Cygnal (R),R,2026-02-04,1500.0,LV,48.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
@@ -329,36 +336,36 @@ The Economist/YouGov,,2026-02-02,1501.0,RV,44.0,40.0,https://en.wikipedia.org/wi
 Morning Consult,,2026-02-01,2201.0,RV,47.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Public Policy Polling (D),D,2026-01-30,652.0,RV,48.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Harvard/Harris Poll/HarrisX,,2026-01-29,,LV,52.0,48.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-I&I/TIPP Insights (R),R,2026-01-28,1126.0,RV,45.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Marquette University Law School,,2026-01-28,577.0,LV,52.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Cygnal (R),R,2026-01-28,1004.0,LV,48.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Marquette University Law School,,2026-01-28,577.0,LV,52.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+I&I/TIPP Insights (R),R,2026-01-28,1126.0,RV,45.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Argument/Verasight,,2026-01-27,1515.0,RV,52.0,48.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 McLaughlin & Associates (R),R,2026-01-27,1000.0,RV,46.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Echelon Insights,,2026-01-26,1029.0,LV,49.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-The Economist/YouGov,,2026-01-26,1519.0,RV,43.0,38.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Beacon Research (D)/ Shaw & Co. Research (R),D,2026-01-26,1005.0,RV,52.0,46.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+The Economist/YouGov,,2026-01-26,1519.0,RV,43.0,38.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Reuters/Ipsos,,2026-01-25,906.0,RV,41.0,37.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2026-01-25,2201.0,RV,45.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Big Data Poll (R),R,2026-01-24,2909.0,LV,48.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Clarity Campaign Labs (D),D,2026-01-22,1147.0,LV,51.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Quantus Insights (R),R,2026-01-22,1000.0,RV,47.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Clarity Campaign Labs (D),D,2026-01-22,1147.0,LV,51.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Strength In Numbers/Verasight,,2026-01-20,1352.0,RV,51.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 KFF,,2026-01-20,1141.0,RV,49.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Emerson College,,2026-01-19,1000.0,LV,48.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Economist/YouGov,,2026-01-19,1717.0,RV,43.0,39.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2026-01-18,2201.0,RV,45.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 New York Times/Siena College,,2026-01-17,1625.0,RV,48.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Public Policy Polling (D),D,2026-01-14,597.0,RV,50.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Rasmussen Reports (R),R,2026-01-14,2273.0,LV,47.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Impact Research (D)/ National Research Inc. (R),D,2026-01-13,1500.0,RV,47.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Public Policy Polling (D),D,2026-01-14,597.0,RV,50.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Reuters/Ipsos,,2026-01-13,941.0,RV,40.0,38.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Morning Consult,,2026-01-12,2201.0,RV,46.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-The Winston Group (R),R,2026-01-12,1000.0,RV,46.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-CNN/SSRS,,2026-01-12,968.0,RV,46.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Yahoo News/YouGov,,2026-01-12,1148.0,RV,45.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Impact Research (D)/ National Research Inc. (R),D,2026-01-13,1500.0,RV,47.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Economist/YouGov,,2026-01-12,1433.0,RV,44.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Cygnal (R),R,2026-01-08,1500.0,LV,48.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Morning Consult,,2026-01-12,2201.0,RV,46.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+CNN/SSRS,,2026-01-12,968.0,RV,46.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+The Winston Group (R),R,2026-01-12,1000.0,RV,46.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Yahoo News/YouGov,,2026-01-12,1148.0,RV,45.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 RMG Research,,2026-01-08,2000.0,RV,44.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Cygnal (R),R,2026-01-08,1500.0,LV,48.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Economist/YouGov,,2026-01-05,1386.0,RV,45.0,39.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2026-01-04,2201.0,RV,45.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Bullfinch Group,,2026-01-01,1000.0,RV,44.0,33.0,https://en.wikipedia.org/wiki/2026_United_States_elections
@@ -366,39 +373,39 @@ The Economist/YouGov,,2025-12-29,1417.0,RV,42.0,38.0,https://en.wikipedia.org/wi
 Big Data Poll (R),R,2025-12-28,3412.0,LV,48.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Economist/YouGov,,2025-12-22,1424.0,RV,43.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2025-12-21,20240.0,RV,45.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-McLaughlin & Associates (R),R,2025-12-19,1000.0,RV,46.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 AtlasIntel,,2025-12-19,2315.0,A,54.0,38.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+McLaughlin & Associates (R),R,2025-12-19,1000.0,RV,46.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Fabrizio Ward (R),R,2025-12-17,1000.0,RV,45.0,38.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Quantus Insights (R),R,2025-12-17,1000.0,RV,43.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Reuters/Ipsos,,2025-12-15,775.0,RV,40.0,36.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Quinnipiac University,,2025-12-15,1035.0,RV,47.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Echelon Insights,,2025-12-15,1011.0,LV,48.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Emerson College,,2025-12-15,1000.0,RV,44.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Reuters/Ipsos,,2025-12-15,775.0,RV,40.0,36.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2025-12-15,2201.0,RV,45.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Emerson College,,2025-12-15,1000.0,RV,44.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Economist/YouGov,,2025-12-15,1451.0,RV,43.0,39.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Quinnipiac University,,2025-12-15,1035.0,RV,47.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Big Data Poll (R),R,2025-12-12,3004.0,RV,47.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Clarity Campaign Labs (D),D,2025-12-11,1000.0,LV,49.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Argument/Verasight,,2025-12-11,,LV,52.0,48.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-The Economist/YouGov,,2025-12-08,1379.0,RV,42.0,37.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Hart Research Associates (D)/ Public Opinion Strategies (R),D,2025-12-08,800.0,RV,50.0,46.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-GrayHouse (R),R,2025-12-08,2058.0,RV,45.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Reuters/Ipsos,,2025-12-08,3521.0,RV,40.0,39.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Hart Research Associates (D)/ Public Opinion Strategies (R),D,2025-12-08,800.0,RV,50.0,46.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+The Economist/YouGov,,2025-12-08,1379.0,RV,42.0,37.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+GrayHouse (R),R,2025-12-08,2058.0,RV,45.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Cygnal (R),R,2025-12-07,1500.0,LV,48.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2025-12-07,2201.0,RV,46.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Quantus Insights (R),R,2025-12-05,1000.0,RV,44.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 RMG Research,,2025-12-04,2000.0,RV,41.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Big Data Poll (R),R,2025-12-01,2008.0,RV,44.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Economist/YouGov,,2025-12-01,1452.0,RV,45.0,39.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Big Data Poll (R),R,2025-12-01,2008.0,RV,44.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2025-11-30,2200.0,RV,45.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 GBAO (D)/Third Way (D),D,2025-11-26,2000.0,RV,48.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Bullfinch Group,,2025-11-25,1000.0,RV,41.0,35.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-McLaughlin & Associates (R),R,2025-11-24,1000.0,RV,45.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Economist/YouGov,,2025-11-24,1511.0,RV,39.0,32.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+McLaughlin & Associates (R),R,2025-11-24,1000.0,RV,45.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2025-11-23,2200.0,RV,45.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Rasmussen Reports (R),R,2025-11-23,2410.0,LV,45.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 J.L. Partners (R),R,2025-11-20,797.0,LV,50.0,46.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-The Economist/YouGov,,2025-11-17,1380.0,RV,43.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Argument/Verasight,,2025-11-17,,LV,54.0,46.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+The Economist/YouGov,,2025-11-17,1380.0,RV,43.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Echelon Insights,,2025-11-17,1051.0,LV,49.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2025-11-16,2200.0,RV,46.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 High Point University,,2025-11-14,1004.0,A,46.0,36.0,https://en.wikipedia.org/wiki/2026_United_States_elections
@@ -413,19 +420,19 @@ Emerson College,,2025-11-04,1000.0,RV,44.0,40.0,https://en.wikipedia.org/wiki/20
 The Economist/YouGov,,2025-11-03,1470.0,RV,44.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 CNN/SSRS,,2025-10-30,945.0,RV,47.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 RMG Research,,2025-10-30,2000.0,RV,42.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Strength In Numbers/Verasight,,2025-10-29,1352.0,LV,49.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 NewsNation/DDHQ,,2025-10-29,1159.0,LV,47.0,47.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Washington Post/ABC News/Ipsos,,2025-10-28,2203.0,RV,46.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Strength In Numbers/Verasight,,2025-10-29,1352.0,LV,49.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Big Data Poll (R),R,2025-10-28,2984.0,RV,43.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Hart Research Associates (D)/ Public Opinion Strategies (R),D,2025-10-28,1000.0,RV,50.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-The Economist/YouGov,,2025-10-27,1472.0,RV,43.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Washington Post/ABC News/Ipsos,,2025-10-28,2203.0,RV,46.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Yahoo News/YouGov,,2025-10-27,1197.0,RV,45.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 McLaughlin & Associates (R),R,2025-10-27,1000.0,RV,44.0,46.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+The Economist/YouGov,,2025-10-27,1472.0,RV,43.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Clarity Campaign Labs (D),D,2025-10-23,1047.0,RV,47.0,46.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-UMass Lowell/YouGov,,2025-10-20,1000.0,A,38.0,35.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Echelon Insights,,2025-10-20,1010.0,LV,48.0,46.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Quinnipiac University,,2025-10-20,1327.0,RV,50.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Economist/YouGov,,2025-10-20,1447.0,RV,45.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Quinnipiac University,,2025-10-20,1327.0,RV,50.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Echelon Insights,,2025-10-20,1010.0,LV,48.0,46.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+UMass Lowell/YouGov,,2025-10-20,1000.0,A,38.0,35.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2025-10-19,2200.0,RV,46.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Argument/Verasight,,2025-10-16,1530.0,RV,51.0,49.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Emerson College,,2025-10-14,1000.0,RV,44.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
@@ -437,16 +444,16 @@ Cygnal (R),R,2025-10-08,1500.0,LV,48.0,45.0,https://en.wikipedia.org/wiki/2026_U
 Noble Predictive Insights/ The Center Square,,2025-10-06,2565.0,RV,45.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Economist/YouGov,,2025-10-06,1486.0,RV,44.0,39.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Morning Consult,,2025-10-05,2200.0,RV,46.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Yahoo News/YouGov,,2025-09-29,1126.0,RV,44.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Economist/YouGov,,2025-09-29,1517.0,RV,44.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Yahoo News/YouGov,,2025-09-29,1126.0,RV,44.0,40.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 New York Times/Siena College,,2025-09-27,1313.0,RV,47.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 RMG Research,,2025-09-24,2000.0,RV,41.0,43.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Echelon Insights,,2025-09-22,1071.0,LV,47.0,46.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-The Economist/YouGov,,2025-09-22,1392.0,RV,45.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 McLaughlin & Associates (R),R,2025-09-22,1000.0,RV,41.0,47.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+The Economist/YouGov,,2025-09-22,1392.0,RV,45.0,42.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 Strength In Numbers/Verasight,,2025-09-19,1268.0,LV,50.0,45.0,https://en.wikipedia.org/wiki/2026_United_States_elections
-Normington Petts (D)/Third Way (D),D,2025-09-16,800.0,,51.0,49.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 AtlasIntel,,2025-09-16,1066.0,A,52.0,44.0,https://en.wikipedia.org/wiki/2026_United_States_elections
+Normington Petts (D)/Third Way (D),D,2025-09-16,800.0,,51.0,49.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 The Economist/YouGov,,2025-09-15,1418.0,RV,43.0,41.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 National Association of Independent Pollsters,,2025-09-13,2071.0,LV,47.0,46.0,https://en.wikipedia.org/wiki/2026_United_States_elections
 i360,,2025-09-12,577.0,RV,35.0,32.0,https://en.wikipedia.org/wiki/2026_United_States_elections

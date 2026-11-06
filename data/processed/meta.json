@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-11-05T18:47:09Z",
+  "fetched_at": "2026-11-06T03:29:19Z",
   "national_pres_margin_2024": -1.5001077368645404,
   "national_house_margin_2024": -2.635,
   "electit_chambers": {
@@ -1813,7 +1813,8 @@
     }
   },
   "warnings": [
-    "FEC fundraising skipped: set FEC_API_KEY to include it (small prior adjustment)."
+    "FEC fundraising skipped: set FEC_API_KEY to include it (small prior adjustment).",
+    "Dated generic-ballot polls unavailable (history limited to live runs): 'end_date'"
   ],
   "sources": [
     {
@@ -1843,10 +1844,6 @@
     {
       "name": "Generic-ballot averages: Decision Desk HQ, FiftyPlusOne, NBC News, RealClearPolitics, Silver Bulletin",
       "url": "https://en.wikipedia.org/wiki/2026_United_States_House_of_Representatives_elections"
-    },
-    {
-      "name": "Generic-ballot polls (545, each cited to its pollster), via Wikipedia",
-      "url": "https://en.wikipedia.org/wiki/2026_United_States_elections"
     },
     {
       "name": "Harvard Dataverse: MIT Election Lab: U.S. President 1976-",

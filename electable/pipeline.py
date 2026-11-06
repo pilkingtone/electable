@@ -560,3 +560,106 @@ def _json_default(o):
     if isinstance(o, (np.bool_,)):
         return bool(o)
     return str(o)
+
+
+# ====================================================================== results
+
+FINAL_DIR = PROCESSED_DIR.parent / "final"
+
+
+def results(out_dir: Path = WEB_DATA_DIR, final_dir: Path = FINAL_DIR, max_age_hours: float = 1) -> dict:
+    """After the election: keep the final forecast frozen and score it against results.
+
+    Writes web/data/results.json and restores the frozen forecast.json and
+    history.json from data/final/ (the last run before polls closed).
+    """
+    from .sources import results as R
+    rc = races_config()
+    final = json.loads((final_dir / "forecast.json").read_text())
+    warnings, races = [], {}
+
+    for ch in ("senate", "governor"):
+        for r in final["chambers"][ch]["races"]:
+            seat = next(s for s in rc[ch]["seats_up"] if s["state"] == r["state"])
+            title = wikipedia.page_title(ch, r["state"], seat.get("special", False))
+            try:
+                res = R.parse_statewide(wikipedia.fetch_html(title, max_age_hours), r["dem"], r["rep"])
+            except Exception as e:  # noqa: BLE001
+                warnings.append(f"{r['id']}: results fetch failed: {e}")
+                continue
+            if res:
+                races[r["id"]] = {**res, "source_url": wikipedia.page_url(title)}
+    try:
+        house_races, house_totals = R.parse_house(wikipedia.fetch_html(wikipedia.HOUSE_TITLE, max_age_hours))
+        for rid, res in house_races.items():
+            races[rid] = {**res, "source_url": wikipedia.page_url(wikipedia.HOUSE_TITLE)}
+    except Exception as e:  # noqa: BLE001
+        house_totals = {}
+        warnings.append(f"House results fetch failed: {e}")
+
+    chambers = {}
+    for ch in CHAMBERS:
+        c = final["chambers"].get(ch, {})
+        if c.get("status") != "ok":
+            continue
+        thr, total = c.get("threshold"), {"senate": 100, "house": 435, "governor": 50}[ch]
+        dem = c.get("base_dem", 0)
+        rep = c.get("base_rep", 0)
+        called = pending = other = 0
+        scored = []
+        for r in c["races"]:
+            res = races.get(r["id"])
+            if r.get("uncontested") in ("D", "R") and not (res and res.get("called")):
+                # Only one party on the ballot (e.g. a California top-two race between two
+                # Democrats): the winning party is certain whichever candidate wins.
+                res = races[r["id"]] = {**(res or {}), "called": True, "winner": r["uncontested"],
+                                        "winner_name": None, "status": "One party on the ballot"}
+            if not res or not res.get("called"):
+                pending += 1
+                continue
+            called += 1
+            won_dem_side = res["winner"] == "D"
+            if won_dem_side and r.get("dem_label", "D") == "D":
+                dem += 1
+            elif res["winner"] == "R":
+                rep += 1
+            else:
+                other += 1
+            scored.append({"id": r["id"], "p_dem": r["p_dem"], "won": won_dem_side,
+                           "forecast": r["median"], "actual": res.get("margin")})
+        right = sum((s["p_dem"] >= 0.5) == s["won"] for s in scored)
+        margins = [s for s in scored if s["actual"] is not None]
+        errs = [s["actual"] - s["forecast"] for s in margins]
+        control = ("D" if thr and dem >= thr else
+                   "R" if thr and rep >= total - thr + 1 else None)
+        chambers[ch] = {
+            "called": called, "pending": pending, "dem_won": dem, "rep_won": rep, "other_won": other,
+            "control": control, "forecast_p_dem": c.get("p_dem_control"),
+            "forecast_mean_dem": c["dem_seats"]["mean"],
+            "calls_right": right, "calls_scored": len(scored),
+            "misses": [{"id": s["id"], "p_dem": s["p_dem"], "winner": "D" if s["won"] else "R"}
+                       for s in scored if (s["p_dem"] >= 0.5) != s["won"]],
+            "brier": float(np.mean([(s["p_dem"] - s["won"]) ** 2 for s in scored])) if scored else None,
+            "margin_n": len(margins),
+            "margin_bias": float(np.mean(errs)) if errs else None,     # + = Democrats beat the forecast
+            "margin_mae": float(np.mean(np.abs(errs))) if errs else None,
+        }
+    if house_totals and "house" in chambers:
+        chambers["house"]["reported"] = house_totals
+
+    out = {"generated_at": datetime.now(timezone.utc).replace(tzinfo=None).isoformat(timespec="seconds") + "Z",
+           "forecast_generated_at": final["generated_at"],
+           "source": "Wikipedia race articles, citing the Associated Press and state election officials",
+           "races": races, "chambers": chambers, "warnings": warnings,
+           # Every race in every chamber called: the scorecard is final.
+           "complete": bool(chambers) and all(c["pending"] == 0 for c in chambers.values())}
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "results.json").write_text(_dumps(out))
+    for name in ("forecast.json", "history.json"):
+        (out_dir / name).write_text((final_dir / name).read_text())
+    for ch, s in chambers.items():
+        _log(f"{ch}: called {s['called']}, D {s['dem_won']} R {s['rep_won']}, control {s['control']}, "
+             f"calls right {s['calls_right']}/{s['calls_scored']}")
+    for w in warnings:
+        _log("WARNING " + w)
+    return out

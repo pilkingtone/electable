@@ -259,3 +259,54 @@ def test_governor_prior_uses_ratings():
     with_r = model.race_prior(row, nat, cfg)
     row["ratings"] = []
     assert with_r < model.race_prior(row, nat, cfg) - 10
+
+
+# ------------------------------------------------------------ news channel
+
+from datetime import datetime, timezone
+from electable import news
+
+RSS = """<?xml version="1.0"?><rss version="2.0"><channel><title>T</title>
+<item><title>Democrats flip the House as votes are counted</title><link>https://example.com/a</link>
+<pubDate>Wed, 04 Nov 2026 10:00:00 GMT</pubDate><description>&lt;p&gt;The &lt;b&gt;election&lt;/b&gt; results so far.&lt;/p&gt;</description></item>
+<item><title>Recipe of the week: soup</title><link>https://example.com/b</link><pubDate>Wed, 04 Nov 2026 09:00:00 GMT</pubDate></item>
+<item><title>Old Senate story</title><link>https://example.com/c</link><pubDate>Thu, 01 Oct 2026 09:00:00 GMT</pubDate></item>
+<item><title>No link poll story</title><pubDate>Wed, 04 Nov 2026 09:00:00 GMT</pubDate></item>
+</channel></rss>"""
+
+ATOM_FEED = """<?xml version="1.0"?><feed xmlns="http://www.w3.org/2005/Atom">
+<entry><title>DEMOCRATS FLIP THE HOUSE as votes are counted</title><link href="https://example.org/x"/>
+<updated>2026-11-04T08:00:00Z</updated><summary>Same story, other outlet.</summary></entry>
+<entry><title>Governor race heads to recount</title><link rel="alternate" href="https://example.org/y"/>
+<updated>2026-11-05T08:00:00Z</updated></entry></feed>"""
+
+
+def test_news_parse_filter_dedupe():
+    raw = news.parse_feed(RSS, "Outlet A") + news.parse_feed(ATOM_FEED, "Outlet B")
+    assert all(i["url"].startswith("https://") for i in raw)
+    assert raw[0]["summary"] == "The election results so far."
+    cfg = {"keywords": ["election", "house", "senate", "governor", "recount", "poll"], "max_age_days": 14}
+    out = news.compile_items(raw, cfg, datetime(2026, 11, 6, tzinfo=timezone.utc))
+    assert [i["title"] for i in out] == ["Governor race heads to recount",
+                                         "Democrats flip the House as votes are counted"]
+    assert out[1]["source"] == "Outlet A"          # newest copy of a duplicate headline wins
+
+
+def test_news_rejects_entity_expansion():
+    bomb = '<?xml version="1.0"?><!DOCTYPE r [<!ENTITY a "aaaa"><!ENTITY b "&a;&a;">]><rss><channel><item><title>&b;</title></item></channel></rss>'
+    with pytest.raises(Exception):
+        news.parse_feed(bomb, "X")
+
+
+def test_results_winner_matches_nominee_not_party_link():
+    from electable.sources import results as R
+    html = """<table class="infobox"><tbody>
+    <tr><td><table><tbody>
+    <tr><th>Nominee</th><td>Ed Markey</td><td>John Deaton</td></tr>
+    <tr><th>Party</th><td>Democratic</td><td>Republican</td></tr>
+    <tr><th>Popular vote</th><td>2,000,000</td><td>1,000,000</td></tr>
+    <tr><th>Percentage</th><td>66.7%</td><td>33.3%</td></tr></tbody></table></td></tr>
+    <tr><td><b>Elected U.S. senator</b><br/><p><a href="/wiki/Democratic_Party_(United_States)">Democratic</a> Ed Markey</p></td></tr>
+    </tbody></table>"""
+    out = R.parse_statewide(html, "Ed Markey", "John Deaton")
+    assert out["called"] and out["winner"] == "D" and round(out["margin"], 1) == 33.3

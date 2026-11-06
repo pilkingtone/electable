@@ -28,6 +28,7 @@
         <button role="tab" data-chamber="senate">Senate</button>
         <button role="tab" data-chamber="house">House</button>
         <button role="tab" data-chamber="governor">Governors</button>
+        <button role="tab" data-chamber="news">News</button>
       </div>
       <div class="chips" id="panel-chips" aria-label="Panels">
         <button data-panel="seats">Seats</button>
@@ -42,6 +43,32 @@
 
     <div id="empty" class="banner" hidden></div>
 
+    <div id="results-banner" class="banner" hidden></div>
+
+    <section class="card" id="panel-results" hidden>
+      <h2>Results vs. the final forecast</h2>
+      <p class="sub" id="results-sub"></p>
+      <div class="tiles small" id="results-tiles"></div>
+      <div id="results-misses"></div>
+    </section>
+
+    <section id="news-view" hidden>
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <h2>News</h2>
+            <p class="sub" id="news-sub"></p>
+          </div>
+          <div class="filters">
+            <label class="check" for="news-source">Outlet
+              <select id="news-source"><option value="">All outlets</option></select>
+            </label>
+          </div>
+        </div>
+        <ol class="news-list" id="news-list"></ol>
+      </div>
+    </section>
+
     <section class="panel" id="panel-seats" data-panel="seats">
       <div class="tiles" id="tiles"></div>
       <div class="card">
@@ -55,7 +82,7 @@
       <div class="card-head">
         <div>
           <h2>Race-by-race forecast</h2>
-          <p class="sub">Dot = forecast margin; bar = 80% range. Sorted by closeness.</p>
+          <p class="sub" id="races-sub">Dot = forecast margin; bar = 80% range. Sorted by closeness.</p>
         </div>
         <div class="filters">
           <input type="search" id="race-search" placeholder="Filter by state or name" aria-label="Filter races">

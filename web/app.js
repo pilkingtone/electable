@@ -4,17 +4,20 @@
   "use strict";
 
   const CHAMBERS = ["senate", "house", "governor"];
+  const VIEWS = [...CHAMBERS, "news"];
   const PANELS = ["seats", "races", "polls", "tipping", "history", "errors", "electit"];
   const DEFAULT_PANELS = ["seats", "races", "polls", "tipping", "history", "errors", "electit"];
   const STATE_NAMES = {AL:"Alabama",AK:"Alaska",AZ:"Arizona",AR:"Arkansas",CA:"California",CO:"Colorado",CT:"Connecticut",DE:"Delaware",FL:"Florida",GA:"Georgia",HI:"Hawaii",ID:"Idaho",IL:"Illinois",IN:"Indiana",IA:"Iowa",KS:"Kansas",KY:"Kentucky",LA:"Louisiana",ME:"Maine",MD:"Maryland",MA:"Massachusetts",MI:"Michigan",MN:"Minnesota",MS:"Mississippi",MO:"Missouri",MT:"Montana",NE:"Nebraska",NV:"Nevada",NH:"New Hampshire",NJ:"New Jersey",NM:"New Mexico",NY:"New York",NC:"North Carolina",ND:"North Dakota",OH:"Ohio",OK:"Oklahoma",OR:"Oregon",PA:"Pennsylvania",RI:"Rhode Island",SC:"South Carolina",SD:"South Dakota",TN:"Tennessee",TX:"Texas",UT:"Utah",VT:"Vermont",VA:"Virginia",WA:"Washington",WV:"West Virginia",WI:"Wisconsin",WY:"Wyoming"};
   const CHAMBER_LABEL = {senate: "Senate", house: "House", governor: "Governors"};
   const UNIT = {senate: "seats", house: "seats", governor: "governorships"};
 
-  const state = {historyDays: 30, electitSet: null, chamber: "senate", panels: new Set(DEFAULT_PANELS), forecast: null, history: [], calibration: null};
+  const state = {results: null, news: null, newsSource: "", historyDays: 30, electitSet: null, chamber: "senate", panels: new Set(DEFAULT_PANELS), forecast: null, history: [], calibration: null};
   const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
   const pct = (p) => p == null ? "—" : p > 0.99 ? ">99%" : p < 0.01 ? "<1%" : Math.round(p * 100) + "%";
   const margin = (m) => m == null ? "—" : (m >= 0 ? "D+" : "R+") + Math.abs(m).toFixed(1);
   const fmtDate = (s) => new Date(s + "T12:00:00").toLocaleDateString(undefined, {month: "short", day: "numeric", year: "numeric"});
+  const fmtTime = (iso) => { const d = new Date(iso); return isNaN(d) ? "" : d.toLocaleString(undefined, {month: "short", day: "numeric", hour: "numeric", minute: "2-digit", timeZoneName: "short"}); };
+  const resultOf = (r) => (state.results && state.results.races[r.id]) || null;
   const raceLabel = (r) => r.district != null ? `${r.state}-${String(r.district).padStart(2, "0")}` : r.state;
   const raceById = (id) => {
     for (const ch of CHAMBERS) {
@@ -28,12 +31,13 @@
   /* ---------------- routing ---------------- */
   function readHash() {
     const toks = location.hash.replace(/^#/, "").split(/[_-]/).filter(Boolean);
-    const ch = toks.find((t) => CHAMBERS.includes(t));
+    const ch = toks.find((t) => VIEWS.includes(t));
     const ps = toks.filter((t) => PANELS.includes(t));
     if (ch) state.chamber = ch;
     if (ps.length) state.panels = new Set(ps);
   }
   function writeHash() {
+    if (state.chamber === "news") { history.replaceState(null, "", "#news"); return; }
     const toks = PANELS.filter((p) => state.panels.has(p)).concat(state.chamber);
     history.replaceState(null, "", "#" + toks.join("-"));
   }
@@ -87,7 +91,7 @@
     el.replaceChildren();
     const days = Math.ceil((new Date(f.election_date + "T00:00:00") - new Date()) / 864e5);
     const a = document.createElement("div");
-    a.append("Updated ");
+    a.append(state.results ? "Final forecast " : "Updated ");
     // generated_at is the build time in UTC; show it in the visitor's own time zone.
     const built = f.generated_at ? new Date(f.generated_at) : null;
     const s = document.createElement("strong");
@@ -97,7 +101,8 @@
     if (built && !isNaN(built)) { const t = document.createElement("time"); t.dateTime = f.generated_at; t.appendChild(s); a.appendChild(t); }
     else a.appendChild(s);
     const b = document.createElement("div");
-    b.textContent = days > 0 ? `${days} day${days === 1 ? "" : "s"} until Nov 3, 2026` : "Election day: Nov 3, 2026";
+    b.textContent = state.results ? `Results updated ${fmtTime(state.results.generated_at)}`
+      : days > 0 ? `${days} day${days === 1 ? "" : "s"} until Nov 3, 2026` : "Election day: Nov 3, 2026";
     el.append(a, b);
     if (f.national) {
       const c = document.createElement("div");
@@ -124,19 +129,20 @@
     const ch = state.chamber, s = c.dem_seats;
     const pD = c.p_dem_control, pR = 1 - pD;
     const what = ch === "governor" ? "a majority of governorships" : `the ${CHAMBER_LABEL[ch]}`;
-    tile(el, {label: `Democrats win ${what}`, value: pct(pD), key: css("--dem"), lead: pD >= pR ? "dem" : null,
+    const F = state.results ? "Final forecast: " : "";
+    tile(el, {label: `${F}Democrats win ${what}`, value: pct(pD), key: css("--dem"), lead: pD >= pR ? "dem" : null,
               note: `Needs ${c.threshold} ${UNIT[ch]}`});
-    tile(el, {label: `Republicans ${ch === "governor" ? "keep a majority" : "control"}`, value: pct(pR), key: css("--rep"),
+    tile(el, {label: `${F}Republicans ${ch === "governor" ? "keep a majority" : "control"}`, value: pct(pR), key: css("--rep"),
               lead: pR > pD ? "rep" : null,
               note: ch === "senate" ? "Includes a 50–50 split (VP breaks ties)" : ch === "house" ? "Needs 218 seats" : "Includes a 25–25 split"});
-    tile(el, {label: `Expected Democratic ${UNIT[ch]}`, value: s.mean.toFixed(1),
+    tile(el, {label: `${F}Expected Democratic ${UNIT[ch]}`, value: s.mean.toFixed(1),
               note: `80% range ${s.lo80}–${s.hi80}` + (c.base_dem ? ` · incl. ${c.base_dem} not up` : "")});
     const j = state.forecast.joint;
     if (j && ch !== "governor") {
       const outcomes = [["Democrats control both chambers", j.dem_both], ["Republicans control both chambers", j.rep_both],
         ["Split: Dem House, Rep Senate", j.dem_house_rep_senate], ["Split: Rep House, Dem Senate", j.dem_senate_rep_house]];
       const top = outcomes.reduce((a, b) => b[1] > a[1] ? b : a);
-      tile(el, {label: `Most likely Congress: ${top[0]}`, value: pct(top[1]),
+      tile(el, {label: `${F}Most likely Congress: ${top[0]}`, value: pct(top[1]),
                 note: outcomes.filter((o) => o !== top).map((o) => `${o[0].replace(" chambers", "")} ${pct(o[1])}`).join(" · ")});
     }
   }
@@ -192,9 +198,11 @@
 
   function renderRaces(c) {
     const el = document.getElementById("races-chart");
+    document.getElementById("races-sub").textContent = "Dot = forecast margin; bar = 80% range"
+      + (state.results ? "; black diamond = actual result; ✓/✗ = whether the favorite won." : ". Sorted by closeness.");
     const races = filteredRaces(c);
     if (!races.length) { message(el, "No races match. Tick “Show safe seats” to see every race."); renderRaceTable([]); return; }
-    const rowH = 30, m = {t: 26, r: 64, b: 8};
+    const rowH = 30, m = {t: 26, r: state.results ? 130 : 64, b: 8};
     const w = width(el), labelW = w < 520 ? 110 : 210;
     const h = m.t + rowH * races.length + m.b;
     const svg = svgIn(el, h);
@@ -217,6 +225,13 @@
       .attr("fill", (d) => partyColor(d.median)).attr("stroke", css("--surface")).attr("stroke-width", 2);
     row.append("text").attr("x", w - 4).attr("y", rowH / 2 + 4).attr("text-anchor", "end").attr("class", "label-strong")
       .text((d) => d.p_dem >= 0.5 ? `D ${pct(d.p_dem)}` : `R ${pct(1 - d.p_dem)}`);
+    // Results: a diamond at the actual margin, and whether the favorite won.
+    row.filter((d) => resultOf(d) && resultOf(d).margin != null).append("path")
+      .attr("transform", (d) => `translate(${x(resultOf(d).margin)},${rowH / 2})`)
+      .attr("d", d3.symbol(d3.symbolDiamond, 70)).attr("fill", css("--ink")).attr("stroke", css("--surface")).attr("stroke-width", 1.5);
+    row.filter((d) => resultOf(d) && resultOf(d).called).append("text")
+      .attr("x", w - 58).attr("y", rowH / 2 + 4).attr("text-anchor", "end")
+      .text((d) => ((d.p_dem >= 0.5) === (resultOf(d).winner === "D") ? "✓ " : "✗ ") + (resultOf(d).winner === "D" ? (d.dem_label === "I" ? "I" : "D") : resultOf(d).winner) + " won");
     row.append("rect").attr("class", "hit").attr("width", w).attr("height", rowH).attr("tabindex", 0)
       .on("pointermove", (e, d) => showTip(e, raceTip(d))).on("pointerleave blur", hideTip)
       .on("focus", function (e, d) { focusTip(this, raceTip(d)); });
@@ -232,6 +247,9 @@
     const ex = electitFor(d);
     if (ex) rows.push([ex.p_dem != null ? pct(ex.p_dem) : shareText(ex.dem_share), `ElectIt (Harvard), ${state.electitSet}`]);
     (d.ratings || []).forEach((r) => rows.push([r.rating, r.source]));
+    const res = resultOf(d);
+    if (res) rows.push([res.margin != null ? margin(res.margin) : (res.called ? `${res.winner} won` : "—"),
+      res.called ? `result: ${res.winner_name || res.winner} won` : "result: not yet called"]);
     return rows;
   }
   function renderRaceTable(races) {
@@ -393,6 +411,7 @@
     const ul = document.getElementById("sources"); ul.replaceChildren();
     const src = (state.forecast.sources || []).concat([
       {name: "FiveThirtyEight pollster ratings & historical polls (CC BY 4.0)", url: "https://github.com/fivethirtyeight/data/tree/master/pollster-ratings"}]
+      .concat(state.results ? [{name: `2026 results: ${state.results.source}`, url: "https://en.wikipedia.org/wiki/2026_United_States_elections"}] : [])
       .concat(state.forecast.electit && state.forecast.electit.sets.length
         ? [{name: "ElectIt: King, Ebanks & Katz, Harvard University", url: "https://gking.harvard.edu/electit/"}] : []));
     src.forEach((s) => {
@@ -470,10 +489,102 @@
       .join("td").attr("class", (d) => d[1] ? "num" : null).text((d) => d[0]);
   }
 
+  /* ---------------- results ---------------- */
+  function renderResults(c) {
+    const R = state.results, rc = R && R.chambers[state.chamber], sec = document.getElementById("panel-results");
+    const banner = document.getElementById("results-banner");
+    banner.hidden = !R;
+    if (R) {
+      banner.className = "banner banner-final";
+      banner.textContent = `The election is over. Everything below is Electable's final forecast, published ${fmtTime(R.forecast_generated_at)}, before any polls closed, now checked against results as races are called (${R.source}).`;
+    }
+    sec.hidden = !rc;
+    if (!rc) return;
+    const ch = state.chamber, unit = UNIT[ch], tiles = document.getElementById("results-tiles");
+    tiles.replaceChildren();
+    const who = rc.control === "D" ? "Democrats" : rc.control === "R" ? "Republicans" : null;
+    document.getElementById("results-sub").textContent =
+      `${rc.called} of ${rc.called + rc.pending} races called` +
+      (rc.pending ? `; ${rc.pending} still being counted. Results refresh every 3 hours until every race is called.` : ". These results are final.");
+    tile(tiles, {label: who ? `${who} win the ${CHAMBER_LABEL[ch]}` : `${CHAMBER_LABEL[ch]} control not yet decided`,
+      value: `D ${rc.dem_won} · R ${rc.rep_won}`, lead: rc.control === "D" ? "dem" : rc.control === "R" ? "rep" : null,
+      note: `${unit} so far, incl. those not up` + (rc.other_won ? ` · ${rc.other_won} independent` : "")});
+    tile(tiles, {label: "Final forecast", value: pct(rc.forecast_p_dem),
+      note: `chance of Democratic control · expected ${rc.forecast_mean_dem.toFixed(1)} Dem ${unit}`});
+    tile(tiles, {label: "Favorite won", value: `${rc.calls_right} / ${rc.calls_scored}`,
+      note: rc.brier != null ? `called races · Brier score ${rc.brier.toFixed(3)} (0 is perfect)` : "called races"});
+    if (rc.margin_bias != null) tile(tiles, {label: "Result vs. forecast margin", value: margin(rc.margin_bias),
+      note: `average gap over ${rc.margin_n} races (${rc.margin_bias >= 0 ? "Democrats" : "Republicans"} beat the forecast) · typical miss ${rc.margin_mae.toFixed(1)} pts`});
+    const box = document.getElementById("results-misses"); box.replaceChildren();
+    if (rc.reported && rc.reported.D && rc.reported.R) {
+      const p = document.createElement("p"); p.className = "sub";
+      const v = rc.reported;
+      p.textContent = `Reported totals: Democrats ${v.D.seats ?? "—"} seats, Republicans ${v.R.seats ?? "—"}` +
+        (v.D.pct && v.R.pct ? `; national House vote ${v.D.pct}% to ${v.R.pct}%.` : ".");
+      box.appendChild(p);
+    }
+    if (rc.misses.length) {
+      const h = document.createElement("h3"); h.textContent = `Races the forecast got wrong (${rc.misses.length})`; box.appendChild(h);
+      const ul = document.createElement("ul"); ul.className = "miss-list";
+      rc.misses.sort((a, b) => Math.abs(b.p_dem - 0.5) - Math.abs(a.p_dem - 0.5)).forEach((mm) => {
+        const r = c.races.find((x) => x.id === mm.id), li = document.createElement("li");
+        const fav = mm.p_dem >= 0.5 ? `D ${pct(mm.p_dem)}` : `R ${pct(1 - mm.p_dem)}`;
+        li.textContent = `${r ? raceLabel(r) : mm.id}: forecast ${fav}; ${mm.winner === "D" ? (r && r.dem_label === "I" ? "independent" : "Democrat") : "Republican"} won` + (r ? ` (${mm.winner === "D" ? r.dem : r.rep})` : "");
+        ul.appendChild(li);
+      });
+      box.appendChild(ul);
+    }
+  }
+
+  /* ---------------- news ---------------- */
+  function renderNews() {
+    const N = state.news, list = document.getElementById("news-list"), sel = document.getElementById("news-source");
+    list.replaceChildren();
+    if (!N || !N.items.length) {
+      document.getElementById("news-sub").textContent = "No headlines yet. The news channel refreshes twice a day.";
+      return;
+    }
+    const outlets = [...new Set(N.items.map((i) => i.source))].sort();
+    if (sel.options.length !== outlets.length + 1) {
+      sel.replaceChildren(Object.assign(document.createElement("option"), {value: "", textContent: "All outlets"}),
+        ...outlets.map((o) => Object.assign(document.createElement("option"), {value: o, textContent: o})));
+    }
+    sel.value = state.newsSource;
+    document.getElementById("news-sub").textContent =
+      `Election and politics headlines from ${N.sources.length} outlets across the political spectrum, updated ${fmtTime(N.generated_at)}. Each links to the original article.`;
+    const ago = (iso) => {
+      const m = Math.round((Date.now() - new Date(iso)) / 6e4);
+      return m < 60 ? `${Math.max(m, 1)} min ago` : m < 1440 ? `${Math.round(m / 60)} hr ago` : `${Math.round(m / 1440)} d ago`;
+    };
+    N.items.filter((i) => !state.newsSource || i.source === state.newsSource).forEach((i) => {
+      const li = document.createElement("li"); li.className = "news-item";
+      const meta = document.createElement("div"); meta.className = "news-meta";
+      const src = document.createElement("span"); src.className = "src"; src.textContent = i.source;
+      const t = document.createElement("time"); t.dateTime = i.published; t.textContent = ago(i.published); t.title = fmtTime(i.published);
+      meta.append(src, t);
+      const a = document.createElement("a");
+      if (/^https?:\/\//.test(i.url)) a.href = i.url;
+      a.target = "_blank"; a.rel = "noopener noreferrer"; a.textContent = i.title;
+      li.append(meta, a);
+      if (i.summary) { const p = document.createElement("p"); p.textContent = i.summary; li.appendChild(p); }
+      list.appendChild(li);
+    });
+  }
+
   /* ---------------- main render ---------------- */
   function render() {
     writeHash();
     document.querySelectorAll("#chamber-tabs button").forEach((b) => b.setAttribute("aria-selected", b.dataset.chamber === state.chamber));
+    const isNews = state.chamber === "news";
+    document.getElementById("news-view").hidden = !isNews;
+    document.getElementById("panel-chips").hidden = isNews;
+    document.getElementById("method").hidden = isNews;
+    if (isNews) {
+      ["empty", "results-banner", "panel-results"].forEach((id) => { document.getElementById(id).hidden = true; });
+      document.querySelectorAll("section.panel").forEach((s) => { s.hidden = true; });
+      renderNews();
+      return;
+    }
     document.querySelectorAll("#panel-chips button").forEach((b) => b.setAttribute("aria-pressed", state.panels.has(b.dataset.panel)));
     document.querySelectorAll("section.panel").forEach((s) => { s.hidden = !state.panels.has(s.dataset.panel); });
     const c = state.forecast.chambers[state.chamber];
@@ -484,6 +595,7 @@
       empty.textContent = `No ${CHAMBER_LABEL[state.chamber]} forecast yet (${c ? c.status : "no data"}). See “Data notes” below for what is missing.`;
       document.querySelectorAll("section.panel").forEach((s) => { if (s.dataset.panel !== "errors") s.hidden = true; });
     } else {
+      renderResults(c);
       if (state.panels.has("seats")) { renderTiles(c); renderSeats(c); }
       if (state.panels.has("races")) renderRaces(c);
       if (state.panels.has("polls")) renderPolls(c);
@@ -500,13 +612,14 @@
   async function load() {
     readHash();
     const get = (p) => fetch(p, {cache: "no-cache"}).then((r) => r.ok ? r.json() : null).catch(() => null);
-    const [f, h, cal] = await Promise.all([get("data/forecast.json"), get("data/history.json"), get("data/calibration.json")]);
+    const [f, h, cal, res, nws] = await Promise.all([get("data/forecast.json"), get("data/history.json"),
+      get("data/calibration.json"), get("data/results.json"), get("data/news.json")]);
     if (!f) {
       const e = document.getElementById("empty"); e.hidden = false;
       e.textContent = "No forecast has been built yet. Run: python -m electable all";
       return;
     }
-    Object.assign(state, {forecast: f, history: h || [], calibration: cal});
+    Object.assign(state, {forecast: f, history: h || [], calibration: cal, results: res, news: nws});
     if (f.electit && f.electit.sets && f.electit.sets.length) state.electitSet = f.electit.primary_set || f.electit.sets[0];
     renderMeta(); renderSources(); render();
     document.querySelectorAll("#chamber-tabs button").forEach((b) => b.addEventListener("click", () => { state.chamber = b.dataset.chamber; render(); }));
@@ -517,6 +630,7 @@
     document.querySelectorAll("#history-range button").forEach((b) => b.addEventListener("click", () => {
       state.historyDays = +b.dataset.days; renderHistory();
     }));
+    document.getElementById("news-source").addEventListener("change", (e) => { state.newsSource = e.target.value; renderNews(); });
     document.getElementById("electit-set").addEventListener("change", (e) => { state.electitSet = e.target.value; render(); });
     document.getElementById("race-search").addEventListener("input", () => renderRaces(state.forecast.chambers[state.chamber]));
     document.getElementById("show-all").addEventListener("change", () => renderRaces(state.forecast.chambers[state.chamber]));

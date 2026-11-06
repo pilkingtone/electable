@@ -1,0 +1,22 @@
+{
+  "_comment": "Politics/election RSS feeds compiled into the News channel. Headlines, outlet, time and the publisher's own feed summary are shown, each linking to the original article; article text is never copied. A feed that fails is skipped and listed under Data notes.",
+  "max_age_days": 14,
+  "max_items": 120,
+  "max_per_source": 15,
+  "keywords": ["election", "elect", "poll", "senate", "house", "congress", "governor", "gubernatorial", "midterm", "campaign", "primary", "ballot", "vote", "voter", "redistricting", "gerrymander", "candidate", "nominee", "gop", "republican", "democrat", "speaker", "majority", "recount", "runoff", "caucus", "2026", "2028"],
+  "feeds": [
+    {"name": "AP", "url": "https://apnews.com/hub/politics?format=rss", "lean": "center"},
+    {"name": "NPR", "url": "https://feeds.npr.org/1014/rss.xml", "lean": "center-left"},
+    {"name": "PBS NewsHour", "url": "https://www.pbs.org/newshour/feeds/rss/politics", "lean": "center"},
+    {"name": "The New York Times", "url": "https://rss.nytimes.com/services/xml/rss/nyt/Politics.xml", "lean": "center-left"},
+    {"name": "The Washington Post", "url": "https://feeds.washingtonpost.com/rss/politics", "lean": "center-left"},
+    {"name": "Politico", "url": "https://rss.politico.com/politics-news.xml", "lean": "center"},
+    {"name": "The Hill", "url": "https://thehill.com/homenews/campaign/feed/", "lean": "center"},
+    {"name": "NBC News", "url": "https://feeds.nbcnews.com/nbcnews/public/politics", "lean": "center-left"},
+    {"name": "CBS News", "url": "https://www.cbsnews.com/latest/rss/politics", "lean": "center-left"},
+    {"name": "ABC News", "url": "https://abcnews.go.com/abcnews/politicsheadlines", "lean": "center-left"},
+    {"name": "BBC News", "url": "https://feeds.bbci.co.uk/news/world/us_and_canada/rss.xml", "lean": "center"},
+    {"name": "Fox News", "url": "https://moxie.foxnews.com/google-publisher/politics.xml", "lean": "right"},
+    {"name": "The Wall Street Journal", "url": "https://feeds.a.dj.com/rss/RSSPolitics.xml", "lean": "center-right"}
+  ]
+}

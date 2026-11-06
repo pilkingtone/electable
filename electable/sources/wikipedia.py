@@ -46,10 +46,10 @@ def page_title(chamber: str, state: str, special: bool = False) -> str:
 GENERIC_BALLOT_TITLE = "2026 United States elections"
 
 
-def fetch_html(title: str) -> str:
+def fetch_html(title: str, max_age_hours: float = 6) -> str:
     data = get(API, {"action": "parse", "page": title, "prop": "text",
                      "format": "json", "formatversion": 2, "redirects": 1},
-               as_json=True)
+               as_json=True, max_age_hours=max_age_hours)
     if "error" in data:
         raise FetchError(f"Wikipedia: {title}: {data['error'].get('info')}")
     return data["parse"]["text"]

@@ -2,7 +2,7 @@ name: Update forecast
 
 on:
   schedule:
-    - cron: "17 11,23 * * *"   # twice daily (UTC)
+    - cron: "17 */3 * * *"     # every 3 hours (UTC): results while races are counted, then news
   workflow_dispatch:
   push:
     branches: [main, master]
@@ -25,7 +25,7 @@ jobs:
       - run: pip install -r requirements.txt
       - run: python -m pytest -q
       - run: python -m electable calibrate
-      - run: python -m electable all --backfill-days 31 --step 1
+      - run: python -m electable auto --backfill-days 31 --step 1
         env:
           FEC_API_KEY: ${{ secrets.FEC_API_KEY }}
       - name: Commit updated forecast

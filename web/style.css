@@ -128,3 +128,18 @@ td.num, th.num { text-align: right; }
 @media print, (forced-colors: active) {
   .chips, .seg, .filters { display: none; }
 }
+
+/* Results */
+.banner-final { background: var(--surface); border-left: 4px solid var(--ink-2); }
+.miss-list { margin: 10px 0 0; padding-left: 18px; color: var(--ink-2); font-size: 0.9rem; }
+.miss-list li { margin-bottom: 4px; }
+
+/* News channel */
+.news-list { list-style: none; margin: 0; padding: 0; }
+.news-item { padding: 14px 0; border-top: 1px solid var(--grid); display: grid; gap: 4px; }
+.news-item:first-child { border-top: 0; }
+.news-meta { color: var(--muted); font-size: 0.8rem; display: flex; gap: 8px; flex-wrap: wrap; }
+.news-meta .src { color: var(--ink-2); font-weight: 600; }
+.news-item a { color: var(--ink); font-weight: 600; font-size: 1.02rem; text-decoration: none; line-height: 1.35; }
+.news-item a:hover, .news-item a:focus-visible { text-decoration: underline; }
+.news-item p { margin: 0; color: var(--ink-2); font-size: 0.9rem; }

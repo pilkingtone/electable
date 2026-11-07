@@ -105,12 +105,17 @@ def run(out_dir: Path = WEB_DATA_DIR) -> dict:
     cfg = json.loads((CONFIG_DIR / "news.json").read_text())
     raw, warnings, ok = [], [], []
     for f in cfg["feeds"]:
-        try:
-            items = parse_feed(get(f["url"], max_age_hours=0.5, timeout=20), f["name"])
-            raw += items
-            ok.append(f["name"])
-        except Exception as e:  # noqa: BLE001 - one bad feed must not sink the channel
-            warnings.append(f"{f['name']}: {str(e)[:120]}")
+        # A feed may list fallback addresses ("urls"); the first that parses is used.
+        errors = []
+        for url in f.get("urls") or [f["url"]]:
+            try:
+                raw += parse_feed(get(url, max_age_hours=0.5, timeout=20), f["name"])
+                ok.append(f["name"])
+                break
+            except Exception as e:  # noqa: BLE001 - one bad feed must not sink the channel
+                errors.append(str(e)[:120])
+        else:
+            warnings.append(f"{f['name']}: {' | '.join(errors)}")
     now = datetime.now(timezone.utc)
     items = compile_items(raw, cfg, now)
     out = {"generated_at": now.replace(tzinfo=None).isoformat(timespec="seconds") + "Z",

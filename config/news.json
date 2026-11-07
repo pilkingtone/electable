@@ -116,8 +116,11 @@
     },
     {
       "name": "PolitiFact",
-      "url": "https://www.politifact.com/rss/all/",
-      "lean": "center"
+      "lean": "center",
+      "urls": [
+        "https://www.politifact.com/rss/factchecks/",
+        "https://www.politifact.com/rss/articles/"
+      ]
     },
     {
       "name": "Vox",
@@ -133,11 +136,6 @@
       "name": "Pew Research Center",
       "url": "https://www.pewresearch.org/politics/feed/",
       "lean": "center"
-    },
-    {
-      "name": "CNN",
-      "url": "http://rss.cnn.com/rss/cnn_allpolitics.rss",
-      "lean": "center-left"
     },
     {
       "name": "Bloomberg",
@@ -173,12 +171,7 @@
       "name": "Ballotpedia News",
       "url": "https://news.ballotpedia.org/feed/",
       "lean": "center"
-    },
-    {
-      "name": "Sabato's Crystal Ball",
-      "url": "https://centerforpolitics.org/crystalball/feed/",
-      "lean": "center"
     }
   ],
-  "_feeds_note": "AP and The Wall Street Journal block automated feed readers (HTTP 403), so they are not listed."
+  "_feeds_note": "Not listed: AP and The Wall Street Journal and Sabato's Crystal Ball block automated feed readers (HTTP 403); CNN's RSS feeds stopped updating."
 }

@@ -52,7 +52,17 @@ def _when(s: str) -> datetime | None:
 
 def parse_feed(xml: str, source: str) -> list[dict]:
     """Items from an RSS 2.0 or Atom feed."""
-    root = ET.fromstring(xml)
+    try:
+        root = ET.fromstring(xml)
+    except ET.ParseError as e:
+        if "unbound prefix" not in str(e):
+            raise
+        # Some feeds use namespace prefixes they never declare (e.g. <media:content>
+        # without xmlns:media). Rename undeclared prefixed tags/attributes so the
+        # strict parser accepts the document; the fields we read are unprefixed.
+        xml = re.sub(r"<(/?)([A-Za-z_][\w.-]*):", r"<\1\2_", xml)
+        xml = re.sub(r"\s(?!xmlns)([A-Za-z_][\w.-]*):([A-Za-z_][\w.-]*)=", r" \1_\2=", xml)
+        root = ET.fromstring(xml)
     items = []
     for it in root.iter("item"):
         items.append({"title": _text(it, "title"), "url": _text(it, "link", "guid"),

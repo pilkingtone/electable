@@ -310,3 +310,12 @@ def test_results_winner_matches_nominee_not_party_link():
     </tbody></table>"""
     out = R.parse_statewide(html, "Ed Markey", "John Deaton")
     assert out["called"] and out["winner"] == "D" and round(out["margin"], 1) == 33.3
+
+
+def test_news_tolerates_undeclared_prefixes():
+    xml = """<?xml version="1.0"?><rss version="2.0"><channel>
+    <item><title>Fact-check: claims about the Senate vote count</title><link>https://example.com/f</link>
+    <pubDate>Wed, 04 Nov 2026 10:00:00 GMT</pubDate><media:content url="https://example.com/i.jpg"/></item>
+    </channel></rss>"""
+    items = news.parse_feed(xml, "PolitiFact")
+    assert items[0]["title"].startswith("Fact-check") and items[0]["url"] == "https://example.com/f"

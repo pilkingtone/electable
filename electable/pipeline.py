@@ -577,6 +577,12 @@ def results(out_dir: Path = WEB_DATA_DIR, final_dir: Path = FINAL_DIR, max_age_h
     rc = races_config()
     final = json.loads((final_dir / "forecast.json").read_text())
     warnings, races = [], {}
+    now_iso = datetime.now(timezone.utc).replace(tzinfo=None).isoformat(timespec="seconds") + "Z"
+    prev_path = out_dir / "results.json"
+    prev = json.loads(prev_path.read_text()).get("races", {}) if prev_path.exists() else {}
+    # Wikipedia doesn't timestamp calls, so a call's time is when a run first saw it.
+    # Races already called on the first run carry no time ("before tracking began").
+    first_run = not prev
 
     for ch in ("senate", "governor"):
         for r in final["chambers"][ch]["races"]:
@@ -607,7 +613,11 @@ def results(out_dir: Path = WEB_DATA_DIR, final_dir: Path = FINAL_DIR, max_age_h
         rep = c.get("base_rep", 0)
         called = pending = other = 0
         scored = []
+        up = {"D": 0, "R": 0}
+        gained = {"D": 0, "R": 0}
         for r in c["races"]:
+            if r.get("holder") in up:
+                up[r["holder"]] += 1
             res = races.get(r["id"])
             if r.get("uncontested") in ("D", "R") and not (res and res.get("called")):
                 # Only one party on the ballot (e.g. a California top-two race between two
@@ -618,6 +628,10 @@ def results(out_dir: Path = WEB_DATA_DIR, final_dir: Path = FINAL_DIR, max_age_h
                 pending += 1
                 continue
             called += 1
+            was = prev.get(r["id"], {})
+            res["called_at"] = was.get("called_at") if was.get("called") else (None if first_run else now_iso)
+            if res["winner"] in gained and r.get("holder") in gained and res["winner"] != r["holder"]:
+                gained[res["winner"]] += 1
             won_dem_side = res["winner"] == "D"
             if won_dem_side and r.get("dem_label", "D") == "D":
                 dem += 1
@@ -632,8 +646,12 @@ def results(out_dir: Path = WEB_DATA_DIR, final_dir: Path = FINAL_DIR, max_age_h
         errs = [s["actual"] - s["forecast"] for s in margins]
         control = ("D" if thr and dem >= thr else
                    "R" if thr and rep >= total - thr + 1 else None)
+        before = {"senate": {"D": 47, "R": 53}, "house": {"D": 215, "R": 220},
+                  "governor": {"D": 24, "R": 26}}[ch]          # control going into the election
         chambers[ch] = {
             "called": called, "pending": pending, "dem_won": dem, "rep_won": rep, "other_won": other,
+            "total": total, "threshold": thr, "up": up, "gained": gained,
+            "control_before": "D" if before["D"] > before["R"] else "R",
             "control": control, "forecast_p_dem": c.get("p_dem_control"),
             "forecast_mean_dem": c["dem_seats"]["mean"],
             "calls_right": right, "calls_scored": len(scored),
@@ -647,7 +665,7 @@ def results(out_dir: Path = WEB_DATA_DIR, final_dir: Path = FINAL_DIR, max_age_h
     if house_totals and "house" in chambers:
         chambers["house"]["reported"] = house_totals
 
-    out = {"generated_at": datetime.now(timezone.utc).replace(tzinfo=None).isoformat(timespec="seconds") + "Z",
+    out = {"generated_at": now_iso,
            "forecast_generated_at": final["generated_at"],
            "source": "Wikipedia race articles, citing the Associated Press and state election officials",
            "races": races, "chambers": chambers, "warnings": warnings,

@@ -11,7 +11,7 @@
   const CHAMBER_LABEL = {senate: "Senate", house: "House", governor: "Governors"};
   const UNIT = {senate: "seats", house: "seats", governor: "governorships"};
 
-  const state = {results: null, news: null, newsSource: "", historyDays: 30, electitSet: null, chamber: "senate", panels: new Set(DEFAULT_PANELS), forecast: null, history: [], calibration: null};
+  const state = {dashIdx: {}, results: null, news: null, newsSource: "", historyDays: 30, electitSet: null, chamber: "senate", panels: new Set(DEFAULT_PANELS), forecast: null, history: [], calibration: null};
   const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
   const pct = (p) => p == null ? "—" : p > 0.99 ? ">99%" : p < 0.01 ? "<1%" : Math.round(p * 100) + "%";
   const margin = (m) => m == null ? "—" : (m >= 0 ? "D+" : "R+") + Math.abs(m).toFixed(1);
@@ -536,6 +536,120 @@
     }
   }
 
+  /* ---------------- results dashboard ---------------- */
+  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+  const partyCls = (p) => p === "D" ? "pd" : p === "R" ? "pr" : "po";
+  const ago = (iso) => {
+    const m = Math.round((Date.now() - new Date(iso)) / 6e4);
+    return m < 60 ? `${Math.max(m, 1)} min ago` : m < 1440 ? `${Math.round(m / 60)} hr ago` : `${Math.round(m / 1440)} d ago`;
+  };
+  const placeLabel = (r) => r.district != null
+    ? [STATE_NAMES[r.state] || r.state, r.district === 1 && /AL$/.test(r.id) ? "At-large" : `Dist. ${r.district}`]
+    : [STATE_NAMES[r.state] || r.state, CHAMBER_LABEL[state.chamber].replace(/s$/, "")];
+
+  function renderDash(c) {
+    const R = state.results, rc = R && R.chambers[state.chamber], dash = document.getElementById("results-dash");
+    dash.hidden = !rc;
+    if (!rc) return;
+    const ch = state.chamber, name = CHAMBER_LABEL[ch];
+
+    // 1. Seat bar
+    const bar = document.getElementById("dash-bar"); bar.replaceChildren();
+    const h = el("h2", null, ch === "governor" ? "Governorships" : `${name} results`); bar.appendChild(h);
+    const ctrlWord = (p) => p === "D" ? "Democrats" : "Republicans";
+    bar.appendChild(el("div", "projection", rc.control
+      ? `${ctrlWord(rc.control)} ${rc.control === rc.control_before ? "keep" : "gain"} ${ch === "governor" ? "a majority" : "control"}`
+      : `${ch === "governor" ? "Majority" : "Control"} not yet decided`));
+    const total = rc.total, uncalled = Math.max(0, total - rc.dem_won - rc.rep_won - rc.other_won);
+    const sb = el("div", "seatbar"); sb.setAttribute("role", "img");
+    sb.setAttribute("aria-label", `Democrats ${rc.dem_won}, Republicans ${rc.rep_won}, ${uncalled} not yet called, ${rc.threshold} needed for ${ch === "governor" ? "a majority" : "control"}`);
+    [["d", rc.dem_won, rc.dem_won], ["o", rc.other_won, ""], ["u", uncalled, ""], ["r", rc.rep_won, rc.rep_won]].forEach(([k, n, label]) => {
+      if (!n) return; const sp = el("span", k, String(label)); sp.style.flex = `${n} 1 0`; sb.appendChild(sp);
+    });
+    const at = (100 * rc.threshold / total).toFixed(2);
+    const tick = el("i", "ctrl"); tick.style.left = `calc(${at}% - 1px)`; sb.appendChild(tick);
+    const wrap = el("div", "seatwrap");
+    const cl = el("span", "ctrl-label", `${rc.threshold} for ${ch === "governor" ? "majority" : "control"}`); cl.style.left = `${at}%`;
+    wrap.append(cl, sb); bar.appendChild(wrap);
+    const lg = el("div", "seat-legend");
+    const side = (who, p, cls) => {
+      const d = el("div", cls); d.appendChild(el("b", null, who));
+      d.append(`${rc.up[p]} up for election`); d.appendChild(document.createElement("br"));
+      const net = rc.gained[p] - rc.gained[p === "D" ? "R" : "D"];
+      d.append(net >= 0 ? `Gained: ${net}` : `Lost: ${-net}`);
+      return d;
+    };
+    lg.append(side("Democrats", "D", ""), side("Republicans", "R", "right"));
+    bar.appendChild(lg);
+    if (uncalled) bar.appendChild(el("div", "race-foot", `${uncalled} not yet called (striped)` + (rc.other_won ? ` · ${rc.other_won} independent (purple)` : "")));
+
+    // 2. Recent calls
+    const calls = document.getElementById("dash-calls"); calls.replaceChildren();
+    calls.appendChild(el("h2", null, "Recent calls"));
+    const called = c.races.map((r) => ({r, res: resultOf(r)})).filter((x) => x.res && x.res.called && x.res.winner_name);
+    const timed = called.filter((x) => x.res.called_at).sort((a, b) => b.res.called_at.localeCompare(a.res.called_at));
+    const list = (timed.length ? timed : called.sort((a, b) => Math.abs(a.r.p_dem - 0.5) - Math.abs(b.r.p_dem - 0.5))).slice(0, 3);
+    const ul = el("ul", "calls");
+    list.forEach(({r, res}) => {
+      const li = el("li"); const [place, sub] = placeLabel(r);
+      const w = el("div", "where", r.state); w.appendChild(el("small", null, r.district != null ? sub : name.replace(/s$/, "")));
+      const who = el("div", "who");
+      const meta = el("small"); meta.append(el("span", null, "Projected winner"), el("span", null, res.called_at ? ago(res.called_at) : ""));
+      const b = el("b"); b.append(`${res.winner_name} · `); b.appendChild(el("span", partyCls(res.winner), res.winner === "D" && r.dem_label === "I" ? "I" : res.winner));
+      who.append(meta, b); li.append(w, who); ul.appendChild(li);
+    });
+    calls.appendChild(list.length ? ul : el("p", "sub", "No races called yet."));
+    if (!timed.length && list.length) calls.appendChild(el("div", "race-foot", "Closest races already called when tracking began."));
+
+    // 3. Race card with prev/next
+    const card = document.getElementById("dash-race"); card.replaceChildren();
+    const pool = c.races.filter((r) => !r.uncontested).map((r) => ({r, res: resultOf(r)}))
+      .sort((a, b) => (a.res && a.res.called ? 1 : 0) - (b.res && b.res.called ? 1 : 0)
+        || Math.abs(a.res && a.res.margin != null ? a.res.margin : a.r.median) - Math.abs(b.res && b.res.margin != null ? b.res.margin : b.r.median));
+    if (!pool.length) { card.hidden = true; } else {
+      card.hidden = false;
+      const i = ((state.dashIdx[ch] || 0) % pool.length + pool.length) % pool.length;
+      const {r, res} = pool[i];
+      const nav = el("div", "race-nav");
+      const prevB = el("button", null, "‹"), nextB = el("button", null, "›");
+      prevB.type = nextB.type = "button"; prevB.setAttribute("aria-label", "Previous race"); nextB.setAttribute("aria-label", "Next race");
+      prevB.onclick = () => { state.dashIdx[ch] = i - 1; renderDash(c); };
+      nextB.onclick = () => { state.dashIdx[ch] = i + 1; renderDash(c); };
+      const [place, sub] = placeLabel(r); const mid = el("div"); mid.append(el("b", null, place), el("small", null, sub));
+      nav.append(prevB, mid, nextB); card.appendChild(nav);
+      const t = el("table", "race-table");
+      const hr = el("tr"); ["Candidate", "Party", "%", "Votes"].forEach((x, k) => { const th = el("th", k > 1 ? "num" : null, x); hr.appendChild(th); });
+      t.appendChild(el("thead")).appendChild(hr);
+      const tb = el("tbody");
+      [[r.dem, r.dem_label || "D", res && res.dem_pct, res && res.dem_votes, "D"], [r.rep, "R", res && res.rep_pct, res && res.rep_votes, "R"]]
+        .sort((a, b) => (b[2] || 0) - (a[2] || 0)).forEach(([nm, lbl, p, v, code]) => {
+          const tr = el("tr"); const won = res && res.called && res.winner === code;
+          tr.append(el("td", null, (nm || "—") + (won ? " ✓" : "")), el("td", partyCls(lbl === "I" ? "I" : code), lbl),
+            el("td", "num", p != null ? `${p.toFixed(1)}%` : "—"), el("td", "num", v != null ? Math.round(v).toLocaleString() : "—"));
+          tb.appendChild(tr);
+        });
+      t.appendChild(tb); card.appendChild(t);
+      const fav = r.p_dem >= 0.5 ? `D ${pct(r.p_dem)}` : `R ${pct(1 - r.p_dem)}`;
+      card.appendChild(el("div", "race-foot", (res && res.called ? `Called${res.winner_name ? ` for ${res.winner_name}` : ""}` : "Still counting")
+        + ` · Electable's final forecast: ${fav}` + (r.district != null && !(res && res.dem_votes) ? " · vote totals not yet compiled for House districts" : "")));
+      card.appendChild(el("div", "race-foot", `${i + 1} of ${pool.length}, closest first`));
+    }
+
+    // 4. Latest news
+    const nb = document.getElementById("dash-news"); nb.replaceChildren();
+    const N = state.news;
+    const h2 = el("h2"); const a = el("a", null, "Latest news →"); a.href = "#news"; h2.appendChild(a); nb.appendChild(h2);
+    if (N && N.items.length) {
+      const ul2 = el("ul", "mini-news");
+      N.items.slice(0, 3).forEach((it) => {
+        const li = el("li"); li.appendChild(el("small", null, `${it.source} · ${ago(it.published)}`));
+        const l = el("a", null, it.title); if (/^https?:\/\//.test(it.url)) l.href = it.url; l.target = "_blank"; l.rel = "noopener noreferrer";
+        li.appendChild(l); ul2.appendChild(li);
+      });
+      nb.appendChild(ul2);
+    } else nb.appendChild(el("p", "sub", "Headlines appear here as the news channel updates."));
+  }
+
   /* ---------------- news ---------------- */
   function renderNews() {
     const N = state.news, list = document.getElementById("news-list"), sel = document.getElementById("news-source");
@@ -580,7 +694,7 @@
     document.getElementById("panel-chips").hidden = isNews;
     document.getElementById("method").hidden = isNews;
     if (isNews) {
-      ["empty", "results-banner", "panel-results"].forEach((id) => { document.getElementById(id).hidden = true; });
+      ["empty", "results-banner", "panel-results", "results-dash"].forEach((id) => { document.getElementById(id).hidden = true; });
       document.querySelectorAll("section.panel").forEach((s) => { s.hidden = true; });
       renderNews();
       return;
@@ -595,6 +709,7 @@
       empty.textContent = `No ${CHAMBER_LABEL[state.chamber]} forecast yet (${c ? c.status : "no data"}). See “Data notes” below for what is missing.`;
       document.querySelectorAll("section.panel").forEach((s) => { if (s.dataset.panel !== "errors") s.hidden = true; });
     } else {
+      renderDash(c);
       renderResults(c);
       if (state.panels.has("seats")) { renderTiles(c); renderSeats(c); }
       if (state.panels.has("races")) renderRaces(c);

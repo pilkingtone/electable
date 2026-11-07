@@ -111,6 +111,12 @@ def test_future_polls_ignored():
 
 # ------------------------------------------------------------ model
 
+def _base_cfg():
+    """Model settings before calibration, so these tests don't move when calibration does."""
+    from electable.config import CONFIG_DIR
+    return json.loads((CONFIG_DIR / "model.json").read_text())
+
+
 def _race_frame(leans, chamber="senate"):
     return pd.DataFrame({"race_id": [f"{chamber}-X{i}" for i in range(len(leans))], "chamber": chamber,
                          "state": ["OH"] * len(leans), "district": None, "holder": "R",
@@ -119,7 +125,7 @@ def _race_frame(leans, chamber="senate"):
 
 
 def test_probabilities_are_monotone_and_symmetric():
-    cfg = model_config()
+    cfg = _base_cfg()
     nat = model.National(0.0, 2.0, None, 0, 0.0, 5.0)
     est = model.combine(_race_frame([-30, -5, 0, 5, 30]), {}, nat, cfg)
     sims = model.simulate(est, nat, cfg, n=20000, seed=1)
@@ -131,7 +137,7 @@ def test_probabilities_are_monotone_and_symmetric():
 
 
 def test_polls_pull_forecast():
-    cfg = model_config()
+    cfg = _base_cfg()
     nat = model.National(0.0, 2.0, None, 0, 0.0, 5.0)
     races = _race_frame([0])
     est = model.combine(races, {"senate-X0": {"mean": 10.0, "sampling_sd": 1.0, "n_polls": 8,
@@ -141,7 +147,7 @@ def test_polls_pull_forecast():
 
 
 def test_seat_count_includes_seats_not_up():
-    cfg = model_config()
+    cfg = _base_cfg()
     nat = model.National(0.0, 1.0, None, 0, 0.0, 5.0)
     est = model.combine(_race_frame([60, 60, -60]), {}, nat, cfg)
     sims = model.simulate(est, nat, cfg, n=2000, seed=2)
@@ -150,7 +156,7 @@ def test_seat_count_includes_seats_not_up():
 
 
 def test_shared_error_correlates_races():
-    cfg = model_config()
+    cfg = _base_cfg()
     nat = model.National(0.0, 4.0, None, 0, 0.0, 5.0)
     est = model.combine(_race_frame([0, 0]), {}, nat, cfg)
     sims = model.simulate(est, nat, cfg, n=20000, seed=3)

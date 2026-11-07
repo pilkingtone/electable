@@ -1,25 +1,25 @@
 {
-  "generated_at": "2026-11-07T00:15:27Z",
+  "generated_at": "2026-11-07T00:26:51Z",
   "overrides": {
     "polls": {
       "systematic_error_sd": {
-        "senate": 6.58,
-        "governor": 6.21,
+        "senate": 6.54,
+        "governor": 6.09,
         "house": 7.74
       }
     },
     "national": {
-      "shared_error_sd": 3.0,
-      "generic_ballot_error_sd": 2.72,
-      "generic_ballot_bias": 2.78
+      "shared_error_sd": 3.02,
+      "generic_ballot_error_sd": 3.09,
+      "generic_ballot_bias": 2.33
     },
     "prior": {
       "lean_weight": {
         "senate": 0.979
       },
       "race_sd": {
-        "senate": 9.43,
-        "house": 7.62
+        "senate": 16.29,
+        "house": 10.07
       }
     }
   }

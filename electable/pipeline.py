@@ -322,8 +322,10 @@ def load_inputs(processed: Path = PROCESSED_DIR, manual: Path = MANUAL_DIR,
             "approval": appr, "electit": electit}
 
 
-def run_model(inp: dict, as_of: date, n_sims: int | None = None) -> dict:
-    cfg = model_config()
+def run_model(inp: dict, as_of: date, n_sims: int | None = None, cfg: dict | None = None,
+              electit_cfg: dict | None = None) -> dict:
+    """cfg / electit_cfg override the configured model and ElectIt settings (hindsight studies)."""
+    cfg = cfg or model_config()
     rc = races_config()
     grades = P.load_pollster_grades()
     warnings = list(inp["warnings"])
@@ -383,7 +385,7 @@ def run_model(inp: dict, as_of: date, n_sims: int | None = None) -> dict:
             pavg[rid] = a
     est = model.combine(allr, pavg, nat, cfg)
     ext = inp.get("electit")
-    hcfg = harvard.config().get("electit", {})
+    hcfg = electit_cfg if electit_cfg is not None else harvard.config().get("electit", {})
     ext_sets = sorted(ext["set"].unique()) if ext is not None and not ext.empty else []
     ext_set = hcfg.get("preferred_set") if hcfg.get("preferred_set") in ext_sets else (ext_sets[0] if ext_sets else None)
     if ext_set and hcfg.get("ensemble_weight", 0) > 0:

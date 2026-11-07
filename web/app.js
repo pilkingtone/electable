@@ -11,7 +11,7 @@
   const CHAMBER_LABEL = {senate: "Senate", house: "House", governor: "Governors"};
   const UNIT = {senate: "seats", house: "seats", governor: "governorships"};
 
-  const state = {dashIdx: {}, results: null, news: null, newsSource: "", historyDays: 30, electitSet: null, chamber: "senate", panels: new Set(DEFAULT_PANELS), forecast: null, history: [], calibration: null};
+  const state = {hindsight: null, dashIdx: {}, results: null, news: null, newsSource: "", historyDays: 30, electitSet: null, chamber: "senate", panels: new Set(DEFAULT_PANELS), forecast: null, history: [], calibration: null};
   const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
   const pct = (p) => p == null ? "—" : p > 0.99 ? ">99%" : p < 0.01 ? "<1%" : Math.round(p * 100) + "%";
   const margin = (m) => m == null ? "—" : (m >= 0 ? "D+" : "R+") + Math.abs(m).toFixed(1);
@@ -523,6 +523,22 @@
         (v.D.pct && v.R.pct ? `; national House vote ${v.D.pct}% to ${v.R.pct}%.` : ".");
       box.appendChild(p);
     }
+    const H = state.hindsight, a = H && H.published[ch], b = H && H.model_v2[ch];
+    if (a && b) {
+      box.appendChild(el("h3", null, "Model update: what a corrected model would have said"));
+      const t = el("table");
+      const hr = el("tr"); ["", "Favorite won", "Brier score", "Chance of Dem control"].forEach((x, k) => hr.appendChild(el("th", k ? "num" : null, x)));
+      t.appendChild(el("thead")).appendChild(hr);
+      const tb = el("tbody");
+      [["Published forecast (Nov 3)", a], ["Model v2, same inputs", b]].forEach(([lab, v]) => {
+        const tr = el("tr");
+        tr.append(el("td", null, lab), el("td", "num", `${v.right} / ${v.n}`), el("td", "num", v.brier.toFixed(3)), el("td", "num", pct(v.p_dem_control)));
+        tb.appendChild(tr);
+      });
+      t.appendChild(tb);
+      const wrap = el("div", "table-scroll"); wrap.appendChild(t); box.appendChild(wrap);
+      box.appendChild(el("p", "sub", H.note));
+    }
     if (rc.misses.length) {
       const h = document.createElement("h3"); h.textContent = `Races the forecast got wrong (${rc.misses.length})`; box.appendChild(h);
       const ul = document.createElement("ul"); ul.className = "miss-list";
@@ -727,14 +743,14 @@
   async function load() {
     readHash();
     const get = (p) => fetch(p, {cache: "no-cache"}).then((r) => r.ok ? r.json() : null).catch(() => null);
-    const [f, h, cal, res, nws] = await Promise.all([get("data/forecast.json"), get("data/history.json"),
-      get("data/calibration.json"), get("data/results.json"), get("data/news.json")]);
+    const [f, h, cal, res, nws, hs] = await Promise.all([get("data/forecast.json"), get("data/history.json"),
+      get("data/calibration.json"), get("data/results.json"), get("data/news.json"), get("data/hindsight.json")]);
     if (!f) {
       const e = document.getElementById("empty"); e.hidden = false;
       e.textContent = "No forecast has been built yet. Run: python -m electable all";
       return;
     }
-    Object.assign(state, {forecast: f, history: h || [], calibration: cal, results: res, news: nws});
+    Object.assign(state, {forecast: f, history: h || [], calibration: cal, results: res, news: nws, hindsight: hs});
     if (f.electit && f.electit.sets && f.electit.sets.length) state.electitSet = f.electit.primary_set || f.electit.sets[0];
     renderMeta(); renderSources(); render();
     document.querySelectorAll("#chamber-tabs button").forEach((b) => b.addEventListener("click", () => { state.chamber = b.dataset.chamber; render(); }));

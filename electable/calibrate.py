@@ -54,12 +54,18 @@ def _fit_fe(y: pd.Series, x: pd.Series, year: pd.Series) -> tuple[float, float, 
 MODERN_FROM = 2004
 
 
-def _robust_sd(resid) -> float:
-    """1.4826 x median absolute deviation: the SD a normal would have, ignoring the
-    heavy tail of blowouts against token opposition (the simulation's Student-t
-    errors model that tail separately)."""
+def _prior_sd(resid) -> float:
+    """Root-mean-square residual (the fixed-effects fit already demeans by year).
+
+    This must be the plain SD, blowouts included: the simulation draws Student-t
+    errors scaled to unit variance, and inverse-variance weighting is only
+    MSE-optimal with the true variance. (A robust MAD-based estimate was used
+    until Nov 2026; it understated the prior's error and over-weighted
+    fundamentals: Senate 1998-2022 data put the optimal poll weight at 0.83,
+    against the 0.64 that estimate implied.)
+    """
     r = np.asarray(resid, float)
-    return float(1.4826 * np.median(np.abs(r - np.median(r))))
+    return float(np.sqrt(np.mean(r ** 2)))
 
 
 def history_errors(hist: pd.DataFrame) -> dict:
@@ -79,7 +85,7 @@ def history_errors(hist: pd.DataFrame) -> dict:
         m = m[(m["year"] % 10 != 2) & (m["prev"].abs() < 60)]   # new maps take effect in years ending in 2
         if len(m) > 100:
             b, _, resid = _fit_fe(m["margin"], m["prev"], m["year"])
-            sd = _robust_sd(resid)
+            sd = _prior_sd(resid)
             out["house"] = {"lean_weight": b, "race_sd": sd, "n": len(m), "residuals": resid.tolist(),
                             "years": f"{int(m['year'].min())}-{int(m['year'].max())}"}
     sen = h[h["chamber"] == "senate"].sort_values("year")
@@ -89,7 +95,7 @@ def history_errors(hist: pd.DataFrame) -> dict:
         m = sen.dropna(subset=["prev"])
         if len(m) > 50:
             b, _, resid = _fit_fe(m["margin"], m["prev"], m["year"])
-            sd = _robust_sd(resid)
+            sd = _prior_sd(resid)
             out["senate"] = {"lean_weight": b, "race_sd": sd, "n": len(m), "residuals": resid.tolist(),
                              "years": f"{int(m['year'].min())}-{int(m['year'].max())}"}
     return out
@@ -118,7 +124,7 @@ def fundamentals_errors() -> dict:
         sen = sen.merge(pres[["year", "state_po", "lean"]].rename(columns={"year": "pres_year"}),
                         on=["pres_year", "state_po"])
         b, _, resid = _fit_fe(sen["margin"], sen["lean"], sen["year"])
-        out["senate"] = {"lean_weight": b, "race_sd": _robust_sd(resid), "n": len(sen),
+        out["senate"] = {"lean_weight": b, "race_sd": _prior_sd(resid), "n": len(sen),
                          "residuals": resid.tolist(), "lean_is_pres": True,
                          "years": f"{int(sen['year'].min())}-{int(sen['year'].max())}"}
         sources.append("MIT Election Data + Science Lab (Senate vs presidential lean)")
@@ -178,10 +184,42 @@ def _hist(values, lo=-20, hi=20, width=1.0):
     return [{"x0": float(edges[i]), "x1": float(edges[i + 1]), "n": int(c[i])} for i in range(len(c))]
 
 
-def run() -> dict:
+def recent_cycle_errors() -> tuple[pd.DataFrame, list[dict]]:
+    """Polling errors from cycles Electable forecast itself (538's data ends in 2022):
+    each race's final polling average (data/final/forecast.json) against its result
+    (web/data/results.json), plus the generic ballot against the House vote."""
+    from .config import DATA_DIR
+    fpath, rpath = DATA_DIR / "final" / "forecast.json", WEB_DATA_DIR / "results.json"
+    if not (fpath.exists() and rpath.exists()):
+        return pd.DataFrame(), []
+    f, r = json.loads(fpath.read_text()), json.loads(rpath.read_text())
+    cycle = int(f["election_date"][:4])
+    rows = []
+    for ch, t in (("senate", "Sen-G"), ("governor", "Gov-G")):
+        for race in f["chambers"].get(ch, {}).get("races", []):
+            res = r["races"].get(race["id"], {})
+            if race.get("poll_n") and race.get("poll_avg") is not None and res.get("margin") is not None:
+                rows.append({"race": f"{cycle}_{t}_{race['state']}", "cycle": cycle, "type_simple": t,
+                             "location": race["state"], "poll": race["poll_avg"], "actual": res["margin"],
+                             "n_polls": race["poll_n"], "error": race["poll_avg"] - res["margin"]})
+    generic = []
+    rep = r.get("chambers", {}).get("house", {}).get("reported", {})
+    g = (f.get("national") or {}).get("generic_avg")
+    if g is not None and rep.get("D", {}).get("pct") and rep.get("R", {}).get("pct"):
+        actual = _two_party(rep["D"]["pct"], rep["R"]["pct"])
+        generic.append({"cycle": cycle, "error": g - actual})
+    return pd.DataFrame(rows), generic
+
+
+def run(include_recent: bool = True, write: bool = True) -> dict:
+    """include_recent=False calibrates on 538's 1998-2022 history only (for
+    out-of-sample checks of a cycle Electable itself forecast)."""
     raw_path = RAW_DIR / "538" / "raw_polls.csv"
     raw = pd.read_csv(raw_path, low_memory=False)
     errs = poll_errors(raw)
+    recent, recent_generic = recent_cycle_errors() if include_recent else (pd.DataFrame(), [])
+    if not recent.empty:
+        errs = pd.concat([errs, recent], ignore_index=True)
 
     overrides: dict = {"polls": {"systematic_error_sd": {}}, "national": {}, "prior": {
         "lean_weight": {}, "race_sd": {}}}
@@ -214,6 +252,9 @@ def run() -> dict:
     panel["backtest"] = backtest(races[races["cycle"].isin(cyc.index)], cyc["mean"])
 
     gb = errs[errs["type_simple"] == "House-G-US"]
+    if recent_generic:
+        gb = pd.concat([gb, pd.DataFrame([{**g, "type_simple": "House-G-US"} for g in recent_generic])],
+                       ignore_index=True)
     if len(gb) >= 4:
         bias = float(gb["error"].mean())
         gsd = float(np.sqrt(((gb["error"] - bias) ** 2).mean()))
@@ -249,8 +290,9 @@ def run() -> dict:
     if not overrides["prior"]:
         del overrides["prior"]
 
-    (CONFIG_DIR / "calibrated.json").write_text(json.dumps(
-        {"generated_at": panel["generated_at"], "overrides": overrides}, indent=2))
-    WEB_DATA_DIR.mkdir(parents=True, exist_ok=True)
-    (WEB_DATA_DIR / "calibration.json").write_text(json.dumps(panel))
+    if write:
+        (CONFIG_DIR / "calibrated.json").write_text(json.dumps(
+            {"generated_at": panel["generated_at"], "overrides": overrides}, indent=2))
+        WEB_DATA_DIR.mkdir(parents=True, exist_ok=True)
+        (WEB_DATA_DIR / "calibration.json").write_text(json.dumps(panel))
     return {"overrides": overrides, "panel": panel}

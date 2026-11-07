@@ -13,13 +13,13 @@ from __future__ import annotations
 import argparse
 from datetime import date
 
-from . import calibrate, news, pipeline
+from . import calibrate, hindsight, news, pipeline
 from .config import races_config
 
 
 def main() -> None:
     ap = argparse.ArgumentParser(prog="electable")
-    ap.add_argument("command", choices=["calibrate", "fetch", "build", "all", "results", "news", "auto"])
+    ap.add_argument("command", choices=["calibrate", "fetch", "build", "all", "results", "news", "auto", "hindsight"])
     ap.add_argument("--as-of", type=date.fromisoformat, default=None)
     ap.add_argument("--backfill-days", type=int, default=0)
     ap.add_argument("--step", type=int, default=7)
@@ -39,6 +39,9 @@ def main() -> None:
         news.run()
     if a.command == "results":
         pipeline.results()
+        hindsight.run()
+    if a.command == "hindsight":
+        hindsight.run()
     if a.command in ("build", "all"):
         pipeline.build(as_of=a.as_of, backfill_days=a.backfill_days, step=a.step)
 

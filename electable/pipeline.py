@@ -704,6 +704,11 @@ def results(out_dir: Path = WEB_DATA_DIR, final_dir: Path = FINAL_DIR, max_age_h
     shown = REVISED_DIR if (REVISED_DIR / "forecast.json").exists() else final_dir
     for name in ("forecast.json", "history.json"):
         (out_dir / name).write_text((shown / name).read_text())
+    # The forecast as published on Election Day, browsable on the site (#original).
+    archive = out_dir / "archive"
+    archive.mkdir(parents=True, exist_ok=True)
+    for name in ("forecast.json", "history.json"):
+        (archive / name).write_text((final_dir / name).read_text())
     for ch, s in chambers.items():
         _log(f"{ch}: called {s['called']}, D {s['dem_won']} R {s['rep_won']}, control {s['control']}, "
              f"calls right {s['calls_right']}/{s['calls_scored']}")

@@ -29,6 +29,8 @@
   };
 
   /* ---------------- routing ---------------- */
+  // "#original-..." shows the forecast as published on Election Day (data/archive/).
+  const ARCHIVE = /(^#|[_-])original([_-]|$)/.test(location.hash);
   function readHash() {
     const toks = location.hash.replace(/^#/, "").split(/[_-]/).filter(Boolean);
     const ch = toks.find((t) => VIEWS.includes(t));
@@ -38,7 +40,7 @@
   }
   function writeHash() {
     if (state.chamber === "news") { history.replaceState(null, "", "#news"); return; }
-    const toks = PANELS.filter((p) => state.panels.has(p)).concat(state.chamber);
+    const toks = (ARCHIVE ? ["original"] : []).concat(PANELS.filter((p) => state.panels.has(p)), state.chamber);
     history.replaceState(null, "", "#" + toks.join("-"));
   }
 
@@ -91,7 +93,7 @@
     el.replaceChildren();
     const days = Math.ceil((new Date(f.election_date + "T00:00:00") - new Date()) / 864e5);
     const a = document.createElement("div");
-    a.append(state.results ? (f.model_version ? `Forecast (model ${f.model_version}) on data from ` : "Final forecast ") : "Updated ");
+    a.append(state.results ? (ARCHIVE ? "Published " : f.model_version ? `Forecast (model ${f.model_version}) on data from ` : "Final forecast ") : "Updated ");
     // generated_at is the build time in UTC; show it in the visitor's own time zone.
     const built = f.generated_at ? new Date(f.generated_at) : null;
     const s = document.createElement("strong");
@@ -496,12 +498,13 @@
     if (!R) return;
     banner.className = "banner banner-final";
     banner.replaceChildren();
-    if (f.model_version) {
+    const view = (archive) => `#${archive ? "original-" : ""}${[...state.panels].join("-")}-${state.chamber}`;
+    if (ARCHIVE) {
+      banner.append(`You're viewing the forecast as originally published on Election Day, ${fmtTime(f.generated_at)}, before any polls closed. Results are added for comparison. `);
+      const a = el("a", null, "Back to the current forecast."); a.href = view(false); banner.appendChild(a);
+    } else if (f.model_version) {
       banner.append(`The election is over. Forecasts shown are from Electable's revised model (${f.model_version}), re-run on the polls and data available on ${fmtDate(f.as_of)}, with results added as races are called. `);
-      if (/^https:\/\//.test(f.original_url || "")) {
-        const a = el("a", null, "The forecast originally published on Election Day is archived here."); a.href = f.original_url; a.rel = "noopener";
-        banner.appendChild(a);
-      }
+      const a = el("a", null, "See the forecast as originally published on Election Day."); a.href = view(true); banner.appendChild(a);
     } else {
       banner.append(`The election is over. Forecasts shown are Electable's final forecast, published ${fmtTime(f.generated_at)}, with results added as races are called.`);
     }
@@ -700,7 +703,8 @@
   async function load() {
     readHash();
     const get = (p) => fetch(p, {cache: "no-cache"}).then((r) => r.ok ? r.json() : null).catch(() => null);
-    const [f, h, cal, res, nws] = await Promise.all([get("data/forecast.json"), get("data/history.json"),
+    const dir = ARCHIVE ? "data/archive/" : "data/";
+    const [f, h, cal, res, nws] = await Promise.all([get(dir + "forecast.json"), get(dir + "history.json"),
       get("data/calibration.json"), get("data/results.json"), get("data/news.json")]);
     if (!f) {
       const e = document.getElementById("empty"); e.hidden = false;
@@ -722,7 +726,10 @@
     document.getElementById("electit-set").addEventListener("change", (e) => { state.electitSet = e.target.value; render(); });
     document.getElementById("race-search").addEventListener("input", () => renderRaces(state.forecast.chambers[state.chamber]));
     document.getElementById("show-all").addEventListener("change", () => renderRaces(state.forecast.chambers[state.chamber]));
-    addEventListener("hashchange", () => { readHash(); render(); });
+    addEventListener("hashchange", () => {
+      if (/(^#|[_-])original([_-]|$)/.test(location.hash) !== ARCHIVE) { location.reload(); return; }
+      readHash(); render();
+    });
     let t; addEventListener("resize", () => { clearTimeout(t); t = setTimeout(render, 150); });
     matchMedia("(prefers-color-scheme: dark)").addEventListener("change", render);
   }

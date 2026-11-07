@@ -1,7 +1,7 @@
 {
   "_comment": "Politics/election RSS feeds compiled into the News channel. Headlines, outlet, time and the publisher's own feed summary are shown, each linking to the original article; article text is never copied. A feed that fails is skipped and listed under Data notes.",
   "max_age_days": 14,
-  "max_items": 120,
+  "max_items": 300,
   "max_per_source": 15,
   "keywords": [
     "election",
@@ -103,6 +103,81 @@
       "name": "Washington Examiner",
       "url": "https://www.washingtonexaminer.com/section/politics/feed/",
       "lean": "right"
+    },
+    {
+      "name": "The Economist",
+      "url": "https://www.economist.com/united-states/rss.xml",
+      "lean": "center"
+    },
+    {
+      "name": "Axios",
+      "url": "https://api.axios.com/feed/",
+      "lean": "center"
+    },
+    {
+      "name": "PolitiFact",
+      "url": "https://www.politifact.com/rss/all/",
+      "lean": "center"
+    },
+    {
+      "name": "Vox",
+      "url": "https://www.vox.com/rss/politics/index.xml",
+      "lean": "left"
+    },
+    {
+      "name": "ProPublica",
+      "url": "https://feeds.propublica.org/propublica/main",
+      "lean": "center-left"
+    },
+    {
+      "name": "Pew Research Center",
+      "url": "https://www.pewresearch.org/politics/feed/",
+      "lean": "center"
+    },
+    {
+      "name": "CNN",
+      "url": "http://rss.cnn.com/rss/cnn_allpolitics.rss",
+      "lean": "center-left"
+    },
+    {
+      "name": "Bloomberg",
+      "url": "https://feeds.bloomberg.com/politics/news.rss",
+      "lean": "center"
+    },
+    {
+      "name": "The Atlantic",
+      "url": "https://www.theatlantic.com/feed/channel/politics/",
+      "lean": "center-left"
+    },
+    {
+      "name": "The Guardian",
+      "url": "https://www.theguardian.com/us-news/us-politics/rss",
+      "lean": "left"
+    },
+    {
+      "name": "Los Angeles Times",
+      "url": "https://www.latimes.com/politics/rss2.0.xml",
+      "lean": "center-left"
+    },
+    {
+      "name": "The Dispatch",
+      "url": "https://thedispatch.com/feed/",
+      "lean": "center-right"
+    },
+    {
+      "name": "FactCheck.org",
+      "url": "https://www.factcheck.org/feed/",
+      "lean": "center"
+    },
+    {
+      "name": "Ballotpedia News",
+      "url": "https://news.ballotpedia.org/feed/",
+      "lean": "center"
+    },
+    {
+      "name": "Sabato's Crystal Ball",
+      "url": "https://centerforpolitics.org/crystalball/feed/",
+      "lean": "center"
     }
   ],
   "_feeds_note": "AP and The Wall Street Journal block automated feed readers (HTTP 403), so they are not listed."

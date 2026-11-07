@@ -325,3 +325,17 @@ def test_news_tolerates_undeclared_prefixes():
     </channel></rss>"""
     items = news.parse_feed(xml, "PolitiFact")
     assert items[0]["title"].startswith("Fact-check") and items[0]["url"] == "https://example.com/f"
+
+
+def test_results_ranked_choice_rounds_and_reporting():
+    from electable.sources import results as R
+    html = """<table class="infobox"><tbody>
+    <tr><th>Reporting</th><td>74% as of November 5, 6:53 PM AKST</td></tr>
+    <tr><td><table><tbody>
+    <tr><th>Candidate</th><td>Mary Peltola</td><td>Dan S. Sullivan</td></tr>
+    <tr><th>Party</th><td>Democratic</td><td>Republican</td></tr>
+    <tr><th>First round</th><td>102,962 48.18%</td><td>102,325 47.88%</td></tr></tbody></table></td></tr>
+    <tr><td><b>Elected U.S. senator</b><p>TBD</p></td></tr></tbody></table>"""
+    out = R.parse_statewide(html, "Mary Peltola", "Dan S. Sullivan")
+    assert (out["dem_votes"], out["rep_votes"], out["dem_pct"], out["rep_pct"]) == (102962, 102325, 48.18, 47.88)
+    assert out["reporting"] == 74 and out["round"] == "first" and not out["called"]

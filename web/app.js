@@ -601,6 +601,8 @@
         });
       t.appendChild(tb); card.appendChild(t);
       const fav = r.p_dem >= 0.5 ? `D ${pct(r.p_dem)}` : `R ${pct(1 - r.p_dem)}`;
+      if (res && res.reporting != null) card.appendChild(el("div", "race-foot",
+        `Expected vote reporting: ${Math.round(res.reporting)}%` + (res.round === "first" ? " · first-round count (ranked-choice)" : res.round === "final" ? " · final ranked-choice round" : "")));
       card.appendChild(el("div", "race-foot", (res && res.called ? `Called${res.winner_name ? ` for ${res.winner_name}` : ""}` : "Still counting")
         + ` · Electable forecast: ${fav}` + (r.district != null && !(res && res.dem_votes) ? " · vote totals not yet compiled for House districts" : "")));
       card.appendChild(el("div", "race-foot", `${i + 1} of ${pool.length}, closest first`));

@@ -34,11 +34,18 @@ def parse_statewide(html: str, dem_name: str | None, rep_name: str | None) -> di
     for tr in box.find_all("tr"):
         th = tr.find("th", recursive=False)
         label = W._clean(th.get_text(" ")) if th else ""
-        if label in ("Nominee", "Candidate", "Party", "Popular vote", "Percentage"):
+        if label in ("Nominee", "Candidate", "Party", "Popular vote", "Percentage",
+                     "First round", "Final round", "Reporting"):
             rows.setdefault(label, []).append(
                 [W._clean(td.get_text(" ")) for td in tr.find_all("td", recursive=False)])
     names = rows.get("Nominee") or rows.get("Candidate") or []
     votes, pcts = rows.get("Popular vote", []), rows.get("Percentage", [])
+    if not votes:
+        # Ranked-choice states (Alaska, Maine) give "votes pct" per round instead,
+        # e.g. "102,962 48.18%"; the final round, once tabulated, decides the race.
+        rounds = rows.get("Final round") or rows.get("First round") or []
+        votes = [[c.split()[0] if c else "" for c in g] for g in rounds]
+        pcts = [[(c.split() + ["", ""])[1] if c else "" for c in g] for g in rounds]
     cands = []
     for g, group in enumerate(names):
         for j, n in enumerate(group):
@@ -57,6 +64,11 @@ def parse_statewide(html: str, dem_name: str | None, rep_name: str | None) -> di
     d, r = find(dem_name), find(rep_name)
     out = {"dem_votes": d and d["votes"], "rep_votes": r and r["votes"],
            "dem_pct": d and d["pct"], "rep_pct": r and r["pct"]}
+    rep_row = (rows.get("Reporting") or [[""]])[0]
+    if rep_row and rep_row[0]:
+        out["reporting"] = _num(rep_row[0])                 # "74% as of November 5" -> 74
+    if rows.get("Final round") or rows.get("First round"):
+        out["round"] = "final" if rows.get("Final round") else "first"
     if out["dem_votes"] and out["rep_votes"]:
         out["margin"] = 100 * (out["dem_votes"] - out["rep_votes"]) / (out["dem_votes"] + out["rep_votes"])
     elif out["dem_pct"] and out["rep_pct"]:

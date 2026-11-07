@@ -485,17 +485,19 @@ def _history_point(f: dict) -> dict | None:
 def build(as_of: date | None = None, backfill_days: int = 0, step: int = 7,
           processed: Path = PROCESSED_DIR, manual: Path = MANUAL_DIR,
           out_dir: Path = WEB_DATA_DIR, demo: bool = False,
-          electit_dir: Path | None = None) -> dict:
+          electit_dir: Path | None = None, cfg: dict | None = None,
+          electit_cfg: dict | None = None, fresh_history: bool = False) -> dict:
     rc = races_config()
     as_of = as_of or date.today()
     inp = load_inputs(processed, manual, electit_dir)
-    cfg, grades = model_config(), P.load_pollster_grades()
+    model_cfg = cfg
+    cfg, grades = cfg or model_config(), P.load_pollster_grades()
     if not inp["generic"].empty and not inp["generic_polls"].empty:
         agg = P.average(inp["generic"], as_of, cfg, grades)
         own = P.average(inp["generic_polls"], as_of, cfg, grades)
         if agg and own:
             inp["generic_offset"] = agg["mean"] - own["mean"]
-    f = run_model(inp, as_of)
+    f = run_model(inp, as_of, cfg=model_cfg, electit_cfg=electit_cfg)
     f.update({"generated_at": datetime.now(timezone.utc).replace(tzinfo=None).isoformat(timespec="seconds") + "Z",
               "election_date": rc["election_date"], "demo": demo,
               "sources": inp["meta"].get("sources", []),
@@ -504,7 +506,7 @@ def build(as_of: date | None = None, backfill_days: int = 0, step: int = 7,
     (out_dir / "forecast.json").write_text(_dumps(f))
 
     hist_path = out_dir / "history.json"
-    hist = json.loads(hist_path.read_text()) if hist_path.exists() else []
+    hist = json.loads(hist_path.read_text()) if hist_path.exists() and not fresh_history else []
     points = {h["date"]: h for h in hist}
     if (pt := _history_point(f)):
         points[f["as_of"]] = pt
@@ -513,7 +515,7 @@ def build(as_of: date | None = None, backfill_days: int = 0, step: int = 7,
             d = as_of - timedelta(days=k)
             if d.isoformat() in points:
                 continue
-            past = run_model(inp, d, n_sims=5000)
+            past = run_model(inp, d, n_sims=5000, cfg=model_cfg, electit_cfg=electit_cfg)
             # Generic-ballot averages are published as today's values only; a past
             # date without them would run on fundamentals alone and draw a false jump.
             if (f.get("national") or {}).get("generic_avg") is not None and \
@@ -567,6 +569,30 @@ def _json_default(o):
 # ====================================================================== results
 
 FINAL_DIR = PROCESSED_DIR.parent / "final"
+REVISED_DIR = PROCESSED_DIR.parent / "revised"
+
+
+def revise(days: int = 33) -> dict:
+    """Re-run the final forecast's exact inputs (data/final/) with the current model
+    and calibration, history included, into data/revised/ -- the forecast the site
+    shows after the election. data/final/ (the forecast published on Election Day)
+    is never modified."""
+    import copy
+    from .config import CONFIG_DIR, _deep_update
+    final = json.loads((FINAL_DIR / "forecast.json").read_text())
+    cfg = json.loads((CONFIG_DIR / "model.json").read_text())
+    cal = CONFIG_DIR / "calibrated.json"
+    if cal.exists():
+        _deep_update(cfg, json.loads(cal.read_text())["overrides"])
+    f = build(as_of=date.fromisoformat(final["as_of"]), backfill_days=days, step=1,
+              processed=FINAL_DIR / "processed", manual=FINAL_DIR / "manual", out_dir=REVISED_DIR,
+              cfg=copy.deepcopy(cfg), electit_cfg={"ensemble_weight": 0.0}, fresh_history=True)
+    f.update({"model_version": "v2", "revised_at": f["generated_at"],
+              "original_generated_at": final["generated_at"],
+              "original_url": "https://github.com/pilkingtone/electable/blob/master/data/final/forecast.json",
+              "generated_at": final["generated_at"]})
+    (REVISED_DIR / "forecast.json").write_text(_dumps(f))
+    return f
 
 
 def results(out_dir: Path = WEB_DATA_DIR, final_dir: Path = FINAL_DIR, max_age_hours: float = 1) -> dict:
@@ -675,8 +701,9 @@ def results(out_dir: Path = WEB_DATA_DIR, final_dir: Path = FINAL_DIR, max_age_h
            "complete": bool(chambers) and all(c["pending"] == 0 for c in chambers.values())}
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "results.json").write_text(_dumps(out))
+    shown = REVISED_DIR if (REVISED_DIR / "forecast.json").exists() else final_dir
     for name in ("forecast.json", "history.json"):
-        (out_dir / name).write_text((final_dir / name).read_text())
+        (out_dir / name).write_text((shown / name).read_text())
     for ch, s in chambers.items():
         _log(f"{ch}: called {s['called']}, D {s['dem_won']} R {s['rep_won']}, control {s['control']}, "
              f"calls right {s['calls_right']}/{s['calls_scored']}")

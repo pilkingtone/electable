@@ -7,6 +7,7 @@
   python -m electable results              # after the election: score the frozen final forecast
   python -m electable news                 # compile the News channel
   python -m electable auto                 # news + (forecast before Election Day | results after)
+  python -m electable revise               # after the election: re-run the Nov 3 inputs with the current model
 """
 from __future__ import annotations
 
@@ -19,7 +20,7 @@ from .config import races_config
 
 def main() -> None:
     ap = argparse.ArgumentParser(prog="electable")
-    ap.add_argument("command", choices=["calibrate", "fetch", "build", "all", "results", "news", "auto", "hindsight"])
+    ap.add_argument("command", choices=["calibrate", "fetch", "build", "all", "results", "news", "auto", "hindsight", "revise"])
     ap.add_argument("--as-of", type=date.fromisoformat, default=None)
     ap.add_argument("--backfill-days", type=int, default=0)
     ap.add_argument("--step", type=int, default=7)
@@ -37,9 +38,10 @@ def main() -> None:
         news.run()
     if a.command == "news":
         news.run()
+    if a.command == "revise":
+        pipeline.revise()
     if a.command == "results":
         pipeline.results()
-        hindsight.run()
     if a.command == "hindsight":
         hindsight.run()
     if a.command in ("build", "all"):

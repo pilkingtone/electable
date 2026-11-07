@@ -11,7 +11,7 @@
   const CHAMBER_LABEL = {senate: "Senate", house: "House", governor: "Governors"};
   const UNIT = {senate: "seats", house: "seats", governor: "governorships"};
 
-  const state = {hindsight: null, dashIdx: {}, results: null, news: null, newsSource: "", historyDays: 30, electitSet: null, chamber: "senate", panels: new Set(DEFAULT_PANELS), forecast: null, history: [], calibration: null};
+  const state = {dashIdx: {}, results: null, news: null, newsSource: "", historyDays: 30, electitSet: null, chamber: "senate", panels: new Set(DEFAULT_PANELS), forecast: null, history: [], calibration: null};
   const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
   const pct = (p) => p == null ? "—" : p > 0.99 ? ">99%" : p < 0.01 ? "<1%" : Math.round(p * 100) + "%";
   const margin = (m) => m == null ? "—" : (m >= 0 ? "D+" : "R+") + Math.abs(m).toFixed(1);
@@ -91,7 +91,7 @@
     el.replaceChildren();
     const days = Math.ceil((new Date(f.election_date + "T00:00:00") - new Date()) / 864e5);
     const a = document.createElement("div");
-    a.append(state.results ? "Final forecast " : "Updated ");
+    a.append(state.results ? (f.model_version ? `Forecast (model ${f.model_version}) on data from ` : "Final forecast ") : "Updated ");
     // generated_at is the build time in UTC; show it in the visitor's own time zone.
     const built = f.generated_at ? new Date(f.generated_at) : null;
     const s = document.createElement("strong");
@@ -129,7 +129,7 @@
     const ch = state.chamber, s = c.dem_seats;
     const pD = c.p_dem_control, pR = 1 - pD;
     const what = ch === "governor" ? "a majority of governorships" : `the ${CHAMBER_LABEL[ch]}`;
-    const F = state.results ? "Final forecast: " : "";
+    const F = state.results ? "Forecast: " : "";
     tile(el, {label: `${F}Democrats win ${what}`, value: pct(pD), key: css("--dem"), lead: pD >= pR ? "dem" : null,
               note: `Needs ${c.threshold} ${UNIT[ch]}`});
     tile(el, {label: `${F}Republicans ${ch === "governor" ? "keep a majority" : "control"}`, value: pct(pR), key: css("--rep"),
@@ -199,7 +199,7 @@
   function renderRaces(c) {
     const el = document.getElementById("races-chart");
     document.getElementById("races-sub").textContent = "Dot = forecast margin; bar = 80% range"
-      + (state.results ? "; black diamond = actual result; ✓/✗ = whether the favorite won." : ". Sorted by closeness.");
+      + (state.results ? "; black diamond = actual result." : ". Sorted by closeness.");
     const races = filteredRaces(c);
     if (!races.length) { message(el, "No races match. Tick “Show safe seats” to see every race."); renderRaceTable([]); return; }
     const rowH = 30, m = {t: 26, r: state.results ? 130 : 64, b: 8};
@@ -231,7 +231,7 @@
       .attr("d", d3.symbol(d3.symbolDiamond, 70)).attr("fill", css("--ink")).attr("stroke", css("--surface")).attr("stroke-width", 1.5);
     row.filter((d) => resultOf(d) && resultOf(d).called).append("text")
       .attr("x", w - 58).attr("y", rowH / 2 + 4).attr("text-anchor", "end")
-      .text((d) => ((d.p_dem >= 0.5) === (resultOf(d).winner === "D") ? "✓ " : "✗ ") + (resultOf(d).winner === "D" ? (d.dem_label === "I" ? "I" : "D") : resultOf(d).winner) + " won");
+      .text((d) => (resultOf(d).winner === "D" ? (d.dem_label === "I" ? "I" : "D") : resultOf(d).winner) + " won");
     row.append("rect").attr("class", "hit").attr("width", w).attr("height", rowH).attr("tabindex", 0)
       .on("pointermove", (e, d) => showTip(e, raceTip(d))).on("pointerleave blur", hideTip)
       .on("focus", function (e, d) { focusTip(this, raceTip(d)); });
@@ -489,66 +489,21 @@
       .join("td").attr("class", (d) => d[1] ? "num" : null).text((d) => d[0]);
   }
 
-  /* ---------------- results ---------------- */
-  function renderResults(c) {
-    const R = state.results, rc = R && R.chambers[state.chamber], sec = document.getElementById("panel-results");
-    const banner = document.getElementById("results-banner");
+  /* ---------------- post-election banner ---------------- */
+  function renderBanner() {
+    const R = state.results, f = state.forecast, banner = document.getElementById("results-banner");
     banner.hidden = !R;
-    if (R) {
-      banner.className = "banner banner-final";
-      banner.textContent = `The election is over. Everything below is Electable's final forecast, published ${fmtTime(R.forecast_generated_at)}, before any polls closed, now checked against results as races are called (${R.source}).`;
-    }
-    sec.hidden = !rc;
-    if (!rc) return;
-    const ch = state.chamber, unit = UNIT[ch], tiles = document.getElementById("results-tiles");
-    tiles.replaceChildren();
-    const who = rc.control === "D" ? "Democrats" : rc.control === "R" ? "Republicans" : null;
-    document.getElementById("results-sub").textContent =
-      `${rc.called} of ${rc.called + rc.pending} races called` +
-      (rc.pending ? `; ${rc.pending} still being counted. Results refresh every 3 hours until every race is called.` : ". These results are final.");
-    tile(tiles, {label: who ? `${who} win the ${CHAMBER_LABEL[ch]}` : `${CHAMBER_LABEL[ch]} control not yet decided`,
-      value: `D ${rc.dem_won} · R ${rc.rep_won}`, lead: rc.control === "D" ? "dem" : rc.control === "R" ? "rep" : null,
-      note: `${unit} so far, incl. those not up` + (rc.other_won ? ` · ${rc.other_won} independent` : "")});
-    tile(tiles, {label: "Final forecast", value: pct(rc.forecast_p_dem),
-      note: `chance of Democratic control · expected ${rc.forecast_mean_dem.toFixed(1)} Dem ${unit}`});
-    tile(tiles, {label: "Favorite won", value: `${rc.calls_right} / ${rc.calls_scored}`,
-      note: rc.brier != null ? `called races · Brier score ${rc.brier.toFixed(3)} (0 is perfect)` : "called races"});
-    if (rc.margin_bias != null) tile(tiles, {label: "Result vs. forecast margin", value: margin(rc.margin_bias),
-      note: `average gap over ${rc.margin_n} races (${rc.margin_bias >= 0 ? "Democrats" : "Republicans"} beat the forecast) · typical miss ${rc.margin_mae.toFixed(1)} pts`});
-    const box = document.getElementById("results-misses"); box.replaceChildren();
-    if (rc.reported && rc.reported.D && rc.reported.R) {
-      const p = document.createElement("p"); p.className = "sub";
-      const v = rc.reported;
-      p.textContent = `Reported totals: Democrats ${v.D.seats ?? "—"} seats, Republicans ${v.R.seats ?? "—"}` +
-        (v.D.pct && v.R.pct ? `; national House vote ${v.D.pct}% to ${v.R.pct}%.` : ".");
-      box.appendChild(p);
-    }
-    const H = state.hindsight, a = H && H.published[ch], b = H && H.model_v2[ch];
-    if (a && b) {
-      box.appendChild(el("h3", null, "Model update: what a corrected model would have said"));
-      const t = el("table");
-      const hr = el("tr"); ["", "Favorite won", "Brier score", "Chance of Dem control"].forEach((x, k) => hr.appendChild(el("th", k ? "num" : null, x)));
-      t.appendChild(el("thead")).appendChild(hr);
-      const tb = el("tbody");
-      [["Published forecast (Nov 3)", a], ["Model v2, same inputs", b]].forEach(([lab, v]) => {
-        const tr = el("tr");
-        tr.append(el("td", null, lab), el("td", "num", `${v.right} / ${v.n}`), el("td", "num", v.brier.toFixed(3)), el("td", "num", pct(v.p_dem_control)));
-        tb.appendChild(tr);
-      });
-      t.appendChild(tb);
-      const wrap = el("div", "table-scroll"); wrap.appendChild(t); box.appendChild(wrap);
-      box.appendChild(el("p", "sub", H.note));
-    }
-    if (rc.misses.length) {
-      const h = document.createElement("h3"); h.textContent = `Races the forecast got wrong (${rc.misses.length})`; box.appendChild(h);
-      const ul = document.createElement("ul"); ul.className = "miss-list";
-      rc.misses.sort((a, b) => Math.abs(b.p_dem - 0.5) - Math.abs(a.p_dem - 0.5)).forEach((mm) => {
-        const r = c.races.find((x) => x.id === mm.id), li = document.createElement("li");
-        const fav = mm.p_dem >= 0.5 ? `D ${pct(mm.p_dem)}` : `R ${pct(1 - mm.p_dem)}`;
-        li.textContent = `${r ? raceLabel(r) : mm.id}: forecast ${fav}; ${mm.winner === "D" ? (r && r.dem_label === "I" ? "independent" : "Democrat") : "Republican"} won` + (r ? ` (${mm.winner === "D" ? r.dem : r.rep})` : "");
-        ul.appendChild(li);
-      });
-      box.appendChild(ul);
+    if (!R) return;
+    banner.className = "banner banner-final";
+    banner.replaceChildren();
+    if (f.model_version) {
+      banner.append(`The election is over. Forecasts shown are from Electable's revised model (${f.model_version}), re-run on the polls and data available on ${fmtDate(f.as_of)}, with results added as races are called. `);
+      if (/^https:\/\//.test(f.original_url || "")) {
+        const a = el("a", null, "The forecast originally published on Election Day is archived here."); a.href = f.original_url; a.rel = "noopener";
+        banner.appendChild(a);
+      }
+    } else {
+      banner.append(`The election is over. Forecasts shown are Electable's final forecast, published ${fmtTime(f.generated_at)}, with results added as races are called.`);
     }
   }
 
@@ -647,7 +602,7 @@
       t.appendChild(tb); card.appendChild(t);
       const fav = r.p_dem >= 0.5 ? `D ${pct(r.p_dem)}` : `R ${pct(1 - r.p_dem)}`;
       card.appendChild(el("div", "race-foot", (res && res.called ? `Called${res.winner_name ? ` for ${res.winner_name}` : ""}` : "Still counting")
-        + ` · Electable's final forecast: ${fav}` + (r.district != null && !(res && res.dem_votes) ? " · vote totals not yet compiled for House districts" : "")));
+        + ` · Electable forecast: ${fav}` + (r.district != null && !(res && res.dem_votes) ? " · vote totals not yet compiled for House districts" : "")));
       card.appendChild(el("div", "race-foot", `${i + 1} of ${pool.length}, closest first`));
     }
 
@@ -710,7 +665,7 @@
     document.getElementById("panel-chips").hidden = isNews;
     document.getElementById("method").hidden = isNews;
     if (isNews) {
-      ["empty", "results-banner", "panel-results", "results-dash"].forEach((id) => { document.getElementById(id).hidden = true; });
+      ["empty", "results-banner", "results-dash"].forEach((id) => { document.getElementById(id).hidden = true; });
       document.querySelectorAll("section.panel").forEach((s) => { s.hidden = true; });
       renderNews();
       return;
@@ -726,7 +681,7 @@
       document.querySelectorAll("section.panel").forEach((s) => { if (s.dataset.panel !== "errors") s.hidden = true; });
     } else {
       renderDash(c);
-      renderResults(c);
+      renderBanner();
       if (state.panels.has("seats")) { renderTiles(c); renderSeats(c); }
       if (state.panels.has("races")) renderRaces(c);
       if (state.panels.has("polls")) renderPolls(c);
@@ -743,14 +698,14 @@
   async function load() {
     readHash();
     const get = (p) => fetch(p, {cache: "no-cache"}).then((r) => r.ok ? r.json() : null).catch(() => null);
-    const [f, h, cal, res, nws, hs] = await Promise.all([get("data/forecast.json"), get("data/history.json"),
-      get("data/calibration.json"), get("data/results.json"), get("data/news.json"), get("data/hindsight.json")]);
+    const [f, h, cal, res, nws] = await Promise.all([get("data/forecast.json"), get("data/history.json"),
+      get("data/calibration.json"), get("data/results.json"), get("data/news.json")]);
     if (!f) {
       const e = document.getElementById("empty"); e.hidden = false;
       e.textContent = "No forecast has been built yet. Run: python -m electable all";
       return;
     }
-    Object.assign(state, {forecast: f, history: h || [], calibration: cal, results: res, news: nws, hindsight: hs});
+    Object.assign(state, {forecast: f, history: h || [], calibration: cal, results: res, news: nws});
     if (f.electit && f.electit.sets && f.electit.sets.length) state.electitSet = f.electit.primary_set || f.electit.sets[0];
     renderMeta(); renderSources(); render();
     document.querySelectorAll("#chamber-tabs button").forEach((b) => b.addEventListener("click", () => { state.chamber = b.dataset.chamber; render(); }));

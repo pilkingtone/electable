@@ -168,3 +168,93 @@ def parse_house(html: str) -> tuple[dict, dict]:
             for p, v in zip(parties, lab.get(key, [])):
                 totals.setdefault(p, {})[field] = _num(v)
     return races, totals
+
+
+ORDINAL = re.compile(r"(\d+)(?:st|nd|rd|th)\s+congressional district", re.I)
+
+
+def parse_house_state(html: str, state: str) -> dict:
+    """Per-district general-election vote totals from a state's 2026 House article.
+
+    Each district's results box is captioned "2026 Iowa's 1st congressional district
+    election" (or "...at-large congressional district election"); primary boxes are
+    skipped. Rows read Party | Candidate | Votes | %. Districts whose votes aren't
+    filled in yet are omitted.
+    """
+    soup = BeautifulSoup(html, "lxml")
+    out = {}
+    for table in soup.find_all("table"):
+        cap = table.find("caption")
+        title = W._clean(cap.get_text(" ")) if cap else ""
+        if "congressional district" not in title.lower() or "primary" in title.lower() \
+                or "special" in title.lower() or "2026" not in title:
+            continue
+        m = ORDINAL.search(title)
+        dist = int(m.group(1)) if m else (1 if "at-large" in title.lower() else None)
+        if dist is None:
+            continue
+        cands, reporting = _box_candidates(table)
+        if not cands:
+            cands = _results_table_candidates(table)
+        if not cands:
+            continue
+        # Top-two/same-party races have two Democrats or two Republicans; take the best of each party.
+        best = {p: max((c for c in cands if c["party"] == p), key=lambda c: c["votes"], default=None) for p in ("D", "R")}
+        d, r = best["D"], best["R"]
+        rec = {"candidates": sorted(cands, key=lambda c: -c["votes"])[:4],
+               "dem_votes": d and d["votes"], "rep_votes": r and r["votes"],
+               "dem_pct": d and d["pct"], "rep_pct": r and r["pct"]}
+        if d and r and d["votes"] + r["votes"] > 0:
+            rec["margin"] = 100 * (d["votes"] - r["votes"]) / (d["votes"] + r["votes"])
+        if reporting is not None:
+            rec["reporting"] = reporting
+        rid = race_id("house", state, dist)
+        # A district can have both an infobox and a results box; keep the fuller one.
+        if rid not in out or len(rec["candidates"]) > len(out[rid]["candidates"]):
+            out[rid] = {**out.get(rid, {}), **rec}
+    return out
+
+
+def _box_candidates(table) -> tuple[list[dict], float | None]:
+    """Infobox-style box: Nominee / Party / Popular vote (or First/Final round) / Percentage rows."""
+    rows: dict[str, list[list[str]]] = {}
+    for tr in table.find_all("tr"):
+        th = tr.find("th", recursive=False)
+        label = W._clean(th.get_text(" ")) if th else ""
+        if label in ("Nominee", "Candidate", "Party", "Popular vote", "Percentage",
+                     "First round", "Final round", "Reporting"):
+            rows.setdefault(label, []).append([W._clean(td.get_text(" ")) for td in tr.find_all("td", recursive=False)])
+    reporting = _num(rows["Reporting"][0][0]) if rows.get("Reporting") and rows["Reporting"][0] else None
+    names, parties = rows.get("Nominee") or rows.get("Candidate") or [], rows.get("Party", [])
+    votes, pcts = rows.get("Popular vote", []), rows.get("Percentage", [])
+    if not votes:
+        rounds = rows.get("Final round") or rows.get("First round") or []
+        votes = [[c.split()[0] if c else "" for c in g] for g in rounds]
+        pcts = [[(c.split() + ["", ""])[1] if c else "" for c in g] for g in rounds]
+    out = []
+    for g, group in enumerate(names):
+        for j, n in enumerate(group):
+            v = _num(votes[g][j]) if g < len(votes) and j < len(votes[g]) else None
+            if not n or v is None:
+                continue
+            party = parties[g][j] if g < len(parties) and j < len(parties[g]) else ""
+            pct = _num(pcts[g][j]) if g < len(pcts) and j < len(pcts[g]) else None
+            out.append({"party": _party(party), "name": W.display_name(n), "votes": v, "pct": pct})
+    return out, reporting
+
+
+def _results_table_candidates(table) -> list[dict]:
+    """Results box: Party | Candidate | Votes | % rows (a color-swatch cell may lead)."""
+    out = []
+    for tr in table.find_all("tr"):
+        cells = [W._clean(c.get_text(" ")) for c in tr.find_all(["td", "th"])]
+        while cells and cells[0] == "":
+            cells = cells[1:]
+        if len(cells) < 3 or cells[0].lower().startswith(("party", "total", "turnout")):
+            continue
+        votes = _num(cells[2])
+        if votes is None or not re.fullmatch(r"[\d,]+", cells[2].replace(" ", "")):
+            continue
+        out.append({"party": _party(cells[0]), "name": re.sub(r"\s*\((?:incumbent|inc\.)\)", "", cells[1], flags=re.I),
+                    "votes": votes, "pct": _num(cells[3]) if len(cells) > 3 else None})
+    return out

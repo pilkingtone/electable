@@ -339,3 +339,25 @@ def test_results_ranked_choice_rounds_and_reporting():
     out = R.parse_statewide(html, "Mary Peltola", "Dan S. Sullivan")
     assert (out["dem_votes"], out["rep_votes"], out["dem_pct"], out["rep_pct"]) == (102962, 102325, 48.18, 47.88)
     assert out["reporting"] == 74 and out["round"] == "first" and not out["called"]
+
+
+def test_house_state_both_box_layouts():
+    from electable.sources import results as R
+    infobox = """<table class="infobox"><caption>2026 New York's 1st congressional district election</caption><tbody>
+    <tr><th>Reporting</th><td>97% as of Nov 5</td></tr>
+    <tr><td colspan="2"><table><tbody>
+    <tr><th>Nominee</th><td>Nick LaLota</td><td>Chris Gallant</td></tr>
+    <tr><th>Party</th><td>Republican</td><td>Democratic</td></tr>
+    <tr><th>Popular vote</th><td>152,546</td><td>145,869</td></tr>
+    <tr><th>Percentage</th><td>51.1%</td><td>48.9%</td></tr></tbody></table></td></tr></tbody></table>"""
+    box = """<table class="wikitable"><caption>2026 Florida's 1st congressional district election</caption><tbody>
+    <tr><th colspan="2">Party</th><th>Candidate</th><th>Votes</th><th>%</th></tr>
+    <tr><td style="background:red"></td><td>Republican</td><td>Jimmy Patronis (incumbent)</td><td>181,944</td><td>62.5</td></tr>
+    <tr><td style="background:blue"></td><td>Democratic</td><td>Gay Valimont</td><td>103,729</td><td>35.6</td></tr>
+    <tr><th colspan="3">Total votes</th><td>291,010</td><td>100.0</td></tr></tbody></table>"""
+    ny = R.parse_house_state(infobox, "NY")["house-NY-01"]
+    assert (ny["rep_votes"], ny["dem_pct"], ny["reporting"]) == (152546, 48.9, 97)
+    fl = R.parse_house_state(box, "FL")["house-FL-01"]
+    assert (fl["rep_votes"], fl["dem_votes"], fl["candidates"][0]["name"]) == (181944, 103729, "Jimmy Patronis")
+    primary = box.replace("2026 Florida's 1st congressional district election", "Republican primary results")
+    assert R.parse_house_state(primary, "FL") == {}

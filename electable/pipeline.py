@@ -630,6 +630,16 @@ def results(out_dir: Path = WEB_DATA_DIR, final_dir: Path = FINAL_DIR, max_age_h
     except Exception as e:  # noqa: BLE001
         house_totals = {}
         warnings.append(f"House results fetch failed: {e}")
+    # District vote totals come from each state's House article, filled in as counts come in.
+    for st in sorted({r["state"] for r in final["chambers"]["house"]["races"]}):
+        title = wikipedia.page_title("house", st)
+        try:
+            votes = R.parse_house_state(wikipedia.fetch_html(title, max_age_hours), st)
+        except Exception as e:  # noqa: BLE001
+            warnings.append(f"{st} House vote totals unavailable: {e}")
+            continue
+        for rid, v in votes.items():
+            races[rid] = {**races.get(rid, {"called": False}), **v, "votes_url": wikipedia.page_url(title)}
 
     chambers = {}
     for ch in CHAMBERS:

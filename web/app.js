@@ -204,14 +204,18 @@
       + (state.results ? "; black diamond = actual result." : ". Sorted by closeness.");
     const races = filteredRaces(c);
     if (!races.length) { message(el, "No races match. Tick “Show safe seats” to see every race."); renderRaceTable([]); return; }
-    const rowH = 30, m = {t: 26, r: state.results ? 130 : 64, b: 8};
-    const w = width(el), labelW = w < 520 ? 110 : 210;
+    const w = width(el), narrow = w < 520;
+    // On phones: state codes only on the left, and the forecast and result stacked on the right,
+    // so the plot keeps most of the width.
+    const rowH = 30, m = {t: 26, r: state.results && !narrow ? 130 : 64, b: 8};
+    const labelW = narrow ? 64 : 210;
+    const tickCount = (pw) => Math.max(2, Math.min(8, Math.floor(pw / 56)));
     const h = m.t + rowH * races.length + m.b;
     const svg = svgIn(el, h);
     const lim = Math.min(45, Math.max(15, d3.max(races, (r) => Math.max(Math.abs(r.lo80), Math.abs(r.hi80))) || 15));
     const x = d3.scaleLinear().domain([-lim, lim]).range([labelW, w - m.r]).clamp(true);
     svg.append("g").attr("class", "grid").attr("transform", `translate(0,${m.t})`)
-      .call(d3.axisTop(x).ticks(w < 520 ? 4 : 8).tickSize(-(h - m.t - m.b)).tickFormat((v) => v === 0 ? "Even" : (v > 0 ? "D+" : "R+") + Math.abs(v)))
+      .call(d3.axisTop(x).ticks(tickCount(w - m.r - labelW)).tickSize(-(h - m.t - m.b)).tickFormat((v) => v === 0 ? "Even" : (v > 0 ? "D+" : "R+") + Math.abs(v)))
       .call((g) => g.select(".domain").remove());
     svg.append("line").attr("x1", x(0)).attr("x2", x(0)).attr("y1", m.t).attr("y2", h - m.b).attr("stroke", css("--axis"));
     const row = svg.append("g").selectAll("g").data(races).join("g").attr("class", "row")
@@ -225,14 +229,16 @@
       .attr("fill", (d) => partyColor(d.median)).attr("opacity", 0.35);
     row.append("circle").attr("class", "mark").attr("cx", (d) => x(d.median)).attr("cy", rowH / 2).attr("r", 5)
       .attr("fill", (d) => partyColor(d.median)).attr("stroke", css("--surface")).attr("stroke-width", 2);
-    row.append("text").attr("x", w - 4).attr("y", rowH / 2 + 4).attr("text-anchor", "end").attr("class", "label-strong")
+    const stacked = narrow && state.results;
+    row.append("text").attr("x", w - 4).attr("y", stacked ? rowH / 2 - 1 : rowH / 2 + 4).attr("text-anchor", "end").attr("class", "label-strong")
       .text((d) => d.p_dem >= 0.5 ? `D ${pct(d.p_dem)}` : `R ${pct(1 - d.p_dem)}`);
     // Results: a diamond at the actual margin, and whether the favorite won.
     row.filter((d) => resultOf(d) && resultOf(d).margin != null).append("path")
       .attr("transform", (d) => `translate(${x(resultOf(d).margin)},${rowH / 2})`)
       .attr("d", d3.symbol(d3.symbolDiamond, 70)).attr("fill", css("--ink")).attr("stroke", css("--surface")).attr("stroke-width", 1.5);
     row.filter((d) => resultOf(d) && resultOf(d).called).append("text")
-      .attr("x", w - 58).attr("y", rowH / 2 + 4).attr("text-anchor", "end")
+      .attr("x", stacked ? w - 4 : w - 58).attr("y", stacked ? rowH / 2 + 11 : rowH / 2 + 4).attr("text-anchor", "end")
+      .style("font-size", stacked ? "10px" : null)
       .text((d) => (resultOf(d).winner === "D" ? (d.dem_label === "I" ? "I" : "D") : resultOf(d).winner) + " won");
     row.append("rect").attr("class", "hit").attr("width", w).attr("height", rowH).attr("tabindex", 0)
       .on("pointermove", (e, d) => showTip(e, raceTip(d))).on("pointerleave blur", hideTip)
@@ -276,7 +282,7 @@
     const ext = d3.max(races, (r) => Math.max(Math.abs(r.poll_avg), Math.abs(r.median))) || 10;
     const x = d3.scaleLinear().domain([-Math.min(45, ext + 3), Math.min(45, ext + 3)]).range([labelW, w - m.r]).clamp(true);
     svg.append("g").attr("class", "grid").attr("transform", `translate(0,${m.t})`)
-      .call(d3.axisTop(x).ticks(w < 520 ? 4 : 8).tickSize(-(h - m.t - m.b)).tickFormat((v) => v === 0 ? "Even" : (v > 0 ? "D+" : "R+") + Math.abs(v)))
+      .call(d3.axisTop(x).ticks(Math.max(2, Math.min(8, Math.floor((w - m.r - labelW) / 56)))).tickSize(-(h - m.t - m.b)).tickFormat((v) => v === 0 ? "Even" : (v > 0 ? "D+" : "R+") + Math.abs(v)))
       .call((g) => g.select(".domain").remove());
     svg.append("line").attr("x1", x(0)).attr("x2", x(0)).attr("y1", m.t).attr("y2", h - m.b).attr("stroke", css("--axis"));
     const row = svg.append("g").selectAll("g").data(races).join("g").attr("class", "row")

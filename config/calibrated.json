@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-11-11T10:52:33Z",
+  "generated_at": "2026-11-11T19:34:13Z",
   "overrides": {
     "polls": {
       "systematic_error_sd": {
-        "senate": 6.55,
+        "senate": 6.54,
         "governor": 6.06,
         "house": 7.74
       }

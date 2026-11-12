@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-11-11T19:34:13Z",
+  "generated_at": "2026-11-12T01:48:56Z",
   "overrides": {
     "polls": {
       "systematic_error_sd": {
-        "senate": 6.54,
+        "senate": 6.55,
         "governor": 6.06,
         "house": 7.74
       }
     },
     "national": {
       "shared_error_sd": 3.03,
-      "generic_ballot_error_sd": 3.26,
-      "generic_ballot_bias": 2.25
+      "generic_ballot_error_sd": 3.27,
+      "generic_ballot_bias": 2.24
     },
     "prior": {
       "lean_weight": {

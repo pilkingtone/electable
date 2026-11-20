@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-20T02:18:15Z",
+  "generated_at": "2026-11-20T11:31:48Z",
   "overrides": {
     "polls": {
       "systematic_error_sd": {
@@ -10,8 +10,8 @@
     },
     "national": {
       "shared_error_sd": 3.05,
-      "generic_ballot_error_sd": 3.32,
-      "generic_ballot_bias": 2.22
+      "generic_ballot_error_sd": 3.35,
+      "generic_ballot_bias": 2.2
     },
     "prior": {
       "lean_weight": {
